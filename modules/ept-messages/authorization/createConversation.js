@@ -3,6 +3,8 @@ var Boom = require('boom');
 var Promise = require('bluebird');
 
 module.exports = function conversationsCreate(server, auth, receiverIds) {
+  var userId = auth.credentials.id;
+
   // allowed
   var allowed = server.authorization.build({
     error: Boom.forbidden(),
@@ -11,6 +13,36 @@ module.exports = function conversationsCreate(server, auth, receiverIds) {
     auth: auth,
     permission: 'conversations.create.allow'
   });
+
+  // check if user is ignoring newbies, if they are they cannot send messages to newbies
+  var canMessageNewbies = server.db.messages.getMessageSettings(userId)
+  .then(function(data) {
+    if (data) { return data.ignore_newbies; }
+    else { return Promise.reject(Boom.badRequest('There was an error creating your message')); }
+  })
+  .then(function(isIgnoring) {
+    if (isIgnoring) {
+      return Promise.all(Promise.map(receiverIds, function(receiverId) {
+        return server.db.users.find(receiverId)
+        .then(function(refUser) {
+          var refIsNewbie = false;
+          for(var i = 0; i < refUser.roles.length; i++) {
+            var roleLookup = refUser.roles[i].lookup;
+            if (roleLookup === 'newbie') {
+              refIsNewbie = true;
+              break;
+            }
+          }
+          if (refIsNewbie) {
+            return Promise.reject(Boom.forbidden(refUser.username + ' is a newbie, you must stop ignoring newbie messages in order to send this message'));
+          }
+          else { return Promise.resolve(true); }
+        });
+      }));
+    }
+    else { return Promise.resolve(true); }
+  });
+
 
   // priority restriction
   var priority;
@@ -28,5 +60,5 @@ module.exports = function conversationsCreate(server, auth, receiverIds) {
     }));
   }
 
-  return Promise.all([allowed, priority]);
+  return Promise.all([allowed, priority, canMessageNewbies]);
 };
