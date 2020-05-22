@@ -49,6 +49,14 @@ $font-size-tiny:  0.6375rem;
 $placeholder-text-color: lighten($header-bg-color, 20%);
 @if (lightness($header-bg-color) > 50) { $placeholder-text-color: darken($header-bg-color, 20%); }
 
+
+// Calculated shadow color
+$card-shadow-color: rgba(0, 0, 0, 0.1);
+@if (lightness($sub-header-color) < 50) { 
+  $card-shadow-color: rgba(0, 0, 0, 0.2); 
+}
+
+
 // Spacing Calculated
 $base-grid-padding: 2rem;
 
