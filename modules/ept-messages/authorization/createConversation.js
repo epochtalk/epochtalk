@@ -18,7 +18,7 @@ module.exports = function conversationsCreate(server, auth, receiverIds) {
   var canMessageNewbies = server.db.messages.getMessageSettings(userId)
   .then(function(data) {
     if (data) { return data.ignore_newbies; }
-    else { return Promise.reject(Boom.badRequest('There was an error creating your message')); }
+    else { return Promise.reject(Boom.badRequest('There was an error starting your conversation')); }
   })
   .then(function(isIgnoring) {
     if (isIgnoring) {
@@ -34,7 +34,7 @@ module.exports = function conversationsCreate(server, auth, receiverIds) {
             }
           }
           if (refIsNewbie) {
-            return Promise.reject(Boom.forbidden(refUser.username + ' is a newbie, you must stop ignoring newbie messages in order to send this message'));
+            return Promise.reject(Boom.forbidden(refUser.username + ' is a newbie member, you must stop ignoring newbie messages in order to start this conversation'));
           }
           else { return Promise.resolve(true); }
         });
