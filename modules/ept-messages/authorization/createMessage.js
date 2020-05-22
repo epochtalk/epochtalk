@@ -18,7 +18,7 @@ module.exports = function messagesCreate(server, auth, receiverIds, convoId) {
   var canMessageNewbies = server.db.messages.getMessageSettings(userId)
   .then(function(data) {
     if (data) { return data.ignore_newbies; }
-    else { return Promise.reject(Boom.badRequest('There was an error starting your conversation')); }
+    else { return Promise.reject(Boom.badRequest('There was an error starting your message')); }
   })
   .then(function(isIgnoring) {
     if (isIgnoring) {
