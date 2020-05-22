@@ -31,7 +31,6 @@ module.exports = function(conversationId, viewerId, opts) {
   var query = 'SELECT ' + columns + ' FROM ( ' +
     q + ' ) mid LEFT JOIN LATERAL ( ' +
     q2 + ' ) s ON true ORDER BY mid.created_at DESC';
-
   // get all related posts
   return using(db.createTransaction(), function(client) {
     return client.query(query, params)
@@ -42,18 +41,19 @@ module.exports = function(conversationId, viewerId, opts) {
           delete data.read_by_user_ids;
         }
         else { data.viewed = false; }
-        if (data && data.receiver_ids.length) {
-          return Promise.map(data.receiver_ids, function(receiverId) {
-            var userQuery = 'SELECT u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = $1';
-            return client.query(userQuery, [receiverId]);
-          })
+        return data;
+      })
+      .then(function(data) { // TODO: Reoptimize
+        return Promise.map(data, function(data) {
+          data.receivers = [];
+          var userQuery = 'SELECT u.id, u.username, u.deleted, up.avatar FROM users u LEFT JOIN users.profiles up ON u.id = up.user_id WHERE u.id = ANY($1)';
+          return client.query(userQuery, [data.receiver_ids])
           .then(function(receiverData) {
-            data.receivers = receiverData[0].rows;
+            data.receivers = receiverData.rows;
             if (data.content && !data.content.body_html) { data.content.body_html = data.content.body; }
             return data;
           });
-        }
-        else { return data; }
+        });
       });
     })
     .then(function(data) {
