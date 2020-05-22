@@ -136,7 +136,7 @@ var ctrl = [
         ctrl.newMessage.receiver_ids = lastReceiverIds;
         ctrl.newMessage.receiver_usernames = lastReceiverUsernames;
 
-        ctrl.receiverNames = lastReceiverUsernames;
+        ctrl.receiverNames = lastReceiverUsernames.filter((it, i, ar) => ar.indexOf(it) === i);
       })
       // scroll last message into view
       .then(function() { $anchorScroll(); });
