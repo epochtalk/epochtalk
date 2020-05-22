@@ -240,7 +240,8 @@ var ctrl = [
         message.sender_username = ctrl.newMessage.sender_username;
         message.sender_avatar = Session.user.avatar;
         ctrl.currentConversation.messages.unshift(message);
-        Alert.success('Reply sent to ' + message.receiver_usernames.join(', '));
+        var receiverNames = message.receiver_usernames.filter((it, i, ar) => ar.indexOf(it) === i).sort();
+        Alert.success('Reply sent to ' + receiverNames.join(', '));
       })
       .then(ctrl.loadRecentMessages)
       .then(function() {
