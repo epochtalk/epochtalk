@@ -77,7 +77,7 @@ $secondary-font-color-light: darken($secondary-font-color, 20%);
 
 // Components Calculated
 $color-highlighted: HSL(200, 20%, 12%);
-$border-color-alt: darken($border-color, 30%);
+$border-color-alt: darken($border-color, 10%);
 $code-block-bg-color: lighten($base-background-color, 10%);
 @if (lightness($base-background-color) > 50) {
   $border-color-alt: lighten($border-color, 10%);
