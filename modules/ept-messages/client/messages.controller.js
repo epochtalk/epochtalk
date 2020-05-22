@@ -81,7 +81,7 @@ var ctrl = [
         receiverNames.splice(authedIndex, 1);
         receiverNames.push(message.sender_username);
       }
-      receiverNames = receiverNames.filter((it, i, ar) => ar.indexOf(it) === i);
+      receiverNames = receiverNames.filter((it, i, ar) => ar.indexOf(it) === i).sort();
       return receiverNames.join(', ');
     };
 
@@ -136,7 +136,7 @@ var ctrl = [
         ctrl.newMessage.receiver_ids = lastReceiverIds;
         ctrl.newMessage.receiver_usernames = lastReceiverUsernames;
 
-        ctrl.receiverNames = lastReceiverUsernames.filter((it, i, ar) => ar.indexOf(it) === i);
+        ctrl.receiverNames = lastReceiverUsernames.filter((it, i, ar) => ar.indexOf(it) === i).sort();
       })
       // scroll last message into view
       .then(function() { $anchorScroll(); });
