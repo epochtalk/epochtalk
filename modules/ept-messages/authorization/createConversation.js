@@ -43,6 +43,36 @@ module.exports = function conversationsCreate(server, auth, receiverIds) {
     else { return Promise.resolve(true); }
   });
 
+  var newbieCanMessageUser = server.db.users.find(userId)
+  .then(function(authUser) {
+    var authIsNewbie = false;
+    for(var i = 0; i < authUser.roles.length; i++) {
+      var roleLookup = authUser.roles[i].lookup;
+      if (roleLookup === 'newbie') {
+        authIsNewbie = true;
+        break;
+      }
+    }
+    if (authIsNewbie) {
+      return Promise.all(Promise.map(receiverIds, function(receiverId) {
+        return server.db.messages.getMessageSettings(receiverId)
+        .then(function(data) {
+          if (data) { return data.ignore_newbies; }
+          else { return Promise.reject(Boom.badRequest('There was an error creating your conversation')); }
+        })
+        .then(function(isIgnoring) {
+          if (isIgnoring) {
+            return server.db.users.find(receiverId)
+            .then(function(receiver) {
+              return Promise.reject(Boom.forbidden(receiver.username + ' does not accept messages from newbie members'));
+            });
+          }
+          else { return Promise.resolve(true); }
+        });
+      }));
+    }
+    else { return Promise.resolve(true); }
+  });
 
   // priority restriction
   var priority;
@@ -60,5 +90,5 @@ module.exports = function conversationsCreate(server, auth, receiverIds) {
     }));
   }
 
-  return Promise.all([allowed, priority, canMessageNewbies]);
+  return Promise.all([allowed, priority, canMessageNewbies, newbieCanMessageUser]);
 };
