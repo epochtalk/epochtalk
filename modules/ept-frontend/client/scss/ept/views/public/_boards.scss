@@ -60,8 +60,8 @@
     border-radius: 6px;
     box-shadow: 0 4px 16px 8px $card-shadow-color;
     cursor: pointer;
-    padding: 0.5rem;
-    padding-bottom: 1.5rem;
+    padding: 0.75rem 1rem 1rem;
+    // padding-bottom: 1.5rem;
     transition: box-shadow ease-in-out 150ms, transform ease-in-out 150ms;
 
     &:hover {
