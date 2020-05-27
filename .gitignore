@@ -38,7 +38,6 @@ test/coverage/
 /modules/etc
 
 /content/sass/_custom-variables.scss
-/content/sass/_custom-variables-alternate.scss
 /content/legal/disclaimer.txt
 /content/legal/privacy.txt
 /content/legal/tos.txt

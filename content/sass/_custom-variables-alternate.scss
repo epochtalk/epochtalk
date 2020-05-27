@@ -1,0 +1,65 @@
+// Theme settings
+
+// Spacing User Customizable
+$base-line-height: 1.3rem;
+
+// Primary Layout Colors User Customizable
+$base-background-color: rgb(255, 255, 255);
+$color-primary: rgb(255, 100, 0);
+
+// Fonts User Customizable
+$base-font-sans: "Roboto", "Helvetica Neue", Helvetica, sans-serif;
+$base-font-color: rgb(34, 34, 54);
+$base-font-size: 16px;
+$secondary-font-color: rgb(153, 153, 153);
+$text-gray-med: #777;
+
+// Components User Customizable
+$input-font-color: rgb(34, 34, 54);
+$input-background-color: rgb(255, 255, 255);
+$border-color: rgb(215, 215, 215);
+
+// Header Colors User Customizable
+$header-font-color: rgb(255, 255, 255);
+$header-bg-color: rgb(66, 71, 80);
+$sub-header-color: rgb(245, 245, 245);
+
+
+// Base layout width
+@mixin base-layout-width {
+  max-width: $view-maxWidth;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// Alternate Color Themes
+
+// Dark Grey ----------------------------------------------
+$base-line-height: 1.3rem;
+$base-background-color:  rgb(50,50,50);
+$color-primary:          rgb(65, 128, 255);
+$base-font-sans: "roboto", "helvetica neue", helvetica, sans-serif;
+$base-font-color:        rgb(182, 191, 210);
+$base-font-size: 16px;
+$secondary-font-color:   rgb(140, 140, 150);
+$input-font-color:       rgb(150, 150, 150);
+$input-background-color: rgb(0,0,0);
+$border-color:           rgb(80,80,80);
+$header-font-color:      rgb(80,80,80);
+$header-bg-color:        rgb(30,30,30);
+$sub-header-color:       rgb(40,40,40);
+
+// Black theme --------------------------------------------
+$base-line-height: 1.3rem;
+$base-background-color:  rgb(10 , 10 , 10 );
+$color-primary:          rgb(255, 210, 40);
+$base-font-sans: "roboto", "helvetica neue", helvetica, sans-serif;
+$base-font-color:        rgb(240, 240, 240);
+$base-font-size: 16px;
+$secondary-font-color:   rgb(220, 220, 220);
+$input-font-color:       rgb(200, 200, 200);
+$input-background-color: rgb(0, 0, 0);
+$border-color:           rgb(80, 80, 80);
+$header-font-color:      rgb(80,80,80);
+$header-bg-color:        rgb(20,20,20);
+$sub-header-color:       rgb(40,40,40);
