@@ -29,7 +29,7 @@
 .dashboard-hero {
   background-color: $sub-header-color;
   grid-area: main;
-  margin: -1rem 0 2rem;
+  margin: calc(-1rem - 1px) 0 2rem;
   padding: 2rem;
   position: relative;
   width: 100vw;
