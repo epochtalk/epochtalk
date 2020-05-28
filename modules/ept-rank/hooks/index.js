@@ -9,5 +9,6 @@ function getRankData(request) {
 }
 
 module.exports = [
-  { path: 'posts.byThread.post', method: getRankData }
+  { path: 'posts.byThread.post', method: getRankData },
+  { path: 'users.find.post', method: getRankData }
 ];
