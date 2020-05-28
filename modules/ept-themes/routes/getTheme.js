@@ -6,6 +6,7 @@ var readLine = require('readline');
 var common = require(path.normalize(__dirname + '/common'));
 var customVarsPath = common.customVarsPath;
 var previewVarsPath = common.previewVarsPath;
+var themeVarsPath = common.themeVarsPath;
 /**
   * @apiVersion 0.4.0
   * @apiGroup Settings
@@ -34,13 +35,20 @@ module.exports = {
   path: '/api/theme',
   options: {
     auth: { strategy: 'jwt' },
-    validate: { query: Joi.object({ preview: Joi.boolean() }) },
+    validate: { query: Joi.object({ preview: Joi.boolean(), theme: Joi.string().valid('light', 'dark', 'black') }) },
     pre: [ { method: (request) => request.server.methods.auth.themes.getTheme(request.server, request.auth) } ]
   },
   handler: function(request) {
+    var theme = request.query.theme;
     var preview = request.query.preview;
     var previewExists = fs.statSync(previewVarsPath).size;
-    var readFilePath = preview && previewExists ? previewVarsPath : customVarsPath;
+    var readFilePath = customVarsPath;
+    if (preview && previewExists) {
+      readFilePath = previewVarsPath;
+    }
+    if (theme) {
+      readFilePath = themeVarsPath(theme);
+    }
     var rl = readLine.createInterface({
       input: fs.createReadStream(readFilePath),
       terminal: false
