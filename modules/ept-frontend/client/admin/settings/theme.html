@@ -1,8 +1,21 @@
 <div class="settings full-width">
-<button ng-click="AdminSettingsCtrl.loadTheme('light')">Light Theme</button>
-<button ng-click="AdminSettingsCtrl.loadTheme('dark')">Dark Theme</button>
-<button ng-click="AdminSettingsCtrl.loadTheme('black')">Black Theme</button>
+  <h5 class="thin-underline">Font Settings</h5>
+  <button style="display: inline-block;" ng-click="AdminSettingsCtrl.loadTheme('light')">
+    <img src="/static/img/light-theme.png" alt="Light Theme" />
+    <div class="center">Preview Light Theme</div>
+  </button>
+  &nbsp;&nbsp;
+  <button style="display: inline-block;" ng-click="AdminSettingsCtrl.loadTheme('dark')">
+    <img src="/static/img/dark-theme.png" alt="Dark Theme" />
+    <div class="center">Preview Dark Theme</div>
+  </button>
+  &nbsp;&nbsp;
+  <button style="display: inline-block;" ng-click="AdminSettingsCtrl.loadTheme('black')">
+    <img src="/static/img/black-theme.png" alt="Black Theme" />
+    <div class="center">Preview Black Theme</div>
+  </button>
 </div>
+
 <!-- Column One -->
 <form name="themeForm" class="css-form" novalidate>
   <div class="settings half-column">
