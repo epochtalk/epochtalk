@@ -17,6 +17,15 @@ var ctrl = ['$scope', '$state', '$timeout', 'theme', 'settings', 'Configurations
   // Theme copy
   this.themeCopy = null;
 
+  this.loadTheme = function(themeName) {
+    return Themes.getTheme({ theme: themeName }).$promise
+    .then(function(theme) {
+      ctrl.theme = theme;
+      ctrl.removeVarPostFix();
+      return $scope.child.preview();
+    });
+  };
+
   // Remove px and rem
   this.removeVarPostFix = function() {
     ctrl.theme['base-font-size'] = ctrl.theme['base-font-size'].split('px')[0];
@@ -50,7 +59,7 @@ var ctrl = ['$scope', '$state', '$timeout', 'theme', 'settings', 'Configurations
     ThemeSVC.setTheme(ctrl.themeCopy);
 
     // Update
-    Themes.previewTheme(ctrl.themeCopy).$promise
+    return Themes.previewTheme(ctrl.themeCopy).$promise
     .then(function(previewTheme) {
       ctrl.theme = previewTheme;
       ctrl.removeVarPostFix();
