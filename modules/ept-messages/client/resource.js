@@ -30,7 +30,11 @@ var messagesResource = ['$resource',
         method: 'PUT',
         url: '/api/messages/settings'
       },
-      getMessageEmailSettings: {
+      enableNewbieMessages: {
+        method: 'PUT',
+        url: '/api/messages/settings/newbie'
+      },
+      getMessageSettings: {
         method: 'GET',
         url: '/api/messages/settings'
       },

@@ -6,6 +6,7 @@
 .error-label { @include label(error,  0.6875rem, 2px, 0.1rem); }
 .thin-underline { @include clearfix; border-bottom: 1px solid $border-color; margin-bottom: 0.625rem; }
 .info-tooltip { transition:color 0.3s ease; margin-left: 0.25rem; cursor: pointer; color: $secondary-font-color; &:hover { color: $secondary-font-color-dark; }}
+.delete.info-tooltip:hover { color: $secondary-font-color-light; }
 .desc-label, .secondary-font-color-light { color: $secondary-font-color-light; }
 .bold { font-weight: bold; }
 .spoiler { color: black; background-color: black; &:hover { color: white; } }

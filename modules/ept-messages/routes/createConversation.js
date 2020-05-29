@@ -100,7 +100,7 @@ function processing(request) {
         return request.db.users.find(receiverId)
         .then(function(receiverName) {
           receiver = receiverName;
-          return request.db.messages.getEmailSettings(receiverId);
+          return request.db.messages.getMessageSettings(receiverId);
         })
         .then(function(data) {
           if (data.email_messages) {

@@ -72,7 +72,8 @@
         </div>
         <div class="title">
           <strong ng-bind="message.sender_username"></strong>
-          <span class="date" ng-bind="message.created_at | humanDate"></span>
+          <span class="date" ng-bind="message.created_at | humanDate"></span>&nbsp;
+          <span class="delete info-tooltip" ng-if="message.sender_newbie_alert && (message.sender_id !== MessagesCtrl.currentUserId)" data-balloon="!!! WARNING: This user is a newbie. If you are expecting a message from a more veteran member, then this is an imposter !!!" data-balloon-pos="down" data-balloon-length="large" data-balloon-break>Newbie Alert!&nbsp;&nbsp;<i class="fa fa-info-circle"></i></span>
           <div class="right">
             <a ng-href="" class="action" data-balloon="Quote" ng-click="MessagesCtrl.addQuote(message); MessagesCtrl.editorConvoMode = false;">
               <i class="icon-epoch-quote"></i>
@@ -85,7 +86,7 @@
             </a>
           </div>
         </div>
-        <div class="msg-content post-body" post-processing="message.content.body_html" style-fix="true"></div>
+        <div class="msg-content post-body" post-processing="message.content.body_html" style-fix="true" is-newbie="message.sender_newbie_alert"></div>
       </div>
     </div>
   </div>

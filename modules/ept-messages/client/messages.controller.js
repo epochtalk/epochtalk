@@ -81,6 +81,7 @@ var ctrl = [
         receiverNames.splice(authedIndex, 1);
         receiverNames.push(message.sender_username);
       }
+      receiverNames = receiverNames.filter((it, i, ar) => ar.indexOf(it) === i).sort();
       return receiverNames.join(', ');
     };
 
@@ -135,7 +136,7 @@ var ctrl = [
         ctrl.newMessage.receiver_ids = lastReceiverIds;
         ctrl.newMessage.receiver_usernames = lastReceiverUsernames;
 
-        ctrl.receiverNames = lastReceiverUsernames;
+        ctrl.receiverNames = lastReceiverUsernames.filter((it, i, ar) => ar.indexOf(it) === i).sort();
       })
       // scroll last message into view
       .then(function() { $anchorScroll(); });
@@ -185,16 +186,16 @@ var ctrl = [
         Alert.success('New Conversation Started!');
         ctrl.loadRecentMessages();
       })
-      .catch(function(err) {
-        var msg = 'Failed to create conversation';
-        if (err && err.status === 403) { msg = err.data.message; }
-        Alert.error(msg);
-      })
-      .finally(function() {
+      .then(function() {
         ctrl.receivers = [];
         ctrl.newMessage.receiver_ids = [];
         ctrl.newMessage.content = { subject: '', body: '', body_html: '' };
         closeEditor();
+      })
+      .catch(function(err) {
+        var msg = 'Failed to create conversation';
+        if (err && err.status === 403) { msg = err.data.message; }
+        Alert.error(msg);
       });
     };
 
@@ -239,7 +240,8 @@ var ctrl = [
         message.sender_username = ctrl.newMessage.sender_username;
         message.sender_avatar = Session.user.avatar;
         ctrl.currentConversation.messages.unshift(message);
-        Alert.success('Reply sent to ' + message.receiver_usernames.join(', '));
+        var receiverNames = message.receiver_usernames.filter((it, i, ar) => ar.indexOf(it) === i).sort();
+        Alert.success('Reply sent to ' + receiverNames.join(', '));
       })
       .then(ctrl.loadRecentMessages)
       .then(function() {
