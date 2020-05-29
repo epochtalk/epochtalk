@@ -32,6 +32,9 @@
       <h1 ng-bind="vmProfile.user.username"></h1>
       <span class="username-screen" ng-bind="vmProfile.user.name"></span>
       <span class="user-role" style="background-color: {{vmProfile.user.role_highlight_color ? vmProfile.user.role_highlight_color : 'grey'}}" ng-bind="vmProfile.user.role_name"></span>
+      <span class="user-rank">
+        <rank-display ranks="vmProfile.user.metadata.ranks" maps="vmProfile.user.metadata.rank_metric_maps" user="vmProfile.user"></rank-display>
+      </span>
     </div>
 
     <div class="profile-user-activity">
