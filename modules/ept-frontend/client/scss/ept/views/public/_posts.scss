@@ -149,6 +149,10 @@ ad-viewer {
 
     &.highlighted {
       background-color: $color-highlighted;
+
+      .post-user .user-avatar .online svg {
+        stroke: $color-highlighted;
+      }
     }
     &.editing {
       background-color: RGBA(235, 200, 120, 0.5);
