@@ -50,8 +50,10 @@
 
   .threads-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    // grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
     grid-gap: 2rem;
+    padding-bottom: 2rem;
   }
 
   .threads-data {
@@ -108,6 +110,10 @@
         margin-right: 0.5rem;
       }
     }
+  }
+
+  @include break-mobile-sm {
+    padding: 0 1rem;
   }
 }
 
