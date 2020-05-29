@@ -145,7 +145,7 @@ ad-viewer {
     min-height: 11rem;
     // max-width: calc(#{$view-maxWidth} - #{$sidebarWidth} - 2rem);
     border-bottom: $border;
-    padding: 1.5rem 0 2rem;
+    padding: 1.5rem 0.5rem 2rem;
 
     &.highlighted {
       background-color: $color-highlighted;
