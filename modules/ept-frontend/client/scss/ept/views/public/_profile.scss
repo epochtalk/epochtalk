@@ -13,14 +13,14 @@ profile {
   grid-column: span 2;
   display: grid;
   @include grid-columns-base
-  grid-template-areas: 
+  grid-template-areas:
     "header sidebar"
     "main sidebar";
   column-gap: 2rem;
 
   @include break-mobile-med {
     grid-template-columns: 1fr;
-    grid-template-areas: 
+    grid-template-areas:
       "header"
       "sidebar"
       "main";
@@ -53,7 +53,7 @@ profile {
       position: absolute;
       top: 4px;
       right: 4px;
-      
+
       svg {
         stroke: $base-background-color;
         stroke-width: 6;
@@ -108,6 +108,21 @@ profile {
         text-align: center;
         text-overflow: ellipsis;
         white-space: nowrap;
+        margin-right: 0.5rem;
+      }
+      .user-rank {
+        background: transparent;
+        border-radius: 2px;
+        color:  $base-font-color;
+        font-size: $font-size-xs;
+        line-height: 1.4;
+        max-width: 140px;
+        overflow: hidden;
+        padding: 1px 6px;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        border: 1px solid $border-color;
       }
     }
 
@@ -318,7 +333,7 @@ profile {
 
       .imageContainer.loaded { background: none; }
       .imageContainer { background: url('/static/img/loading.gif') no-repeat center; display: inline;}
-      
+
       .profile-avatar-image {
         display: block;
         position: relative;
@@ -414,7 +429,7 @@ profile {
 
 .profile-posts-table {
   table-layout: fixed;
-  
+
   tr {
     td {
       font-size: $base-font-size;
@@ -431,8 +446,8 @@ profile {
     width: 25%;
   }
 
-  .truncate-title { 
-    width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+  .truncate-title {
+    width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
   .thread-title {
@@ -456,8 +471,8 @@ profile {
       background-color: darken($base-background-color, 5%);
     }
 
-    ul { 
-      white-space: normal 
+    ul {
+      white-space: normal
     }
 
     &.closed {
