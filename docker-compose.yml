@@ -14,7 +14,7 @@ services:
     env_file:
       - docker.env
   epoch:
-    image: quay.io/epochtalk/epoch:v1.6.0
+    image: quay.io/epochtalk/epoch:newbie-pm-restrictions
     depends_on:
       - postgres
     links:
