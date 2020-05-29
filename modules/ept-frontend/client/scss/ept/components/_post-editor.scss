@@ -11,7 +11,7 @@
   right: 0;
   height: 100vh;
   width: calc(((100vw - 1300px)/2) + 240px);
-  z-index: 3000;
+  z-index: 1500;
 
   @media screen and (max-width: 1400px) {
     width: calc(#{$sidebarWidth} + #{$base-grid-padding});
