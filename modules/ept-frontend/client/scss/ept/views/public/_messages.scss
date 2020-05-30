@@ -27,7 +27,7 @@ main #public-content {
 /*-------------- Messages Layout -------------- */
 .conversations {
   grid-area: list;
-  min-height: calc(100vh - 95px);
+  // min-height: calc(100vh - 95px);
 
   .pagination-slide {
     font-size: $font-size-sm;
@@ -160,18 +160,53 @@ main #public-content {
   }
 
   @include break-mobile-sm {
-    min-height: unset;
-    height: 35vh;
-    overflow-y: scroll;
+    // min-height: unset;
+    // height: 35vh;
+    // overflow-y: scroll;
     margin-bottom: 2rem;
-    border-bottom: $border;
+    // border-bottom: $border;
   }
 }
 
 .messages {
   grid-area: details;
 
+  .action-bar {
+    display: none;
+    font-size: $font-size-sm;
+    margin-bottom: 0.25rem;
+    width: 100%;
+
+    .to__messages {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+
+      svg {
+        height: 10px;
+        fill: $color-primary;
+        transform: rotateZ(90deg);
+      }
+    }
+
+    @include break-mobile-sm {
+      display: block;
+    }
+  }
+
+  .message-details-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+
+    .to__reply {
+      flex: 0 0 auto;
+      font-size: $font-size-sm;
+    }
+  }
+
   .message-details-header {
+    flex: 1 0 auto;
     font-size: $font-size-base;
     text-transform: none;
   }
@@ -204,6 +239,7 @@ main #public-content {
     }
     button { margin-bottom: 0; }
   }
+
   .msg-container {
     .message-body-header {
       display: flex;
@@ -317,6 +353,22 @@ main #public-content {
           }
         }
       }
+    }
+  }
+
+  @include break-mobile-sm {
+    background: $base-background-color;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 0.5rem;
+    transform: translateX(100%);
+    transition: all ease-in-out 150ms;
+
+    &.is__active {
+      transform: translateX(0%);
     }
   }
 }
