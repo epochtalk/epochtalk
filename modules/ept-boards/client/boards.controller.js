@@ -89,6 +89,7 @@ module.exports = ['$timeout', '$anchorScroll', 'Session', 'User', 'PreferencesSv
         last_post_created_at: data.last_post_created_at,
         last_post_position: data.last_post_position,
         last_post_username: data.last_post_username,
+        last_post_avatar: data.last_post_avatar,
         last_thread_id: data.last_thread_id,
         last_thread_title: data.last_thread_title
       }
