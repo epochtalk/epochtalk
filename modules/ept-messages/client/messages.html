@@ -105,10 +105,14 @@
               <img ng-src="{{ message.sender_avatar || $webConfigs.default_avatar }}" />
             </div>
             <div class="title">
-              <span class="username" ng-bind="message.sender_username"></span>
+              <div class="title-username-role">
+                <span class="username" ng-bind="message.sender_username"></span>
+                <span class="badge alert user-role info-tooltip" ng-if="!message.sender_newbie_alert && (message.sender_id !== MessagesCtrl.currentUserId)" data-balloon="!!! WARNING: This user is a newbie. If you are expecting a message from a more veteran member, then this is an imposter !!!" data-balloon-pos="down" data-balloon-length="large" data-balloon-break>
+                  <i class="fa fa-info-circle"></i>
+                  Newbie Alert!
+                </span>
+              </div>
               <span class="date" ng-bind="message.created_at | humanDate"></span>
-              &nbsp;
-              <span class="delete info-tooltip" ng-if="message.sender_newbie_alert && (message.sender_id !== MessagesCtrl.currentUserId)" data-balloon="!!! WARNING: This user is a newbie. If you are expecting a message from a more veteran member, then this is an imposter !!!" data-balloon-pos="down" data-balloon-length="large" data-balloon-break>Newbie Alert!&nbsp;&nbsp;<i class="fa fa-info-circle"></i></span>
             </div>
             <div class="actions">
               <a ng-href="" class="action" data-balloon="Quote" ng-click="MessagesCtrl.addQuote(message); MessagesCtrl.editorConvoMode = false;">
