@@ -18,8 +18,20 @@
       <button class="" ng-click="SettingsCtrl.savePreferences()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
         Save
       </button>
+      <!-- Save Button -->
     </div>
   </form>
+  <br />
+  <ignore-messages-settings></ignore-messages-settings>
+  <br />
+  <ignore-mentions-settings></ignore-mentions-settings>
+  <br />
+  <h3 class="thin-underline">Timezone Offset</h3>
+  <div class="fieldgroup">
+    <select ng-model="SettingsCtrl.timezone_offset_sign" ng-options="offset_sign.value as offset_sign.label disable when offset_sign.disabled for offset_sign in SettingsCtrl.timezone_offset_sign_options"></select>
+    <select ng-model="SettingsCtrl.timezone_offset_hours" ng-options="offset_hours.value as offset_hours.label disable when offset_hours.disabled for offset_hours in SettingsCtrl.timezone_offset_hours_options"></select>
+    <select ng-model="SettingsCtrl.timezone_offset_minutes" ng-options="offset_minutes.value as offset_minutes.label disable when offset_minutes.disabled for offset_minutes in SettingsCtrl.timezone_offset_minutes_options"></select>
+  </div>
   <br />
   <ignore-messages-settings></ignore-messages-settings>
   <br />

@@ -21,6 +21,9 @@ function checkUserIgnoredMessages(request) {
     });
   })
   .then(function() {
+    // filter duplicates for when you include yourself in a group message.
+    ignoredByAuthed = ignoredByAuthed.filter(function(it, i, ar) { return ar.indexOf(it) === i; });
+    ignoringAuthed = ignoringAuthed.filter(function(it, i, ar) { return ar.indexOf(it) === i; });
     // User is blocking and being blocked
     if (ignoredByAuthed.length && ignoringAuthed.length) {
       return Promise.reject(Boom.forbidden('The following users have blocked you from sending private messages: ' + ignoringAuthed.join(', ') + '. You must also unblock the following users in order to send this message: ' + ignoredByAuthed.join(', ')));

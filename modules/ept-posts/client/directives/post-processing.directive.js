@@ -2,7 +2,8 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
   return {
     scope: {
       postProcessing: '=',
-      styleFix: '='
+      styleFix: '=',
+      isNewbie: '='
     },
     restrict: 'A',
     link: function($scope, $element) {
@@ -179,8 +180,11 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
         // autoDate and autoLink
         processed = processed.replace(new RegExp('&#47;&#47;', 'g'), '//');
         processed = processed.replace(autoDateRegex, autoDate) || processed;
-        processed = processed.replace(autoVideoRegex, autoVideo) || processed;
-        processed = processed.replace(autoLinkRegex, autoLink) || processed;
+
+        if (!$scope.isNewbie) {
+          processed = processed.replace(autoVideoRegex, autoVideo) || processed;
+          processed = processed.replace(autoLinkRegex, autoLink) || processed;
+        }
 
         // styleFix
         if (doStyleFix) {

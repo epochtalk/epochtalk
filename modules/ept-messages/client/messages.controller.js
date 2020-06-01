@@ -60,6 +60,7 @@ var ctrl = [
         receiverNames.splice(authedIndex, 1);
         receiverNames.push(message.sender_username);
       }
+      receiverNames = receiverNames.filter((it, i, ar) => ar.indexOf(it) === i).sort();
       return receiverNames.join(', ');
     };
 
@@ -107,7 +108,7 @@ var ctrl = [
         ctrl.newMessage.receiver_ids = lastReceiverIds;
         ctrl.newMessage.receiver_usernames = lastReceiverUsernames;
 
-        ctrl.receiverNames = lastReceiverUsernames;
+        ctrl.receiverNames = lastReceiverUsernames.filter((it, i, ar) => ar.indexOf(it) === i).sort();
       })
       // scroll last message into view
       .then(function() { $anchorScroll(); });
@@ -216,7 +217,8 @@ var ctrl = [
         message.sender_username = ctrl.newMessage.sender_username;
         message.sender_avatar = Session.user.avatar;
         ctrl.currentConversation.messages.unshift(message);
-        Alert.success('Reply sent to ' + message.receiver_usernames.join(', '));
+        var receiverNames = message.receiver_usernames.filter((it, i, ar) => ar.indexOf(it) === i).sort();
+        Alert.success('Reply sent to ' + receiverNames.join(', '));
       })
       .then(ctrl.loadRecentMessages)
       .then(function() {
