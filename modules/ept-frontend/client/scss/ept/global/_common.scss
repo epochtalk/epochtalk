@@ -282,3 +282,53 @@ input[type].nested-input.valid-username { color: green; }
     ul { margin-left: 1.25rem; }
   }
 }
+
+
+// Badges
+.badge {
+  background-color: $base-background-color;
+  border: 1px solid $secondary-font-color;
+  border-radius: 4px;
+  color: $secondary-font-color;
+  display: inline-block;
+  font-size: $font-size-xs;
+  margin-right: 0.25rem;
+  padding: 0 0.5rem;
+  position: relative;
+  // top: -4px;
+  text-transform: uppercase;
+
+  a {
+    color: $secondary-font-color;
+
+    &:active,
+    &:focus,
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  .badgeContents {
+    display: flex;
+    align-items: center;
+  }
+
+  svg,
+  .fa {
+    height: 0.75rem;
+    fill: $secondary-font-color;
+    margin-right: 0.25rem;
+    // position: relative;
+    // top: 1px;
+  }
+
+  &.alert {
+    background-color: $color-alert;
+    border: none;
+    color: #fff;
+
+    svg {
+      fill: #fff;
+    }
+  }
+}

@@ -419,42 +419,6 @@ ad-viewer {
   margin-top: 4px;
 }
 
-.badge {
-  // border: 1px solid $text-gray-dark;
-  background-color: $base-background-color;
-  border: 1px solid $secondary-font-color;
-  border-radius: 4px;
-  color: $secondary-font-color;
-  display: inline-block;
-  font-size: $font-size-xs;
-  margin-right: 0.25rem;
-  padding: 0 0.5rem;
-  position: relative;
-  // top: -4px;
-  text-transform: uppercase;
-
-  a {
-    color: $secondary-font-color;
-
-    &:active,
-    &:focus,
-    &:hover {
-      text-decoration: none;
-    }
-  }
-
-  .badgeContents {
-    display: flex;
-    align-items: center;
-  }
-
-  svg {
-    height: 0.75rem;
-    fill: $secondary-font-color;
-    // position: relative;
-    // top: 1px;
-  }
-}
 
 #post-spacer {
   min-height: 175px;
