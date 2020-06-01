@@ -250,9 +250,16 @@ main #public-content {
         flex-direction: column;
         flex: 1 0 auto;
 
+        .title-username-role {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+
         .username {
           font-size: 1rem;
           font-weight: 600;
+          margin-right: 0.5rem;
         }
 
         .date {
