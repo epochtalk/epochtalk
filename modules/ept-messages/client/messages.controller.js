@@ -10,6 +10,7 @@ var ctrl = [
     this.limit = pageData.limit;
     this.pageMax = Math.ceil(pageData.total_convo_count / pageData.limit);
     this.currentConversation = {messages: []};
+    this.isActive = false;
     this.selectedConversationId = null;
     this.receiverNames = null;
     this.newMessage = { content: { body: '', body_html: '' }, receiver_ids: [], receiver_usernames: [] };
@@ -78,6 +79,8 @@ var ctrl = [
         ctrl.currentSubject = data.messages[0].content.subject;
         ctrl.currentConversation = data;
         ctrl.currentConversation.id = conversationId;
+        if (options.init) { ctrl.isActive = false; }
+        else { ctrl.isActive = true; }
         if (options.saveInput) {
           ctrl.newMessage.subject = ctrl.newMessage.subject || ctrl.currentConversation.subject;
           ctrl.newMessage.content.body = ctrl.newMessage.content.body || '';
@@ -115,7 +118,7 @@ var ctrl = [
     };
 
     if (this.recentMessages.length) {
-      this.loadConversation(this.recentMessages[0].conversation_id);
+      this.loadConversation(this.recentMessages[0].conversation_id, { init: true });
     }
 
     this.reloadConversation = function() {
