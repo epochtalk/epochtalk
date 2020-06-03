@@ -8,7 +8,9 @@
     "serve": "node ./scripts/serve.js",
     "build": "webpack",
     "test-client": "./node_modules/.bin/protractor protractor.config.js",
-    "test": "./node_modules/.bin/mocha -R spec ./tests && dropdb --if-exists epoch_test && createdb epoch_test && psql epoch_test < ./schema.sql"
+    "test": "./node_modules/.bin/mocha -R spec ./tests && dropdb --if-exists epoch_test && createdb epoch_test && psql epoch_test < ./schema.sql",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "release": {
     "plugins": [
