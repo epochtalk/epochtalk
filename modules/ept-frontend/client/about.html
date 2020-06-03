@@ -1,0 +1,27 @@
+<!-- Page Header -->
+<div class="about-section">
+  <h1 class="">About <span ng-bind="$webConfigs.title | decode"></span></h1>
+  <dl class="tabs">
+    <dd class="no-select active" >
+      <a ui-sref="watchlist">Terms of Service</a>
+    </dd>
+    <dd class="no-select">
+      <a ng-href="/legal#tos" target="_blank" rel="noopener noreferrer">
+        Terms of Service
+      </a>
+    </dd>
+    <dd class="no-select">
+      <a ng-href="/legal#disclaimer" target="_blank" rel="noopener noreferrer">
+        Disclaimer
+      </a>
+    </dd>
+  </dl>
+</div>
+
+<div class="forum-description">
+  (insert forum description here)
+</div>
+
+<div class="copyright">
+  <span class="">&copy; {{currentYear}} {{title}}</span>
+</div>
