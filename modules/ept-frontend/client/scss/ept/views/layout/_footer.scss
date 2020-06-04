@@ -10,7 +10,7 @@ footer {
   background-color:$footer-bg-color;
   color: $footer-font-color;
   font-size: 0.8rem;
-  margin-bottom: 1rem;
+  // margin-bottom: 1rem;
 
   #footer {
     @include base-layout-width;
