@@ -284,6 +284,16 @@ input[type].nested-input.valid-username { color: green; }
 }
 
 
+// View Title
+.view-title {
+  color: $base-font-color;
+  font-size: $font-size-lg;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-transform: none;
+}
+
+
 // Badges
 .badge {
   background-color: $base-background-color;

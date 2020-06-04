@@ -1,5 +1,6 @@
 /*-------------- Threads Layout -------------- */
-.threads {
+.threads,
+.threads-posted-in {
   main {
     #public-content {
       grid-template-areas:  
@@ -16,6 +17,7 @@
     }
   }
 }
+
 
 .board-controls {
   background-color: $base-background-color;
@@ -101,8 +103,13 @@
   justify-self: end;
 }
 
-.threads {
+.threads,
+.threads-posted-in {
   .actions-bottom {
+    .pagination-bottom {
+      justify-self: end;
+    }
+    
     @media screen and (max-width: 1280px) {
       padding: 0.75rem 1.5rem;
 

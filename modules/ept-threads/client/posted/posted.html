@@ -1,12 +1,9 @@
-<div class="page-header-split">
-  <div><h4>Threads Posted In</h4></div>
-  <div>
-    <pagination page-count="PostedWrapperCtrl.pageCount" page="PostedWrapperCtrl.page"></pagination>
-  </div>
-</div>
+<h1 class="view-title">Threads Posted In</h1>
 
 <div class="board-data" ui-view="data"></div>
 
-<div class="fill-row">
-  <pagination page-count="PostedWrapperCtrl.pageCount" page="PostedWrapperCtrl.page"></pagination>
+<div class="actions-bottom">
+  <div class="actions-bottom-grid">
+    <pagination page-count="PostedWrapperCtrl.pageCount" page="PostedWrapperCtrl.page" class="pagination-bottom"></pagination>
+  </div>
 </div>
