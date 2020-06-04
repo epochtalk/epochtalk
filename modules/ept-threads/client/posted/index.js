@@ -22,6 +22,7 @@ var route = ['$stateProvider', function($stateProvider) {
     },
     resolve: {
       $title: function() { return 'Threads Posted In'; },
+      $className: function() { return 'threads-posted-in'; },
       loadCtrl: ['$q', '$ocLazyLoad', function($q, $ocLazyLoad) {
         var deferred = $q.defer();
         require.ensure([], function() {
