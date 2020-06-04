@@ -1,10 +1,37 @@
 // About styles
 
 .about-section {
+  grid-area: main;
+
   .view-title {
     color: $secondary-font-color;
     font-size: $font-size-xl;
     font-weight: 600;
     text-transform: none;
   }
+
+  .description {
+    margin: 2rem 0 1rem;
+  }
 }
+
+.sidebar {
+    grid-area: sidebar;
+
+    .section-header {
+      color: $secondary-font-color;
+      font-size: $font-size-sm;
+      text-transform: uppercase;
+    }
+
+    .about-links {
+      line-height: 2;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        font-weight: 600;
+      }
+    }
+  }
