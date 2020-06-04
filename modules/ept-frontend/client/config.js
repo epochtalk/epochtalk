@@ -22,6 +22,16 @@ module.exports = ['$stateProvider', '$urlRouterProvider', '$locationProvider', '
       resolve: { $title: function() { return 'Login'; } }
     });
 
+    $stateProvider.state('about', {
+      parent: 'public-layout',
+      url: '/about',
+      views: {
+        'header': { template: require('./layout/header.html') },
+        'content': { template: require('./layout/about.html') }
+      },
+      resolve: { $title: function() { return 'About'; } }
+    });
+
     $stateProvider.state('403', {
       parent: 'public-layout',
       views: {
