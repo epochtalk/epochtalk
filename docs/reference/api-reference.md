@@ -1,9 +1,9 @@
 ---
-title: API reference
+title: API Reference
 ---
 
 <a name="top"></a>
-# API reference
+# API Reference
 
 Overview of Epochtalk API
 
