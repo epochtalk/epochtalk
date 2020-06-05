@@ -1,5 +1,5 @@
-module.exports = ['$timeout', '$anchorScroll', 'Session', 'User', 'PreferencesSvc', 'pageData',
-  function($timeout, $anchorScroll, Session, User, PreferencesSvc, pageData) {
+module.exports = ['$timeout', '$anchorScroll', 'Auth', 'Session', 'User', 'PreferencesSvc', 'pageData',
+  function($timeout, $anchorScroll, Auth, Session, User, PreferencesSvc, pageData) {
     var collapsedCats = PreferencesSvc.preferences.collapsed_categories || [];
     var ignoredBoards = PreferencesSvc.preferences.ignored_boards || [];
     this.loggedIn = Session.isAuthenticated;
@@ -37,6 +37,10 @@ module.exports = ['$timeout', '$anchorScroll', 'Session', 'User', 'PreferencesSv
         return ignoredBoards.indexOf(board.id) === -1;
       });
     }
+
+    this.showLogin = function() { return Auth.toggleLogin(true); };
+
+    this.showRegister = function() { return Auth.toggleRegister(true); };
 
     // Category toggling
     this.toggleCategory = function(cat) {
