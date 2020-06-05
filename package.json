@@ -10,7 +10,10 @@
     "test-client": "./node_modules/.bin/protractor protractor.config.js",
     "test": "./node_modules/.bin/mocha -R spec ./tests && dropdb --if-exists epoch_test && createdb epoch_test && psql epoch_test < ./schema.sql",
     "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs"
+    "docs:build": "vuepress build docs",
+    "docs:build:api": "./node_modules/apidoc/bin/apidoc -i ./ -o apidoc-out -e node_modules -e public && node ./node_modules/apidoc-markdown/bin -t ./api-doc-template.md -p apidoc-out -o ./docs/reference/api-reference.md && rm -rf apidoc-out",
+    "docs:build:all": "./node_modules/apidoc/bin/apidoc -i ./ -o apidoc-out -e node_modules -e public && node ./node_modules/apidoc-markdown/bin -t ./api-doc-template.md -p apidoc-out -o ./docs/reference/api-reference.md && rm -rf apidoc-out && vuepress build docs",
+    "docs:dev:all": "./node_modules/apidoc/bin/apidoc -i ./ -o apidoc-out -e node_modules -e public && node ./node_modules/apidoc-markdown/bin -t ./api-doc-template.md -p apidoc-out -o ./docs/reference/api-reference.md && rm -rf apidoc-out && vuepress dev docs"
   },
   "release": {
     "plugins": [
