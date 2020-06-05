@@ -13,6 +13,16 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
       ctrl.isBanned = val;
     });
 
+    // Watch login modal trigger from LoginSvc
+    $scope.$watch(function() { return Auth.triggerLoginModal(); }, function(val) {
+      ctrl.showLogin = val;
+    });
+
+    // Watch register modal trigger from LoginSvc
+    $scope.$watch(function() { return Auth.triggerRegisterModal(); }, function(val) {
+      ctrl.showRegister = val;
+    });
+
     // Update preview mode on change
     $scope.$watch(function() { return ThemeSVC.previewActive(); }, function(val) {
       ctrl.previewActive = val;
@@ -36,6 +46,14 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
       pathArr.shift();
       if (pathArr.length < 2) { return false; }
       return pathArr[0].toLowerCase() === 'admin' && pathArr[1].toLowerCase() === route;
+    };
+
+    this.closeLogin = function() {
+      return Auth.toggleLogin(false);
+    };
+
+    this.closeRegister = function() {
+      return Auth.toggleRegister(false);
     };
 
     // Patrol
@@ -87,7 +105,7 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
     this.user = {};
     this.showLogin = false;
     this.clearLoginFields = function() {
-      $timeout(function() { ctrl.user = {}; }, 500);
+      $timeout(function() { ctrl.user = {}; ctrl.closeLogin(); }, 500);
     };
 
     this.collapseMobileKeyboard = function() { document.activeElement.blur(); };
@@ -98,7 +116,6 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
       Auth.login(ctrl.user)
       .then(function() {
         ctrl.collapseMobileKeyboard();
-        ctrl.showLogin = false;
         ctrl.clearLoginFields();
         if ($state.next) {
           $state.go($state.next, $state.nextParams, { reload: true });
@@ -131,6 +148,7 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
         // manual clear because angular validation bug
         ctrl.registerUser.email = '';
         ctrl.registerUser.username = '';
+        ctrl.closeRegister();
       }, 500);
     };
 
@@ -142,7 +160,6 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
 
       Auth.register(ctrl.registerUser)
       .then(function(registeredUser) {
-        ctrl.showRegister = false;
         ctrl.clearRegisterFields();
         if (registeredUser.confirm_token) {
           $timeout(function() { ctrl.showRegisterSuccess = true; }, 500);
