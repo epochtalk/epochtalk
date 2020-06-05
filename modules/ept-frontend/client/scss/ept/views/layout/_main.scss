@@ -3,7 +3,7 @@ main {
   @include clearfix();
   @include pad(0 $base-grid-padding);
   min-height: 100%;
-  padding-bottom: 58px;
+  // padding-bottom: 58px;
   #public-content {
     @include base-layout-width;
     @include grid-base-layout;
