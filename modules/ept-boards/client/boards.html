@@ -55,8 +55,8 @@
   </div>
 
   <div class="dashboard-actions">
-    <a style="display: none" ng-if="!BoardsCtrl.loggedIn()" href="" class="button">Create an Account</a>
-    <a style="display: none" ng-if="!BoardsCtrl.loggedIn()" href="" class="button">Log In</a>
+    <a ng-if="!BoardsCtrl.loggedIn()" href="" ng-click="BoardsCtrl.showRegister()" class="button">Create an Account</a>
+    <a ng-if="!BoardsCtrl.loggedIn()" href="" ng-click="BoardsCtrl.showLogin()" class="button">Log In</a>
     <a ng-if="BoardsCtrl.loggedIn()" class="button" ui-sref="watchlist">Watchlist</a>
     <a ng-if="BoardsCtrl.loggedIn()" class="button" ui-sref="posted.data()">Threads Posted In</a>
   </div>
