@@ -24,7 +24,8 @@
       <div class="burger-notification show-mobile" ng-if="HeaderCtrl.notificationMessages() || HeaderCtrl.notificationMentions()"></div>
       <i ng-click="HeaderCtrl.showMobileMenu = true" class="fa fa-bars fa-lg burger" aria-hidden="true"></i>
     </ul>
-    <div class="burger-close-overlay" ng-if="HeaderCtrl.showMobileMenu" ng-click="HeaderCtrl.showMobileMenu = false"></div>
+    <!-- <div class="burger-close-overlay" ng-if="HeaderCtrl.showMobileMenu" ng-click="HeaderCtrl.showMobileMenu = false" ></div> -->
+    <div class="burger-close-overlay" ng-class="{ 'open' : HeaderCtrl.showMobileMenu }" ng-click="HeaderCtrl.showMobileMenu = false" ></div>
     <div class="burger-menu show-mobile" ng-class="{ 'open' : HeaderCtrl.showMobileMenu }">
       <a ng-click="HeaderCtrl.showMobileMenu = false" class="profile" ui-sref="profile.posts({ username: HeaderCtrl.currentUser.username })">
         <img ng-src="{{ HeaderCtrl.currentUser.avatar || $webConfigs.default_avatar }}" class="avatar image-loader {{$webConfigs.default_avatar_shape}}">
@@ -62,7 +63,7 @@
         </li>
         <li ng-click="HeaderCtrl.showMobileMenu = false" ng-if="HeaderCtrl.canInvite()">
           <a ng-click="HeaderCtrl.showInvite = true">
-            <i class="fa fa-user-plus" aria-hidden="true"></i>Invite User
+            <i class="fa fa-user-plus" aria-hidden="true"></i>Invite Users
           </a>
         </li>
         <li ng-click="HeaderCtrl.showMobileMenu = false" >

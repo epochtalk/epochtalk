@@ -83,13 +83,22 @@ header {
         }
       }
       .burger-close-overlay {
-        background-color: transparent;
-        position: fixed;
+        background-color: rgba(0, 0, 0, 0.5);
+        position: absolute;
         top: 0;
         bottom: 0;
         left: 0;
         right: 0;
+        height: 100vh;
         z-index: 1004;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: opacity ease-in-out 150ms;
+
+        &.open {
+          opacity: 1;
+          transform: translateX(0%);
+        }
       }
       .burger-notification {
         width: 10px;
