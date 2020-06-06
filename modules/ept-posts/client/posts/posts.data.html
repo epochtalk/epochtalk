@@ -93,6 +93,11 @@
               <i class="icon-epoch-quote"></i>
             </a>
           </li>
+          <li ng-if="PostsCtrl.thread.locked">
+            <a ng-href="" data-balloon="Quote" ng-click="PostsCtrl.copyQuote(post)">
+              <i class="icon-epoch-quote"></i>
+            </a>
+          </li>
           <li>
             <a ng-href="{{::PostsCtrl.rootUrl}}?start={{::post.position}}#{{::post.id}}" ng-click="PostsCtrl.highlightPost()" data-balloon="Permalink">
               <!-- <i class="icon-epoch-link"></i> -->
