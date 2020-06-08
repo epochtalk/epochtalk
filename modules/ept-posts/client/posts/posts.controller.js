@@ -23,6 +23,7 @@ var ctrl = [
     });
     this.loadEditor = parent.loadEditor;
     this.addQuote = parent.addQuote;
+    this.copyQuote = parent.copyQuote;
     this.openReportModal = parent.openReportModal;
 
     if ($location.hash().length) {

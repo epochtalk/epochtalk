@@ -300,6 +300,37 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       ctrl.showEditor = false;
     }
 
+    this.copyQuote = function(post) {
+      var quote = '[quote author=' + post.user.username;
+      if (ctrl.thread.id) {
+        quote += ' link=';
+        quote += '/threads/' + ctrl.thread.id + '/posts?page=' + ctrl.page + '#' + post.id;
+      }
+      quote += ' date=' + new Date(post.created_at).getTime() + ']';
+      quote += post.body || post.body_html;
+      quote += '[/quote]';
+
+      var copyText = $filter('decode')(quote);
+
+      // create temp element
+      var copyElement = document.createElement("span");
+      copyElement.appendChild(document.createTextNode(copyText));
+      copyElement.id = 'tempCopyToClipboard';
+      angular.element(document.body.append(copyElement));
+
+      // select the text
+      var range = document.createRange();
+      range.selectNode(copyElement);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+
+      // copy & cleanup
+      document.execCommand('copy');
+      window.getSelection().removeAllRanges();
+      copyElement.remove();
+      Alert.success('Quote successfully copied to clipboards');
+    }
+
     this.addQuote = function(post) {
       var timeDuration = 0;
       if (ctrl.showEditor === false) {
