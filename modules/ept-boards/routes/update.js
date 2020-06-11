@@ -39,7 +39,7 @@ module.exports = {
         viewable_by: Joi.number().allow(null),
         postable_by: Joi.number().allow(null),
         right_to_left: Joi.boolean().default(false),
-        disable_post_edit: Joi.boolean().default(false)
+        disable_post_edit: Joi.number().min(-1).max(99999)
       })).unique().min(1)
     },
     pre: [

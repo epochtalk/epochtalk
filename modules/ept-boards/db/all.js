@@ -11,7 +11,7 @@ module.exports = function() {
     viewable_by,
     postable_by,
     right_to_left,
-    (meta ->> 'disable_post_edit')::boolean as disable_post_edit,
+    (meta ->> 'disable_post_edit')::int as disable_post_edit,
     created_at,
     updated_at,
     imported_at
