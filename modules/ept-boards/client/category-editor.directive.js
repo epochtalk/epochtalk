@@ -128,7 +128,7 @@ var directive = ['$state', function($state) {
               newBoard.postable_by = $('#editBoardPostable').val();
               newBoard.postable_by = $('#editBoardPostable').val();
               newBoard.right_to_left = $('input[name="editBoardRTL"]:checked').val() === "true";
-              newBoard.disable_post_edit = $('input[name="editBoardPostEdit"]:checked').val() === "true";
+              newBoard.disable_post_edit = $('input[name="editBoardPostEdit"]').val()
             }
           });
         }
@@ -141,7 +141,7 @@ var directive = ['$state', function($state) {
             viewable_by: $('#editBoardViewable').val() || null,
             postable_by: $('#editBoardPostable').val() || null,
             right_to_left: $('input[name="editBoardRTL"]:checked').val() === "true",
-            disable_post_edit: $('input[name="editBoardPostEdit"]:checked').val() === "true"
+            disable_post_edit: $('input[name="editBoardPostEdit"]').val()
           };
 
           // check if board already exists in editedBoards
@@ -174,7 +174,7 @@ var directive = ['$state', function($state) {
         board.viewable_by = $('#editBoardViewable').val();
         board.postable_by = $('#editBoardPostable').val();
         board.right_to_left = $('input[name="editBoardRTL"]:checked').val() === "true";
-        board.disable_post_edit = $('input[name="editBoardPostEdit"]:checked').val() === "true";
+        board.disable_post_edit = $('input[name="editBoardPostEdit"]').val();
 
         // Reset scope params for editing board
         editBoardDataId = '';
