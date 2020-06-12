@@ -104,7 +104,7 @@ var directive = ['$compile', function($compile) {
         $('#newBoardViewable').val('');
         $('#newBoardPostable').val('');
         $('#ltr').prop('checked', true);
-        $('#new-enable-post-edit').prop('checked', true);
+        $('#newBoardPostEdit').val('-1');
       };
 
     }
