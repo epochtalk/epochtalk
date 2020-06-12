@@ -160,9 +160,9 @@ module.exports = function (server, auth, threadId) {
             // Shim for old disablePostEdit
             if (board.disable_post_edit === true) { disable = true; }
             // Check time on disablePostEdit
-            else if (board.disable_post_edit && board.disable_post_edit > -1) {
+            else if (board.disable_post_edit && Number(board.disable_post_edit) > -1) {
               var currentTime = new Date().getTime();
-              var minutes = board.disable_post_edit * 60 * 1000;
+              var minutes = Number(board.disable_post_edit) * 60 * 1000;
               var postCreatedAt = new Date(post.created_at).getTime();
               disable = currentTime - postCreatedAt >= minutes;
             }
