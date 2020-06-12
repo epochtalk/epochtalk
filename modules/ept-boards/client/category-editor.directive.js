@@ -184,7 +184,7 @@ var directive = ['$state', function($state) {
         $('#editBoardViewable').val('');
         $('#editBoardPostable').val('');
         $('#ltr-edit').prop('checked', true);
-        $('#editBoardPostEdit').val('-1');
+        $('#editBoardPostEdit').val('');
         $scope.showEditBoard = false;
       };
 
