@@ -147,9 +147,27 @@ module.exports = function (server, auth, threadId) {
       // is board post editing locked
       type: 'dbNotProp',
       method: function(threadId) {
-        return server.db.threads.find(threadId)
+        var postCreatedAt;
+        return server.db.threads.getThreadFirstPost(threadId)
+        .then(function(post) {
+          postCreatedAt = new Date(post.created_at);
+          return server.db.threads.find(threadId)
+        })
         .then(function(thread) {
           return server.db.boards.find(thread.board_id)
+          .then(function(board) {
+            var disable = false;
+            // Shim for old disablePostEdit
+            if (board.disable_post_edit === true) { disable = true; }
+            // Check time on disablePostEdit
+            else if (board.disable_post_edit && board.disable_post_edit > -1) {
+              var currentTime = new Date().getTime();
+              var minutes = board.disable_post_edit * 60 * 1000;
+              var postCreatedAt = new Date(post.created_at).getTime();
+              disable = currentTime - postCreatedAt >= minutes;
+            }
+            return { disable_post_edit: disable }
+          });
         });
       },
       args: [threadId],
