@@ -62,16 +62,13 @@ var ctrl = [
       if (BanSvc.banStatus()) { return false; }
       // Shim for old disablePostEdit
       if (ctrl.disablePostEdit === true && !elevatedPrivileges) { return false; }
-
-      var currentTime = new Date().getTime();
-      var minutes = ctrl.disablePostEdit * 60 * 1000;
-      var postCreatedAt = new Date(post.created_at).getTime()
       // Check time on disablePostEdit
-      if (ctrl.disablePostEdit && ctrl.disablePostEdit > -1 && !elevatedPrivileges) {
+      if (ctrl.disablePostEdit && Number(ctrl.disablePostEdit) > -1 && !elevatedPrivileges) {
         var currentTime = new Date().getTime();
-        var minutes = ctrl.disablePostEdit * 60 * 1000;
+        var minutes = Number(ctrl.disablePostEdit) * 60 * 1000;
         var postCreatedAt = new Date(post.created_at).getTime();
-        return currentTime - postCreatedAt < minutes;
+        var canUpdate = currentTime - postCreatedAt < minutes;
+        if (!canUpdate) { return false; }
       }
 
       var validBypass = false;
