@@ -150,7 +150,7 @@ module.exports = function (server, auth, threadId) {
         var postCreatedAt;
         return server.db.threads.getThreadFirstPost(threadId)
         .then(function(post) {
-          postCreatedAt = new Date(post.created_at);
+          postCreatedAt = new Date(post.created_at).getTime();
           return server.db.threads.find(threadId)
         })
         .then(function(thread) {
@@ -163,7 +163,6 @@ module.exports = function (server, auth, threadId) {
             else if (board.disable_post_edit && Number(board.disable_post_edit) > -1) {
               var currentTime = new Date().getTime();
               var minutes = Number(board.disable_post_edit) * 60 * 1000;
-              var postCreatedAt = new Date(post.created_at).getTime();
               disable = currentTime - postCreatedAt >= minutes;
             }
             return { disable_post_edit: disable }
