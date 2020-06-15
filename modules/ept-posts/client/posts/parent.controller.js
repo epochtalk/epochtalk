@@ -36,8 +36,8 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       if (ctrl.disablePostEdit && Number(ctrl.disablePostEdit) > -1 && !elevatedPrivileges) {
         var currentTime = new Date().getTime();
         var minutes = Number(ctrl.disablePostEdit) * 60 * 1000;
-        var postCreatedAt = new Date(post.created_at).getTime();
-        var canUpdate = currentTime - postCreatedAt < minutes;
+        var threadCreatedAt = new Date(ctrl.thread.created_at).getTime();
+        var canUpdate = currentTime - threadCreatedAt < minutes;
         if (!canUpdate) { return false; }
       }
 
