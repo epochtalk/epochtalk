@@ -3,11 +3,11 @@
   <div class="dashboard-hero">
     <div class="recent-threads">
       <h1 class="title">Recent Threads</h1>
-    
+
       <div class="centered-text" ng-if="!BoardsCtrl.recentThreads">
         <h5>No recently updated threads available</h5>
       </div>
-    
+
       <div class="threads-container" ng-if="BoardsCtrl.recentThreads">
         <!-- Thread listing -->
         <div class="threads-data threads-recent" ng-repeat="thread in BoardsCtrl.recentThreads track by thread.id" ui-sref="posts.data({ threadId: thread.id, start: thread.post.position })">
@@ -40,8 +40,8 @@
             <a ng-class="{bold: thread.latest}" class="thread-title" ui-sref="posts.data({ threadId: thread.id, start: thread.post.position })" ng-bind-html="thread.title"></a>
           </div>
           <div class="user">
-            in <a ui-sref="threads.data({ boardId: thread.board.id })" ng-bind-html="thread.board.name" class="thread-board"></a> 
-            by 
+            in <a ui-sref="threads.data({ boardId: thread.board.id })" ng-bind-html="thread.board.name" class="thread-board"></a>
+            by
             <span ng-if="thread.deleted">deleted</span>
             <a ng-if="!thread.deleted" ui-sref="profile.posts({ username: thread.user.username })"
               ng-bind-html="thread.user.username"></a>
@@ -54,11 +54,13 @@
     </div>
   </div>
 
-  <div class="dashboard-actions">
-    <a ng-if="!BoardsCtrl.loggedIn()" href="" ng-click="BoardsCtrl.showRegister()" class="button">Create an Account</a>
-    <a ng-if="!BoardsCtrl.loggedIn()" href="" ng-click="BoardsCtrl.showLogin()" class="button">Log In</a>
-    <a ng-if="BoardsCtrl.loggedIn()" class="button" ui-sref="watchlist">Watchlist</a>
-    <a ng-if="BoardsCtrl.loggedIn()" class="button" ui-sref="posted.data()">Threads Posted In</a>
+  <div ng-if="!BoardsCtrl.loggedIn()" class="dashboard-actions">
+    <a href="" ng-click="BoardsCtrl.showRegister()" class="button">Create an Account</a>
+    <a href="" ng-click="BoardsCtrl.showLogin()" class="button">Log In</a>
+  </div>
+  <div ng-if="BoardsCtrl.loggedIn()" class="dashboard-actions">
+    <a class="button" ui-sref="watchlist">Watchlist</a>
+    <a class="button" ui-sref="posted.data()">Threads Posted In</a>
   </div>
 
   <div class="category" ng-repeat="cat in BoardsCtrl.categorizedBoards">
@@ -76,12 +78,12 @@
         <h1 ng-bind-html="::cat.name"></h1>
       </div>
     </div>
-  
+
     <!-- Boards in Category -->
     <div slide-toggle="cat.show" initial-state="{{cat.initial}}">
       <div class="slide-wrapper">
         <div class="board" ng-repeat="board in cat.boards track by board.id">
-  
+
           <!-- Board Info -->
           <div class="info">
             <!-- Board Name -->
@@ -95,7 +97,7 @@
               <span class="label">Moderators: </span>
               <a ui-sref="profile.posts({ username: mod.username })" ng-repeat="mod in board.moderators" ng-bind="::mod.username + ($last ? '' : ', ')"></a>
             </div>
-  
+
             <!-- Child Boards -->
             <div class="childboards" ng-if="board.children.length > 0">
               <span class="label">Child Boards:</span>
@@ -104,7 +106,7 @@
               </span>
             </div>
           </div>
-  
+
           <div class="board-secondary">
             <!-- Board Posts and Threads -->
             <div class="view-count">
