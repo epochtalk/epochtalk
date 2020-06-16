@@ -29,6 +29,18 @@ module.exports = function() {
     });
   };
 
+  var themeVariablesCss = function() {
+    return new Promise(function(resolve, reject) {
+      var filepath = './app/scss/ept/themes';
+      var dest = './content/sass';
+      fse.copy(filepath, dest, function(err) {
+        if (err) { return reject(err); }
+        console.log('Theme Variables CSS Copied.');
+        return resolve();
+      });
+    });
+  };
+
   var previewVariablesCss = function() {
     return new Promise(function(resolve, reject) {
       var filepath = './app/scss/ept/variables/_preview-variables.scss';
@@ -44,6 +56,7 @@ module.exports = function() {
   };
 
   return loadingBarCss()
+  .then(themeVariablesCss)
   .then(customVariablesCss)
   .then(previewVariablesCss)
   .catch(function(err) { console.log(err); });
