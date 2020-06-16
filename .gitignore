@@ -37,7 +37,7 @@ test/coverage/
 
 /modules/etc
 
-/content/sass/_custom-variables.scss
+/content/sass/*.scss
 /content/legal/disclaimer.txt
 /content/legal/privacy.txt
 /content/legal/tos.txt

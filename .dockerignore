@@ -45,6 +45,6 @@ test/coverage/
 /public/templates/thread/*.html
 /public/templates/user/*.html
 
-/content/sass/_custom-variables.scss
+/content/sass/*.scss
 
 /app
