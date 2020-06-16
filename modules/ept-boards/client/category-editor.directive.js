@@ -108,14 +108,15 @@ var directive = ['$state', function($state) {
         else {
           $('#ltr-edit').prop('checked', true);
         }
+        console.log(editBoard.disable_post_edit);
         if (editBoard.disable_post_edit === "true") {
           //shim for old true values, post editing immediately disabled
           $('#editBoardPostEdit').val(0);
         }
-        else if (Number(editBoard.disable_post_edit) > -1) {
+        else if (editBoard.disable_post_edit !== null && Number(editBoard.disable_post_edit) > -1) {
           $('#editBoardPostEdit').val(Number(editBoard.disable_post_edit));
         }
-        else { $('#editBoardPostEdit').val(null); }
+        else { $('#editBoardPostEdit').val(''); }
         $scope.showEditBoard = true;
       };
 
