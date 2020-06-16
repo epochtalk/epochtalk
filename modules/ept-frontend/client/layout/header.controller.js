@@ -49,11 +49,13 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
     };
 
     this.closeLogin = function() {
-      return Auth.toggleLogin(false);
+      ctrl.showLogin = false;
+      return Auth.toggleLogin(ctrl.showLogin);
     };
 
     this.closeRegister = function() {
-      return Auth.toggleRegister(false);
+      ctrl.showRegister = false;
+      return Auth.toggleRegister(ctrl.showRegister);
     };
 
     // Patrol
