@@ -28,7 +28,16 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       if (ctrl.bannedFromBoard) { return false; }
       if (!Session.hasPermission('threads.title.allow')) { return false; }
       if (!ctrl.writeAccess) { return false; }
-      if (ctrl.disablePostEdit && !elevatedPrivileges) { return false; }
+      // Shim for old disablePostEdit
+      if (ctrl.disablePostEdit === true && !elevatedPrivileges) { return false; }
+      // Check time on disablePostEdit
+      if (ctrl.disablePostEdit && Number(ctrl.disablePostEdit) > -1 && !elevatedPrivileges) {
+        var currentTime = new Date().getTime();
+        var minutes = Number(ctrl.disablePostEdit) * 60 * 1000;
+        var threadCreatedAt = new Date(ctrl.thread.created_at).getTime();
+        var canUpdate = currentTime - threadCreatedAt < minutes;
+        if (!canUpdate) { return false; }
+      }
 
       var title = false;
       if (ctrl.thread.user.id === Session.user.id && !ctrl.thread.locked) { title = true; }
@@ -276,6 +285,37 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       })
       .catch(function() { Alert.error('There was an error creating the poll'); });
     };
+
+    this.copyQuote = function(post) {
+      var quote = '[quote author=' + post.user.username;
+      if (ctrl.thread.id) {
+        quote += ' link=';
+        quote += '/threads/' + ctrl.thread.id + '/posts?page=' + ctrl.page + '#' + post.id;
+      }
+      quote += ' date=' + new Date(post.created_at).getTime() + ']';
+      quote += post.body || post.body_html;
+      quote += '[/quote]';
+
+      var copyText = $filter('decode')(quote);
+
+      // create temp element
+      var copyElement = document.createElement("span");
+      copyElement.appendChild(document.createTextNode(copyText));
+      copyElement.id = 'tempCopyToClipboard';
+      angular.element(document.body.append(copyElement));
+
+      // select the text
+      var range = document.createRange();
+      range.selectNode(copyElement);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+
+      // copy & cleanup
+      document.execCommand('copy');
+      window.getSelection().removeAllRanges();
+      copyElement.remove();
+      Alert.success('Quote successfully copied to clipboard');
+    }
 
     this.addQuote = function(post) {
       var timeDuration = 0;

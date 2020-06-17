@@ -23,6 +23,7 @@ var ctrl = [
     });
     this.loadEditor = parent.loadEditor;
     this.addQuote = parent.addQuote;
+    this.copyQuote = parent.copyQuote;
     this.openReportModal = parent.openReportModal;
 
     if ($location.hash().length) {
@@ -59,7 +60,16 @@ var ctrl = [
       if (!Session.isAuthenticated()) { return false; }
       if (!Session.hasPermission('posts.update.allow')) { return false; }
       if (BanSvc.banStatus()) { return false; }
-      if (ctrl.disablePostEdit && !elevatedPrivileges) { return false; }
+      // Shim for old disablePostEdit
+      if (ctrl.disablePostEdit === true && !elevatedPrivileges) { return false; }
+      // Check time on disablePostEdit
+      if (ctrl.disablePostEdit && Number(ctrl.disablePostEdit) > -1 && !elevatedPrivileges) {
+        var currentTime = new Date().getTime();
+        var minutes = Number(ctrl.disablePostEdit) * 60 * 1000;
+        var postCreatedAt = new Date(post.created_at).getTime();
+        var canUpdate = currentTime - postCreatedAt < minutes;
+        if (!canUpdate) { return false; }
+      }
 
       var validBypass = false;
 
