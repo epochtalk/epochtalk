@@ -54,17 +54,9 @@
       <option value="{{::role.priority}}" ng-repeat="role in roles | orderBy: 'priority'">{{::role.name}}</option>
     </select>
   </label>
-  <div class="form-switch">
-    <label for="newBoardPostEdit">Post Editing
-      <span class="info-tooltip" data-balloon="Allow users in this board to edit their posts" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
-    </label>
-    <div class="switch-field">
-      <input type="radio" id="new-enable-post-edit" name="newBoardPostEdit" value="false" checked/>
-      <label for="new-enable-post-edit">Enabled</label>
-      <input type="radio" id="new-disable-post-edit" name="newBoardPostEdit" value="true" />
-      <label for="new-disable-post-edit">Disabled</label>
-    </div>
-  </div>
+  <label>Disable Post Editing After (in Minutes)
+    <input type="number" class="input-text" id="newBoardPostEdit" name="newBoardPostEdit" placeholder="0 to disable editing, blank to allow editing indefinitely" maxlength="10"/>
+  </label>
   <div class="form-switch">
     <label for="newBoardRTL">Text Direction
       <span class="info-tooltip" data-balloon="Sets the read direction of the text for this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
@@ -103,17 +95,9 @@
       <option value="{{::role.priority}}" ng-repeat="role in roles | orderBy: 'priority'">{{::role.name}}</option>
     </select>
   </label>
-  <div class="form-switch">
-    <label for="editBoardPostEdit">Post Editing
-      <span class="info-tooltip" data-balloon="Allow users in this board to edit their posts" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
-    </label>
-    <div class="switch-field">
-      <input type="radio" id="enable-post-edit" name="editBoardPostEdit" value="false" checked/>
-      <label for="enable-post-edit">Enabled</label>
-      <input type="radio" id="disable-post-edit" name="editBoardPostEdit" value="true" />
-      <label for="disable-post-edit">Disabled</label>
-    </div>
-  </div>
+  <label>Disable Post Editing After (in Minutes)
+    <input type="number" class="input-text" id="editBoardPostEdit" name="editBoardPostEdit" placeholder="0 to disable editing, blank to allow editing indefinitely" maxlength="10"/>
+  </label>
   <div class="form-switch">
     <label for="editBoardRTL">Text Direction
       <span class="info-tooltip" data-balloon="Sets the read direction of the text for this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>

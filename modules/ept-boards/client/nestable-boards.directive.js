@@ -59,7 +59,7 @@ var directive = ['$compile', function($compile) {
           viewable_by: $('#newBoardViewable').val() || undefined,
           postable_by: $('#newBoardPostable').val() || undefined,
           right_to_left: $('input[name="newBoardRTL"]:checked').val() === "true",
-          disable_post_edit: $('input[name="newBoardPostEdit"]:checked').val() === "true"
+          disable_post_edit: $('#newBoardPostEdit').val()
         };
 
         if (board.name !== '') {
@@ -104,7 +104,7 @@ var directive = ['$compile', function($compile) {
         $('#newBoardViewable').val('');
         $('#newBoardPostable').val('');
         $('#ltr').prop('checked', true);
-        $('#new-enable-post-edit').prop('checked', true);
+        $('#newBoardPostEdit').val('');
       };
 
     }

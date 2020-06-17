@@ -108,12 +108,15 @@ var directive = ['$state', function($state) {
         else {
           $('#ltr-edit').prop('checked', true);
         }
-        if (editBoard.disable_post_edit) {
-          $('#disable-post-edit').prop('checked', true);
+        console.log(editBoard.disable_post_edit);
+        if (editBoard.disable_post_edit === "true") {
+          //shim for old true values, post editing immediately disabled
+          $('#editBoardPostEdit').val(0);
         }
-        else {
-          $('#enable-post-edit').prop('checked', true);
+        else if (editBoard.disable_post_edit !== null && Number(editBoard.disable_post_edit) > -1) {
+          $('#editBoardPostEdit').val(Number(editBoard.disable_post_edit));
         }
+        else { $('#editBoardPostEdit').val(''); }
         $scope.showEditBoard = true;
       };
 
@@ -127,8 +130,8 @@ var directive = ['$state', function($state) {
               newBoard.viewable_by = $('#editBoardViewable').val();
               newBoard.postable_by = $('#editBoardPostable').val();
               newBoard.postable_by = $('#editBoardPostable').val();
+              newBoard.disable_post_edit = $('#editBoardPostEdit"]').val();
               newBoard.right_to_left = $('input[name="editBoardRTL"]:checked').val() === "true";
-              newBoard.disable_post_edit = $('input[name="editBoardPostEdit"]:checked').val() === "true";
             }
           });
         }
@@ -140,8 +143,8 @@ var directive = ['$state', function($state) {
             description: $('#editBoardDesc').val(),
             viewable_by: $('#editBoardViewable').val() || null,
             postable_by: $('#editBoardPostable').val() || null,
-            right_to_left: $('input[name="editBoardRTL"]:checked').val() === "true",
-            disable_post_edit: $('input[name="editBoardPostEdit"]:checked').val() === "true"
+            disable_post_edit: $('#editBoardPostEdit').val(),
+            right_to_left: $('input[name="editBoardRTL"]:checked').val() === "true"
           };
 
           // check if board already exists in editedBoards
@@ -173,8 +176,8 @@ var directive = ['$state', function($state) {
         board.description = $('#editBoardDesc').val();
         board.viewable_by = $('#editBoardViewable').val();
         board.postable_by = $('#editBoardPostable').val();
+        board.disable_post_edit = $('#editBoardPostEdit').val();
         board.right_to_left = $('input[name="editBoardRTL"]:checked').val() === "true";
-        board.disable_post_edit = $('input[name="editBoardPostEdit"]:checked').val() === "true";
 
         // Reset scope params for editing board
         editBoardDataId = '';
@@ -184,7 +187,7 @@ var directive = ['$state', function($state) {
         $('#editBoardViewable').val('');
         $('#editBoardPostable').val('');
         $('#ltr-edit').prop('checked', true);
-        $('#enable-post-edit').prop('checked', true);
+        $('#editBoardPostEdit').val('');
         $scope.showEditBoard = false;
       };
 

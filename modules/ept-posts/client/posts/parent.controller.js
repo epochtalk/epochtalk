@@ -30,7 +30,16 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       if (ctrl.bannedFromBoard) { return false; }
       if (!Session.hasPermission('threads.title.allow')) { return false; }
       if (!ctrl.writeAccess) { return false; }
-      if (ctrl.disablePostEdit && !elevatedPrivileges) { return false; }
+      // Shim for old disablePostEdit
+      if (ctrl.disablePostEdit === true && !elevatedPrivileges) { return false; }
+      // Check time on disablePostEdit
+      if (ctrl.disablePostEdit && Number(ctrl.disablePostEdit) > -1 && !elevatedPrivileges) {
+        var currentTime = new Date().getTime();
+        var minutes = Number(ctrl.disablePostEdit) * 60 * 1000;
+        var threadCreatedAt = new Date(ctrl.thread.created_at).getTime();
+        var canUpdate = currentTime - threadCreatedAt < minutes;
+        if (!canUpdate) { return false; }
+      }
 
       var title = false;
       if (ctrl.thread.user.id === Session.user.id && !ctrl.thread.locked) { title = true; }
