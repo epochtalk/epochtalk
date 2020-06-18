@@ -68,11 +68,13 @@
       </div>
     </div>
     <!-- Edit Title -->
-    <div ng-if="PostsParentCtrl.editThread">
+    <div ng-if="PostsParentCtrl.editThread" class="edit-thread-title">
       <form ng-submit="PostsParentCtrl.updateThreadTitle()">
         <input type="text" ng-model="PostsParentCtrl.thread.title" maxlength="255">
-        <button type="submit" ng-disabled="PostsParentCtrl.thread.title.length === 0">Save</button>
-        <button ng-click="PostsParentCtrl.closeEditThread()">Cancel</button>
+        <div class="actions">
+          <button ng-click="PostsParentCtrl.closeEditThread()" class="secondary small">Cancel</button>
+          <button type="submit" ng-disabled="PostsParentCtrl.thread.title.length === 0" class="small">Save</button>
+        </div>
       </form>
     </div>
   </div>

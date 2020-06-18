@@ -101,12 +101,12 @@ ad-viewer {
   }
   button, .button {
     // float: right;
-    color: $button-text-color;
-    padding-top: 0.35rem;
-    padding-bottom: 0.35rem;
-    border: 1px solid transparent;
-    line-height: unset;
-    text-align: center;
+    // color: $button-text-color;
+    // padding-top: 0.35rem;
+    // padding-bottom: 0.35rem;
+    // border: 1px solid transparent;
+    // line-height: unset;
+    // text-align: center;
   }
   .controls.two-thirds-column {
     text-align: right;
@@ -132,6 +132,17 @@ ad-viewer {
 
   .do-edit {
     margin-left: 0.5rem;
+  }
+
+  .edit-thread-title {
+    .actions {
+      display:flex;
+      justify-content: flex-end;
+
+      button {
+        margin-left: 1rem;
+      }
+    }
   }
 }
 
