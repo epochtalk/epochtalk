@@ -42,7 +42,7 @@
         <td ng-bind="feedback.risked_btc"></td>
         <td class="centered-text">
           <i ng-if="!feedback.reference" class="fa fa-external-link-square"></i>
-          <a ng-if="feedback.reference" ng-href="{{ feedback.reference.indexOf('://') > -1 ? feedback.reference.website : '//' + feedback.reference }}" target="_blank" data-balloon="{{feedback.reference}}" data-balloon-pos="left"><i class="fa fa-external-link-square"></i></a>
+          <a ng-if="feedback.reference" ng-href="{{ feedback.reference.indexOf('://') > -1 ? feedback.reference : '//' + feedback.reference }}" target="_blank" data-balloon="{{feedback.reference}}" data-balloon-pos="left"><i class="fa fa-external-link-square"></i></a>
         </td>
         <td ng-bind="feedback.comments" width="35%"></td>
       </tr>
@@ -91,7 +91,7 @@
           <td ng-bind="feedback.risked_btc"></td>
           <td class="centered-text">
             <i ng-if="!feedback.reference" class="fa fa-external-link-square"></i>
-            <a ng-if="feedback.reference" ng-href="{{ feedback.reference.indexOf('://') > -1 ? feedback.reference.website : '//' + feedback.reference }}" target="_blank" data-balloon="{{feedback.reference}}" data-balloon-pos="left"><i class="fa fa-external-link-square"></i></a>
+            <a ng-if="feedback.reference" ng-href="{{ feedback.reference.indexOf('://') > -1 ? feedback.reference : '//' + feedback.reference }}" target="_blank" data-balloon="{{feedback.reference}}" data-balloon-pos="left"><i class="fa fa-external-link-square"></i></a>
           </td>
           <td ng-bind="feedback.comments" width="35%"></td>
         </tr>
@@ -130,7 +130,7 @@
         <td ng-bind="feedback.risked_btc"></td>
         <td class="centered-text">
           <i ng-if="!feedback.reference" class="fa fa-external-link-square"></i>
-          <a ng-if="feedback.reference" ng-href="{{ feedback.reference.indexOf('://') > -1 ? feedback.reference.website : '//' + feedback.reference }}" target="_blank" data-balloon="{{feedback.reference}}" data-balloon-pos="left"><i class="fa fa-external-link-square"></i></a>
+          <a ng-if="feedback.reference" ng-href="{{ feedback.reference.indexOf('://') > -1 ? feedback.reference : '//' + feedback.reference }}" target="_blank" data-balloon="{{feedback.reference}}" data-balloon-pos="left"><i class="fa fa-external-link-square"></i></a>
         </td>
         <td ng-bind="feedback.comments" width="35%"></td>
       </tr>
