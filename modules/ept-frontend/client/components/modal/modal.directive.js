@@ -29,11 +29,11 @@ module.exports = ['$document', function($document) {
       scope.$watch('show', function(show) {
         if (show) {
           scope.focus = true;
-          $document[0].body.style.overflow = 'hidden';
+          $document[0].body.style.overflow = 'hidden hidden';
         }
         else {
           scope.close();
-          $document[0].body.style.overflow = 'auto';
+          $document[0].body.style.overflow = 'hidden auto';
         }
       });
     }
