@@ -108,7 +108,12 @@ var directive = ['$state', function($state) {
         else {
           $('#ltr-edit').prop('checked', true);
         }
-        console.log(editBoard.disable_post_edit);
+        if (editBoard.disable_signature) {
+          $('#rtl-edit').prop('checked', true);
+        }
+        else {
+          $('#ltr-edit').prop('checked', true);
+        }
         if (editBoard.disable_post_edit === "true") {
           //shim for old true values, post editing immediately disabled
           $('#editBoardPostEdit').val(0);
@@ -132,6 +137,7 @@ var directive = ['$state', function($state) {
               newBoard.postable_by = $('#editBoardPostable').val();
               newBoard.disable_post_edit = $('#editBoardPostEdit"]').val();
               newBoard.right_to_left = $('input[name="editBoardRTL"]:checked').val() === "true";
+              newBoard.disable_signature = $('input[name="editBoardSignatures"]:checked').val() === "true";
             }
           });
         }
@@ -144,7 +150,8 @@ var directive = ['$state', function($state) {
             viewable_by: $('#editBoardViewable').val() || null,
             postable_by: $('#editBoardPostable').val() || null,
             disable_post_edit: $('#editBoardPostEdit').val(),
-            right_to_left: $('input[name="editBoardRTL"]:checked').val() === "true"
+            right_to_left: $('input[name="editBoardRTL"]:checked').val() === "true",
+            disable_signature: $('input[name="editBoardSignatures"]:checked').val() === "true"
           };
 
           // check if board already exists in editedBoards
@@ -158,6 +165,7 @@ var directive = ['$state', function($state) {
             foundBoard.postable_by = editedBoard.postable_by;
             foundBoard.right_to_left = editedBoard.right_to_left;
             foundBoard.disable_post_edit = editedBoard.disable_post_edit;
+            foundBoard.disable_signature = editedBoard.disable_signature;
           }
           else { $scope.editedBoards.push(editedBoard); }
         }
@@ -178,6 +186,7 @@ var directive = ['$state', function($state) {
         board.postable_by = $('#editBoardPostable').val();
         board.disable_post_edit = $('#editBoardPostEdit').val();
         board.right_to_left = $('input[name="editBoardRTL"]:checked').val() === "true";
+        board.disable_signature = $('input[name="editBoardSignatures"]:checked').val() === "true";
 
         // Reset scope params for editing board
         editBoardDataId = '';
@@ -329,6 +338,7 @@ var directive = ['$state', function($state) {
               viewable_by: $scope.nestableMap[catBoard.id].viewable_by,
               postable_by: $scope.nestableMap[catBoard.id].postable_by,
               right_to_left: $scope.nestableMap[catBoard.id].right_to_left,
+              disable_signature: $scope.nestableMap[catBoard.id].disable_signature,
               disable_post_edit: $scope.nestableMap[catBoard.id].disable_post_edit,
               view_order: index
             };
@@ -354,6 +364,7 @@ var directive = ['$state', function($state) {
             viewable_by: $scope.nestableMap[board.id].viewable_by,
             postable_by: $scope.nestableMap[board.id].postable_by,
             right_to_left: $scope.nestableMap[board.id].right_to_left,
+            disable_signature: $scope.nestableMap[board.id].disable_signature,
             disable_post_edit: $scope.nestableMap[board.id].disable_post_edit,
             view_order: index
           };
