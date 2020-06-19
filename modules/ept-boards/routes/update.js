@@ -39,6 +39,7 @@ module.exports = {
         viewable_by: Joi.number().allow(null),
         postable_by: Joi.number().allow(null),
         right_to_left: Joi.boolean().default(false),
+        disable_signature: Joi.boolean().default(false),
         disable_post_edit: Joi.number().min(0).max(99999)
       })).unique().min(1)
     },
@@ -50,8 +51,12 @@ module.exports = {
   handler: function(request) {
     var boards = request.payload.map(function(board) {
       // create each board
-      board.meta = { disable_post_edit: board.disable_post_edit };
+      board.meta = {
+        disable_post_edit: board.disable_post_edit,
+        disable_signature: board.disable_signature
+      };
       delete board.disable_post_edit;
+      delete board.disable_signature;
       return board;
     });
 
