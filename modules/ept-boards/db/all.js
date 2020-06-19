@@ -12,6 +12,7 @@ module.exports = function() {
     postable_by,
     right_to_left,
     (meta ->> 'disable_post_edit') as disable_post_edit,
+    (meta ->> 'disable_signature') as disable_signature,
     created_at,
     updated_at,
     imported_at
