@@ -11,32 +11,99 @@
   .ng-enter-active { opacity: 1; }
   .ng-leave { display: none; }
   button { margin: 0.5rem 0 0; width: 100%; }
+  
   // poll creation
   &.poll-form {
-    button { margin-bottom: 0; }
+    max-height: 100%;
+    padding: 1rem 1rem 2rem;
+
+    .section-poll-questions {
+      border-bottom: $border;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      color: $secondary-font-color;
+      font-size: $font-size-lg;
+      font-weight: 400;
+      text-transform: initial;
+    }
+
+    .checkbox-group {
+      align-items: center;
+      display: flex;
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="checkbox"] {
+      margin: 0;
+      margin-right: 0.5rem;
+      padding: 0;
+    }
+
+    label {
+      margin: 0;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 1rem 0;
+    }
+
+    button { 
+      margin: 0; 
+      width: max-content;
+    }
+
     .answer-row {
       @include row;
       margin-bottom: 0.625rem;
       &:last-of-type { margin-bottom: 1rem; }
-      div {
-        @include span-columns(12);
+
+      input {
+        margin-bottom: 0;
+      }
+
+      
+      .field-inline-action {
         position: relative;
-        input { display: inline-block;  margin-bottom: 0; }
+
+        input {
+          display: inline-block;  margin-bottom: 0; 
+        }
+
         button {
+          border: none;
           display: inline-block;
-          margin-bottom: 0;
-          margin-top: 0;
+          margin: 0;
           right: 0.25rem;
           top: 0.25rem;
           padding: 0;
           height: 1.825rem;
           width: 1.825rem;
           position: absolute;
+
+          i {
+            margin: 0;
+          }
         }
       }
     }
-    h4 { margin-bottom: 0.5rem; }
-    .poll-options { margin-top: 0.625rem; }
+
+    .poll-options-expiration {
+      margin-bottom: 1rem;
+      
+      .fieldgroup {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+
+        input {
+          margin-bottom: 0;
+        }
+      }
+    }
   }
 
   .poll-title {

@@ -294,6 +294,17 @@ input[type].nested-input.valid-username { color: green; }
 }
 
 
+// Section Header
+.section-header {
+  color: $secondary-font-color;
+  display: block;
+  font-size: $font-size-sm;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+
 // Badges
 .badge {
   background-color: $base-background-color;
