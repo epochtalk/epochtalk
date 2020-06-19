@@ -178,7 +178,7 @@
       <a ng-href="mailto:{{vmProfile.user.email}}" target="_blank" ng-bind="vmProfile.user.email"></a>
       <div><span ng-bind="vmProfile.user.btc_address"></span></div>
       <div>
-        <a ng-href="{{vmProfile.user.website}}" target="_blank" ng-bind="vmProfile.user.website"></a>
+        <a ng-href="{{ vmProfile.user.website.indexOf('://') > -1 ? vmProfile.user.website : '//' + vmProfile.user.website }}" target="_blank" ng-bind="vmProfile.user.website"></a>
       </div>
       <div ng-if="vmProfile.user.gender">
         Gender:&nbsp;&nbsp;<span ng-bind="vmProfile.user.gender"></span>
