@@ -68,6 +68,17 @@
       <label for="rtl">Right to Left</label>
     </div>
   </div>
+  <div class="form-switch">
+    <label for="newBoardSignatures">Disable Signature
+      <span class="info-tooltip" data-balloon="Disable signature display for this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    </label>
+    <div class="switch-field">
+      <input type="radio" id="disable-signature" name="newBoardSignatures" value="false" checked/>
+      <label for="disable-signature">Yes</label>
+      <input type="radio" id="enable-signature" name="newBoardSignatures" value="true" />
+      <label for="enable-signature">No</label>
+    </div>
+  </div>
   <div class="clear">
     <button ng-click="insertNewBoard()" class="fill-row">Add Board</button>
   </div>
@@ -107,6 +118,17 @@
       <label for="ltr-edit">Left to Right</label>
       <input type="radio" id="rtl-edit" name="editBoardRTL" value="true" />
       <label for="rtl-edit">Right to Left</label>
+    </div>
+  </div>
+  <div class="form-switch">
+    <label for="editBoardSignatures">Disable Signature
+      <span class="info-tooltip" data-balloon="Disable signature display for this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    </label>
+    <div class="switch-field">
+      <input type="radio" id="disable-signature-edit" name="editBoardSignatures" value="false" checked/>
+      <label for="disable-signature-edit">Yes</label>
+      <input type="radio" id="enable-signature-edit" name="editBoardSignatures" value="true" />
+      <label for="enable-signature-edit">No</label>
     </div>
   </div>
   <div class="clear">
