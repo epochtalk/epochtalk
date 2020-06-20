@@ -107,7 +107,7 @@ var directive = ['$compile', function($compile) {
         $('#newBoardViewable').val('');
         $('#newBoardPostable').val('');
         $('#ltr').prop('checked', true);
-        $('#newBoardSignatures').prop('checked', true);
+        $('#enable-signature').prop('checked', true);
         $('#newBoardPostEdit').val('');
       };
 
