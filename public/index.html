@@ -54,13 +54,7 @@
   </style>
 </head>
 
-<!-- <body ng-class="$className"></body> -->
-
-<body ng-class="{'show-motd': vmMotd.data.motd_html.length && !vmMotd.hideAnnnouncement: 'show-motd'}">
-
-<!-- <i ng-class="{'icon-autoscroll': autoScroll, 'icon-autoscroll-disabled': !autoScroll}"></i> -->
-
-  
+<body ng-class="$className">
   <div id="wrapper">
     <!-- Header -->
     <div ng-controller="HeaderCtrl as HeaderCtrl">
