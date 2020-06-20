@@ -112,10 +112,10 @@ var directive = ['$state', function($state) {
           $('#ltr-edit').prop('checked', true);
         }
         if (editBoard.disable_signature) {
-          $('#sig-disabled-edit').prop('checked', true);
+          $('#disable-signature-edit').prop('checked', true);
         }
         else {
-          $('#sig-enable-edit').prop('checked', true);
+          $('#enable-signature-edit').prop('checked', true);
         }
         if (editBoard.disable_post_edit === "true") {
           //shim for old true values, post editing immediately disabled
