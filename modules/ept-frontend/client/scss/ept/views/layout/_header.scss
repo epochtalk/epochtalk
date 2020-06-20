@@ -21,6 +21,10 @@ header {
     // transform: translateY(0);
   }
 
+  .header-contents {
+    transition: transform ease-in-out 250ms;
+  }
+
   #ban-notice {
     @include pad(0.2rem 0);
     text-align: center;
