@@ -36,7 +36,10 @@ var directive = ['$state', function($state) {
         $('#newBoardDesc').val('');
         $('#newBoardViewable').val('');
         $('#newBoardPostable').val('');
+        $('#newBoardSignatures').val('');
         $('#ltr').prop('checked', true);
+        $('#enable-signature').prop('checked', true);
+        $('#newBoardPostEdit').val('');
       };
 
       /* Edit Category */
@@ -109,10 +112,10 @@ var directive = ['$state', function($state) {
           $('#ltr-edit').prop('checked', true);
         }
         if (editBoard.disable_signature) {
-          $('#rtl-edit').prop('checked', true);
+          $('#sig-disabled-edit').prop('checked', true);
         }
         else {
-          $('#ltr-edit').prop('checked', true);
+          $('#sig-enable-edit').prop('checked', true);
         }
         if (editBoard.disable_post_edit === "true") {
           //shim for old true values, post editing immediately disabled
@@ -196,6 +199,7 @@ var directive = ['$state', function($state) {
         $('#editBoardViewable').val('');
         $('#editBoardPostable').val('');
         $('#ltr-edit').prop('checked', true);
+        $('#enable-signature-edit').prop('checked', true);
         $('#editBoardPostEdit').val('');
         $scope.showEditBoard = false;
       };
