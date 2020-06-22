@@ -21,7 +21,14 @@ var directive = ['Motd', function(Motd) {
           }
           else { ctrl.hideAnnnouncement = false; }
         }
+        if (ctrl.data.motd && !ctrl.hideAnnnouncement) {
+          document.body.classList.add('motd-visible');
+        }
+        else {
+          document.body.classList.remove('motd-visible');
+        }
       }
+
 
       // Enforces the main view only preference
       $rootScope.$on('$locationChangeSuccess', function() {  mainViewOnlyCheck(); });
