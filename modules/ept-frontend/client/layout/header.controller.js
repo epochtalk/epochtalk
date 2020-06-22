@@ -192,21 +192,21 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
       };
     };
 
-    var scrollPos = 0;
+    var scrollDownPos = 95;
+    var scrollUpPos = 60;
     function checkPosition() {
       var header = document.querySelector('header');
       var windowY = window.scrollY;
-      if (windowY < scrollPos) {
+      if (windowY <= scrollUpPos) {
         // Scrolling UP
         header.classList.add('is-visible');
         header.classList.remove('is-hidden');
-      } else {
+      } else if (windowY >= scrollDownPos) {
         // Scrolling DOWN
         header.classList.add('is-hidden');
         header.classList.remove('is-visible');
       }
 
-      scrollPos = windowY;
     }
     // window.addEventListener('scroll', checkPosition);
     window.addEventListener('scroll', debounce(checkPosition));
