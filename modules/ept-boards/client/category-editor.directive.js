@@ -36,7 +36,6 @@ var directive = ['$state', function($state) {
         $('#newBoardDesc').val('');
         $('#newBoardViewable').val('');
         $('#newBoardPostable').val('');
-        $('#newBoardSignatures').val('');
         $('#ltr').prop('checked', true);
         $('#enable-signature').prop('checked', true);
         $('#newBoardPostEdit').val('');
