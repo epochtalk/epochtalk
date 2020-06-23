@@ -32,7 +32,7 @@ module.exports = function(id, userPriority) {
         b.postable_by,
         b.right_to_left,
         (b.meta ->> 'disable_post_edit') as disable_post_edit,
-        (b.meta ->> 'disable_signature') as disable_signature,
+        (b.meta ->> 'disable_signature')::boolean as disable_signature,
         b.thread_count,
         b.post_count,
         b.created_at,
