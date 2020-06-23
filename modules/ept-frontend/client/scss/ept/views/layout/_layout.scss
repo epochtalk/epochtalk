@@ -11,6 +11,10 @@
   position:relative;
   margin-top: calc(#{$header-offset} + 1rem);
 
+  .motd-visible & {
+    margin-top: calc(#{$header-offset} + 2.5rem);
+  }
+
   @include break-mobile-sm {
     overflow-x: hidden;
     margin-top: calc(#{$header-offset} - 0.5rem);
