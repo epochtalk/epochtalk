@@ -193,20 +193,21 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
     };
 
     var scrollDownPos = 95;
-    var scrollUpPos = 60;
+    var lastScrollTop = 0;
     function checkPosition() {
       var header = document.querySelector('header');
       var windowY = window.scrollY;
-      if (windowY <= scrollUpPos) {
-        // Scrolling UP
-        header.classList.add('is-visible');
-        header.classList.remove('is-hidden');
-      } else if (windowY >= scrollDownPos) {
+      if (windowY >= scrollDownPos) {
         // Scrolling DOWN
         header.classList.add('is-hidden');
         header.classList.remove('is-visible');
       }
-
+      if (windowY < lastScrollTop) {
+        // Scrolling UP
+        header.classList.add('is-visible');
+        header.classList.remove('is-hidden');
+      }
+      lastScrollTop = windowY;
     }
     // window.addEventListener('scroll', checkPosition);
     window.addEventListener('scroll', debounce(checkPosition));
