@@ -14,7 +14,7 @@ module.exports = function(id, userPriority) {
   else if (!userPriority) { userPriority = Number.MAX_VALUE; }
 
   // get board with given id
-  var q = 'SELECT b.id, b.name, b.description, b.viewable_by, b.postable_by, b.right_to_left, (b.meta ->> \'disable_post_edit\') as disable_post_edit, (b.meta ->> \'disable_signature\') as disable_signature, b.created_at, b.thread_count, b.post_count, b.updated_at, b.imported_at, (SELECT bm.parent_id FROM board_mapping bm WHERE bm.board_id = b.id) as parent_id, (SELECT json_agg(row_to_json((SELECT x FROM ( SELECT bm.user_id as id, u.username as username) x ))) as moderators from board_moderators bm LEFT JOIN users u ON bm.user_id = u.id WHERE bm.board_id = b.id) as moderators FROM boards b WHERE b.id = $1;';
+  var q = 'SELECT b.id, b.name, b.description, b.viewable_by, b.postable_by, b.right_to_left, (b.meta ->> \'disable_post_edit\') as disable_post_edit, (b.meta ->> \'disable_signature\')::boolean as disable_signature, b.created_at, b.thread_count, b.post_count, b.updated_at, b.imported_at, (SELECT bm.parent_id FROM board_mapping bm WHERE bm.board_id = b.id) as parent_id, (SELECT json_agg(row_to_json((SELECT x FROM ( SELECT bm.user_id as id, u.username as username) x ))) as moderators from board_moderators bm LEFT JOIN users u ON bm.user_id = u.id WHERE bm.board_id = b.id) as moderators FROM boards b WHERE b.id = $1;';
   return db.sqlQuery(q, [id])
   .then(function(rows) {
     if (rows.length > 0) { return rows[0]; }
