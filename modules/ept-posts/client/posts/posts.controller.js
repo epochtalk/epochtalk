@@ -13,6 +13,7 @@ var ctrl = [
     parent.writeAccess = pageData.write_access;
     parent.bannedFromBoard = BanSvc.banStatus();
     parent.disablePostEdit = pageData.board.disable_post_edit;
+    parent.disableSignature = pageData.board.disable_signature;
     this.rootUrl = generateBaseUrl();
     this.user = Session.user;
     this.posts = pageData.posts;
