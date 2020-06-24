@@ -6,7 +6,10 @@
     <span class="username" ng-bind-html="HeaderCtrl.currentUser.username"></span>
   </a>
   <div class="close-menu" ng-click="HeaderCtrl.showMobileMenu = false">
-    <i class="fa fa-chevron-right" aria-hidden="true"></i>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+      <title>caret-down</title>
+      <path d="M24,38.83,4.59,19.41a2,2,0,0,1,2.82-2.82L24,33.17,40.59,16.59a2,2,0,0,1,2.82,2.82Z"/>
+    </svg>
   </div>
   <ul>
     <li ng-click="HeaderCtrl.showMobileMenu = false" ng-if="HeaderCtrl.hasPermission('adminAccess')">
@@ -71,7 +74,14 @@
       <!-- User Dropdown Mobile -->
       <ul ng-if="HeaderCtrl.loggedIn()" class="burger-icon">
         <div class="burger-notification show-mobile" ng-if="HeaderCtrl.notificationMessages() || HeaderCtrl.notificationMentions()"></div>
-        <i ng-click="HeaderCtrl.showMobileMenu = true" class="fa fa-bars fa-lg burger" aria-hidden="true"></i>
+        <!-- <i ng-click="HeaderCtrl.showMobileMenu = true" class="fa fa-bars fa-lg burger" aria-hidden="true"></i> -->
+        <span class="burger-menu-icon" ng-click="HeaderCtrl.showMobileMenu = true" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <path d="M7,16H41a2,2,0,0,0,0-4H7a2,2,0,0,0,0,4Z"/>
+            <path d="M41,22H7a2,2,0,0,0,0,4H41a2,2,0,0,0,0-4Z"/>
+            <path d="M41,32H7a2,2,0,0,0,0,4H41a2,2,0,0,0,0-4Z"/>
+          </svg>
+        </span>
       </ul>
   
       <!-- User Dropdown -->
