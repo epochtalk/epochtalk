@@ -25,15 +25,19 @@ module.exports = ['$document', function($document) {
           scope.form.$setUntouched();
         }
         if (scope.onClose) { scope.onClose(); }
+        $document[0].body.style.overflow = 'hidden auto';
+        $(document).off('keydown');
       };
       scope.$watch('show', function(show) {
         if (show) {
           scope.focus = true;
           $document[0].body.style.overflow = 'hidden hidden';
+          $(document).on('keydown', function(e) {
+            if (e.which == 27 && scope.show) { scope.close(); }
+          });
         }
         else {
           scope.close();
-          $document[0].body.style.overflow = 'hidden auto';
         }
       });
     }
