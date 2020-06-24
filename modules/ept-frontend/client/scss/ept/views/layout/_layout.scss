@@ -12,7 +12,11 @@
   margin-top: calc(#{$header-offset} + 1rem);
 
   .motd-visible & {
-    margin-top: calc(#{$header-offset} + 2.5rem);
+    margin-top: calc(#{$header-offset} + 4rem);
+
+    @include break-mobile-sm {
+      margin-top: calc(#{$header-offset} + 3rem);
+    }
   }
 
   @include break-mobile-sm {
