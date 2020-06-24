@@ -10,10 +10,7 @@
 
 <!-- User's Paged Posts -->
 <div ng-if="!ProfilePostsCtrl.threads">
-  <!-- <button ng-click="ProfilePostsCtrl.toggleThreads(true)">View Threads by {{ProfilePostsCtrl.user.username}}</button> -->
-  <div class="profile-row">
-    <!-- <h5 class="title">Posts by {{ProfilePostsCtrl.user.username}}</h5> -->
-
+  <div class="">
     <div class="pagination-wrap" ng-if="ProfilePostsCtrl.pageCount > 0">
       <pagination page-count="ProfilePostsCtrl.pageCount" page="ProfilePostsCtrl.page" query-params="ProfilePostsCtrl.queryParams"></pagination>
     </div>
@@ -23,7 +20,7 @@
     <h4>This user has no posts to display</h4>
   </div>
 
-  <div class="fill-row" ng-if="ProfilePostsCtrl.pageCount > 0">
+  <div class="" ng-if="ProfilePostsCtrl.pageCount > 0">
     <table class="profile-posts-table" width="100%">
       <thead>
         <th class="thread"></span>Thread</th>
@@ -51,10 +48,7 @@
 
 
 <div ng-if="ProfilePostsCtrl.threads">
-  <!-- <button ng-click="ProfilePostsCtrl.toggleThreads(false)">View Posts by {{ProfilePostsCtrl.user.username}}</button> -->
   <!-- User's Paged Threads -->
-  <div class="profile-row">
-    <!-- <h5 class="title">Threads by {{ProfilePostsCtrl.user.username}}</h5> -->
 
     <div class="pagination-wrap" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
       <div class="pagination-simple">
@@ -69,13 +63,12 @@
         <span ng-hide="ProfilePostsCtrl.next">Next &#10095;</span>
       </div>
     </div>
-  </div>
 
   <div class="no-table-contents" ng-if="ProfilePostsCtrl.usersPosts.length < 1">
     This user has no threads to display
   </div>
 
-  <div class="fill-row" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
+  <div class="" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
     <table class="profile-posts-table" width="100%">
       <thead>
         <th class="thread"></span>Thread</th>

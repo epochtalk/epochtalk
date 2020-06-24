@@ -239,7 +239,8 @@ profile {
         margin-bottom: 1.5rem;
 
         h1,
-        .username-screen {
+        .username-screen,
+        .user-role {
           margin-bottom: 0.25rem;
         }
       }
@@ -509,6 +510,7 @@ profile {
       display: flex;
       flex-direction: column;
       padding: 0.5rem 0;
+      width: calc(100vw - 2rem);
 
       td {
         padding: 0;
