@@ -79,6 +79,17 @@
       <label for="enable-signature">No</label>
     </div>
   </div>
+  <div class="form-switch">
+    <label for="newBoardSelfMod">Disable Self Moderated Threads
+      <span class="info-tooltip" data-balloon="Disable self moderated threads for this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    </label>
+    <div class="switch-field">
+      <input type="radio" id="disable-selfmod" name="newBoardSelfMod" value="true" checked/>
+      <label for="disable-selfmod">Yes</label>
+      <input type="radio" id="enable-selfmod" name="newBoardSelfMod" value="false" />
+      <label for="enable-selfmod">No</label>
+    </div>
+  </div>
   <div class="clear">
     <button ng-click="insertNewBoard()" class="fill-row">Add Board</button>
   </div>
@@ -129,6 +140,17 @@
       <label for="disable-signature-edit">Yes</label>
       <input type="radio" id="enable-signature-edit" name="editBoardSignatures" value="false" />
       <label for="enable-signature-edit">No</label>
+    </div>
+  </div>
+  <div class="form-switch">
+    <label for="editBoardSelfMod">Disable Self Moderated Threads
+      <span class="info-tooltip" data-balloon="Disable self moderated threads for this board" data-balloon-pos="down" data-balloon-length="large" data-balloon-break><i class="fa fa-info-circle"></i></span>
+    </label>
+    <div class="switch-field">
+      <input type="radio" id="disable-selfmod-edit" name="editBoardSelfMod" value="true" checked/>
+      <label for="disable-selfmod-edit">Yes</label>
+      <input type="radio" id="enable-selfmod-edit" name="editBoardSelfMod" value="false" />
+      <label for="enable-selfmod-edit">No</label>
     </div>
   </div>
   <div class="clear">
