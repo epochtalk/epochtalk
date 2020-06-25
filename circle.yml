@@ -87,10 +87,10 @@ jobs:
             docker-compose -f circleci-docker-compose.yml exec epochtalk /bin/bash -c "ls; pwd"
           when: on_fail
       - slack/status:
-        fail_only: false
+          fail_only: false
       - slack/status:
-        fail_only: true
-        channel: 'epochtalk-build-fails'
+          fail_only: true
+          channel: 'epochtalk-build-fails'
 
   release:
     docker:
