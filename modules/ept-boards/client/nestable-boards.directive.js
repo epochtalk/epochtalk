@@ -29,6 +29,7 @@ var directive = ['$compile', function($compile) {
             postable_by: board.postable_by,
             right_to_left: board.right_to_left,
             disable_signature: board.disable_signature,
+            disable_selfmod: board.disable_selfmod,
             disable_post_edit: board.disable_post_edit,
             children: board.children || [],
             moderators: board.moderators || []
@@ -61,6 +62,7 @@ var directive = ['$compile', function($compile) {
           postable_by: $('#newBoardPostable').val() || undefined,
           right_to_left: $('input[name="newBoardRTL"]:checked').val() === "true",
           disable_signature: $('input[name="newBoardSignatures"]:checked').val() === "true",
+          disable_selfmod: $('input[name="newBoardSelfMod"]:checked').val() === "true",
           disable_post_edit: $('#newBoardPostEdit').val()
         };
 
@@ -75,6 +77,7 @@ var directive = ['$compile', function($compile) {
             postable_by: board.postable_by,
             right_to_left: board.right_to_left,
             disable_signature: board.disable_signature,
+            disable_selfmod: board.disable_selfmod,
             disable_post_edit: board.disable_post_edit,
             children: board.children || [],
             moderators: board.moderators || []
@@ -108,6 +111,7 @@ var directive = ['$compile', function($compile) {
         $('#newBoardPostable').val('');
         $('#ltr').prop('checked', true);
         $('#enable-signature').prop('checked', true);
+        $('#enable-selfmod').prop('checked', true);
         $('#newBoardPostEdit').val('');
       };
 
