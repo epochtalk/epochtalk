@@ -13,6 +13,7 @@ module.exports = function() {
     right_to_left,
     (meta ->> 'disable_post_edit') as disable_post_edit,
     (meta ->> 'disable_signature')::boolean as disable_signature,
+    (meta ->> 'disable_selfmod')::boolean as disable_selfmod,
     created_at,
     updated_at,
     imported_at
