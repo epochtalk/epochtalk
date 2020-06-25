@@ -23,6 +23,7 @@ module.exports = function(userPriority, opts) {
         b.right_to_left,
         (b.meta ->> 'disable_post_edit') as disable_post_edit,
         (b.meta ->> 'disable_signature')::boolean as disable_signature,
+        (b.meta ->> 'disable_selfmod')::boolean as disable_selfmod,
         b.thread_count,
         b.post_count,
         b.created_at,
