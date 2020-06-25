@@ -60,6 +60,7 @@ var directive = ['$compile', function($compile) {
             postable_by: board.postable_by,
             right_to_left: board.right_to_left,
             disable_signature: board.disable_signature,
+            disable_selfmod: board.disable_selfmod,
             disable_post_edit: board.disable_post_edit,
             children: board.children || [],
             moderators: board.moderators || []
