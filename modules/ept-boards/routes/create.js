@@ -61,7 +61,7 @@ module.exports = {
       // create each board
       board.meta = {
         disable_post_edit: board.disable_post_edit,
-        disable_signature: board.disable_signature
+        disable_signature: board.disable_signature,
         disable_selfmod: board.disable_selfmod
       };
       delete board.disable_post_edit;
