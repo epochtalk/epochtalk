@@ -14,6 +14,7 @@ var ctrl = [
     parent.bannedFromBoard = BanSvc.banStatus();
     parent.disablePostEdit = pageData.board.disable_post_edit;
     parent.disableSignature = pageData.board.disable_signature;
+    parent.disableSelfMod = pageData.board.disable_selfmod;
     this.rootUrl = generateBaseUrl();
     this.user = Session.user;
     this.posts = pageData.posts;
