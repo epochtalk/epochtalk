@@ -47,7 +47,7 @@ module.exports = {
         postable_by: Joi.number(),
         right_to_left: Joi.boolean().default(false),
         disable_post_edit: Joi.number().min(0).max(99999),
-        disable_signature: Joi.boolean().default(false)
+        disable_signature: Joi.boolean().default(false),
         disable_selfmod: Joi.boolean().default(false)
       })).min(1)
     },
