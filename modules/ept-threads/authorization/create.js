@@ -39,6 +39,22 @@ module.exports = function (server, auth, payload) {
     userId: userId
   });
 
+  // board self mod check
+  var selfmod = server.authorization.build({
+    error: Boom.forbidden('Board does not allow self moderated threads'),
+    type: 'dbValue',
+    method: function(boardId) {
+      return server.db.boards.find(boardId)
+      .then(function(board) {
+        if (payload.moderated && board.disable_selfmod) {
+          return false;
+        }
+        else { return true; }
+      });
+    },
+    args: [boardId]
+  });
+
   // user is not banned from this board
   var notBannedFromBoard = server.authorization.common.isNotBannedFromBoard(Boom.forbidden('You are banned from this board'), server, userId, { boardId: boardId });
 
@@ -79,5 +95,5 @@ module.exports = function (server, auth, payload) {
     else { return reject(Boom.forbidden()); }
   });
 
-  return Promise.all([allowed, read, write, notBannedFromBoard, active, pollData, moderated]);
+  return Promise.all([allowed, read, write, selfmod, notBannedFromBoard, active, pollData, moderated]);
 };
