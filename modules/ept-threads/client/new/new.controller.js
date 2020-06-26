@@ -9,6 +9,7 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
     this.addPoll = false;
     this.poll = {};
     this.right_to_left = board.right_to_left;
+    this.disableSelfMod = board.disable_selfmod;
     this.thread = {
       title: '',
       board_id: $stateParams.boardId,
@@ -41,6 +42,7 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
 
     this.canModerate = function() {
       if (!ctrl.loggedIn()) { return false; }
+      if (ctrl.disableSelfMod) { return false; }
       if (!Session.hasPermission('threads.moderated.allow')) { return false; }
       return true;
     };
