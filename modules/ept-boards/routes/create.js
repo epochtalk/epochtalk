@@ -48,6 +48,7 @@ module.exports = {
         right_to_left: Joi.boolean().default(false),
         disable_post_edit: Joi.number().min(0).max(99999),
         disable_signature: Joi.boolean().default(false)
+        disable_selfmod: Joi.boolean().default(false)
       })).min(1)
     },
     pre: [
@@ -61,9 +62,11 @@ module.exports = {
       board.meta = {
         disable_post_edit: board.disable_post_edit,
         disable_signature: board.disable_signature
+        disable_selfmod: board.disable_selfmod
       };
       delete board.disable_post_edit;
       delete board.disable_signature;
+      delete board.disable_selfmod;
       return board;
     });
     var promise = Promise.map(boards, function(board) {
