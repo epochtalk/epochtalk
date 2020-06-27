@@ -16,6 +16,8 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.parent.rtl = pageData.board.right_to_left;
     this.parent.page = pageData.page;
     this.parent.pageCount = Math.ceil((ctrl.board.thread_count - ctrl.board.sticky_thread_count) / ctrl.limit) || 1;
+    this.right_to_left = pageData.board.right_to_left;
+    this.disableSelfMod = pageData.board.disable_selfmod;
     // TODO: This will not be here once actual boards are stored in this array
     this.parent.bannedFromBoard = BanSvc.banStatus();
 
@@ -33,6 +35,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
 
     this.parent.canModerate = function() {
       if (!ctrl.loggedIn()) { return false; }
+      if (ctrl.disableSelfMod) { return false; }
       if (!Session.hasPermission('threads.moderated.allow')) { return false; }
       return true;
     };

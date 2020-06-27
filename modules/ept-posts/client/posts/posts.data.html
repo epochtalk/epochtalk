@@ -158,7 +158,7 @@
       </div>
       <!-- Post Body -->
       <div class="post-body" ng-class="{ 'rtl': post.right_to_left }" post-processing="post.body_html" style-fix="true"></div>
-      <div ng-if="post.user.signature">
+      <div ng-if="post.user.signature && !PostsParentCtrl.disableSignature">
         <div class="post-signature" post-processing="post.user.signature" style-fix="true"></div>
       </div>
     </div>
