@@ -115,6 +115,12 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "master" ] || [ "${CIRCLE_BRANCH}" == "ci-docs" ]; then
               yarn run docs:build:all
             fi
+      - run:
+          name: deploy docs
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ] || [ "${CIRCLE_BRANCH}" == "ci-docs" ]; then
+              aws s3 sync docs/.vuepress $DOCS_S3_URI --region $DOCS_S3_REGION
+            fi
 
 orbs:
   slack: circleci/slack@3.4.2
