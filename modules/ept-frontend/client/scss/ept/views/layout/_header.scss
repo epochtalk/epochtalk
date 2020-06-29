@@ -8,6 +8,8 @@ header {
   z-index: 2000;
 
   &.is-hidden {
+    pointer-events: none;
+
     .header-contents {
       transform: translateY(-100%);  
     }
