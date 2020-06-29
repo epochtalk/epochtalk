@@ -109,6 +109,12 @@ jobs:
               && unzip awscliv2.zip
               && sudo ./aws/install
             fi
+      - run:
+          name: build docs
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ] || [ "${CIRCLE_BRANCH}" == "ci-docs" ]; then
+              yarn run docs:build:all
+            fi
 
 orbs:
   slack: circleci/slack@3.4.2
