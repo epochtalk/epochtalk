@@ -202,7 +202,7 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
         header.classList.add('is-hidden');
         header.classList.remove('is-visible');
       }
-      if (windowY < lastScrollTop) {
+      if (windowY === 0 || windowY < lastScrollTop) {
         // Scrolling UP
         header.classList.add('is-visible');
         header.classList.remove('is-hidden');
