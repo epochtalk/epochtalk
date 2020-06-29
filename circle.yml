@@ -101,6 +101,12 @@ jobs:
       - run:
           command: npx semantic-release
           no_output_timeout: 20m
+      - run:
+          name: Get aws cli
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+            && unzip awscliv2.zip
+            && sudo ./aws/install
 
 orbs:
   slack: circleci/slack@3.4.2
