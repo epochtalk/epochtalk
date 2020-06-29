@@ -15,6 +15,7 @@ protractor.env
 pids
 logs
 doc
+docs/.vuepress/dist
 results
 config.json
 
