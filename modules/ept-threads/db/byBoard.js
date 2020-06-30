@@ -78,7 +78,6 @@ var getNormalThreads = function(boardId, userId, opts) {
     return db.sqlQuery(query, params);
   })
   .then(function(threads) {
-    console.log(threads);
     // rearrange last post and user properties
     return Promise.map(threads, function(thread) {
       return common.formatThread(thread, userId);
