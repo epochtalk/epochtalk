@@ -92,7 +92,7 @@ module.exports = {
       query: Joi.object({
         board_id: Joi.string().required(),
         page: Joi.number().default(1),
-        sortField: Joi.string(),
+        sort: Joi.string().trim().valid('views', 'created_at', 'updated_at', 'post_count'),
         limit: Joi.number().integer().min(1).max(100).default(25)
       })
     },
@@ -120,7 +120,7 @@ function processing(request) {
   var opts = {
     limit: request.query.limit,
     page: request.query.page,
-    sortField: request.query.sortField
+    sortField: request.query.sort
   };
 
   var getWriteAccess = request.db.boards.getBoardWriteAccess(boardId, userPriority);
