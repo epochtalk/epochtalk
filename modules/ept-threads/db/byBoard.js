@@ -62,7 +62,7 @@ var getNormalThreads = function(boardId, userId, opts) {
   // get all related threads
   .then(function() {
     var query = 'SELECT ' + opts.columns + ' FROM ( ' +
-      'SELECT t2.id, t2.updated_at, mt.views as view_count, t2.created_at, t2.post_count ' +
+      'SELECT t2.id, t2.updated_at, mt.views, t2.created_at, t2.post_count ' +
       'FROM threads t2 ' +
       'LEFT JOIN metadata.threads mt ON t2.id = mt.thread_id ' +
       'WHERE t2.board_id = $1 AND t2.sticky = False AND t2.updated_at IS NOT NULL ' +
@@ -75,7 +75,6 @@ var getNormalThreads = function(boardId, userId, opts) {
     'LEFT JOIN LATERAL ( ' + opts.q5 + ' ) pl ON true ' +
     'ORDER BY tlist.' + opts.sortField + ' DESC';
     var params = [boardId, userId, opts.limit, opts.offset];
-    console.log(query)
     return db.sqlQuery(query, params);
   })
   .then(function(threads) {
