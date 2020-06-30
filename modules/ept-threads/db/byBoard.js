@@ -13,6 +13,7 @@ module.exports = function(boardId, userId, opts) {
   opts.limit = opts.limit || 25;
   opts.page = opts.page || 1;
   opts.offset = (opts.page * opts.limit) - opts.limit;
+  opts.sortField = opts.sortField || 'updated_at';
   opts.reversed = 'DESC';
   opts.columns = 'tlist.id, t.locked, t.sticky, t.moderated, t.poll, t.created_at, t.updated_at, t.views as view_count, t.post_count, p.title, p.user_id, p.username, p.user_deleted, t.time AS last_viewed, tv.id AS post_id, tv.position AS post_position, pl.last_post_id, pl.position AS last_post_position, pl.created_at AS last_post_created_at, pl.deleted AS last_post_deleted, pl.id AS last_post_user_id, pl.username AS last_post_username, pl.user_deleted AS last_post_user_deleted, pl.avatar AS last_post_avatar';
   opts.q2 = 'SELECT t1.locked, t1.sticky, t1.moderated, t1.post_count, t1.created_at, t1.updated_at, mt.views, ' +
@@ -35,6 +36,10 @@ module.exports = function(boardId, userId, opts) {
 };
 
 var getNormalThreads = function(boardId, userId, opts) {
+  var innerSortField;
+  if (opts.sortField === 'views') { innerSortField = 'mt.views'; }
+  else { innerSortField = 't2.' + opts.sortField; }
+
   var getBoardSQL = 'SELECT thread_count FROM boards WHERE id = $1';
   var stickyThreadCountSQL = 'SELECT COUNT(*) FROM threads WHERE board_id = $1 AND sticky = True;';
   return Promise.join(db.scalar(getBoardSQL, [boardId]), db.scalar(stickyThreadCountSQL, [boardId]))
@@ -57,21 +62,24 @@ var getNormalThreads = function(boardId, userId, opts) {
   // get all related threads
   .then(function() {
     var query = 'SELECT ' + opts.columns + ' FROM ( ' +
-      'SELECT id, updated_at ' +
-      'FROM threads ' +
-      'WHERE board_id = $1 AND sticky = False AND updated_at IS NOT NULL ' +
-      'ORDER BY updated_at ' + opts.reversed + ' ' +
+      'SELECT t2.id, t2.updated_at, mt.views as view_count, t2.created_at, t2.post_count ' +
+      'FROM threads t2 ' +
+      'LEFT JOIN metadata.threads mt ON t2.id = mt.thread_id ' +
+      'WHERE t2.board_id = $1 AND t2.sticky = False AND t2.updated_at IS NOT NULL ' +
+      'ORDER BY ' + innerSortField + ' ' + opts.reversed + ' ' +
       'LIMIT $3 OFFSET $4 ' +
     ') tlist ' +
     'LEFT JOIN LATERAL ( ' + opts.q2 + ' ) t ON true ' +
     'LEFT JOIN LATERAL ( ' + opts.q3 + ' ) p ON true ' +
     'LEFT JOIN LATERAL ( ' + opts.q4 + ' ) tv ON true ' +
     'LEFT JOIN LATERAL ( ' + opts.q5 + ' ) pl ON true ' +
-    'ORDER BY tlist.updated_at DESC';
+    'ORDER BY tlist.' + opts.sortField + ' DESC';
     var params = [boardId, userId, opts.limit, opts.offset];
+    console.log(query)
     return db.sqlQuery(query, params);
   })
   .then(function(threads) {
+    console.log(threads);
     // rearrange last post and user properties
     return Promise.map(threads, function(thread) {
       return common.formatThread(thread, userId);
