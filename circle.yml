@@ -119,7 +119,7 @@ jobs:
           name: deploy docs
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ] || [ "${CIRCLE_BRANCH}" == "ci-docs" ]; then
-              aws s3 sync docs/.vuepress $DOCS_S3_URI --region $DOCS_S3_REGION
+              aws s3 sync docs/.vuepress/dist $DOCS_S3_URI --region $DOCS_S3_REGION --delete
             fi
 
 orbs:
