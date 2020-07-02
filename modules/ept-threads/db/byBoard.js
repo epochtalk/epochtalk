@@ -75,9 +75,7 @@ var getNormalThreads = function(boardId, userId, opts) {
     'LEFT JOIN LATERAL ( ' + opts.q4 + ' ) tv ON true ' +
     'LEFT JOIN LATERAL ( ' + opts.q5 + ' ) pl ON true ' +
     'ORDER BY tlist.' + opts.sortField + ' ' + opts.sortOrder;
-    console.log(query);
     var params = [boardId, userId, opts.limit, opts.offset];
-    console.log(params);
     return db.sqlQuery(query, params);
   })
   .then(function(threads) {
