@@ -59,14 +59,17 @@
   <div class="subject">
     <h5>Subject</h5>
   </div>
-  <div class="replies">
-    <h5>Replies</h5>
+  <div class="replies pointer" ng-click="ThreadsCtrl.setSortField('post_count')">
+    <span ng-class="ThreadsCtrl.getSortClass('post_count')"></span>&nbsp;
+    <h5 class="inline-block">Replies</h5>
   </div>
-  <div class="views">
-    <h5>Views</h5>
+  <div class="views pointer" ng-click="ThreadsCtrl.setSortField('views')">
+    <span ng-class="ThreadsCtrl.getSortClass('views')"></span>&nbsp;
+    <h5 class="inline-block">Views</h5>
   </div>
-  <div class="last-reply">
-    <h5>Last Post</h5>
+  <div class="last-reply pointer" ng-click="ThreadsCtrl.setSortField('updated_at')">
+    <span ng-class="ThreadsCtrl.getSortClass('updated_at')"></span>&nbsp;
+    <h5 class="inline-block">Last Post</h5>
   </div>
 </div>
 <div class="thin-underline"></div>
