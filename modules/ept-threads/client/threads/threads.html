@@ -4,7 +4,7 @@
       <h4 ng-bind-html="ThreadsWrapperCtrl.board.name"></h4>
     </div>
     <div>
-      <pagination page-count="ThreadsWrapperCtrl.pageCount" page="ThreadsWrapperCtrl.page"></pagination>
+      <pagination page-count="ThreadsWrapperCtrl.pageCount" page="ThreadsWrapperCtrl.page" query-params="ThreadsWrapperCtrl.queryParams"></pagination>
     </div>
     <div class="moderators" ng-if="ThreadsWrapperCtrl.board.moderators.length > 0">
       <span class="label">Moderators: </span>
@@ -30,7 +30,7 @@
 <div class="board-data" ui-view="data"></div>
 
 <div class="fill-row">
-  <pagination page-count="ThreadsWrapperCtrl.pageCount" page="ThreadsWrapperCtrl.page"></pagination>
+  <pagination page-count="ThreadsWrapperCtrl.pageCount" page="ThreadsWrapperCtrl.page" query-params="ThreadsWrapperCtrl.queryParams"></pagination>
 </div>
 
 <set-moderators board="ThreadsWrapperCtrl.board" show="ThreadsWrapperCtrl.showSetModerators"></set-moderators>
