@@ -88,18 +88,21 @@ var getNormalThreads = function(boardId, userId, opts) {
 
 var getStickyThreads = function(boardId, userId, opts) {
   if (opts.page !== 1) { return []; }
-  opts.columns = opts.columns.replace('tlist.views', 't.views');
+  var innerSortField;
+  if (opts.sortField === 'views') { innerSortField = 'mt.views'; }
+  else { innerSortField = 't2.' + opts.sortField; }
   var query = 'SELECT ' + opts.columns + ' FROM ( ' +
-    'SELECT id, created_at, updated_at ' +
-    'FROM threads ' +
-    'WHERE board_id = $1 AND sticky = True AND updated_at IS NOT NULL ' +
-    'ORDER BY created_at DESC ' +
+    'SELECT t2.id, t2.updated_at, mt.views, t2.created_at, t2.post_count ' +
+    'FROM threads t2 ' +
+    'LEFT JOIN metadata.threads mt ON t2.id = mt.thread_id ' +
+    'WHERE t2.board_id = $1 AND t2.sticky = True AND t2.updated_at IS NOT NULL ' +
+    'ORDER BY ' + innerSortField + ' ' + opts.reversed + ' ' +
   ') tlist ' +
   'LEFT JOIN LATERAL ( ' + opts.q2 + ' ) t ON true ' +
   'LEFT JOIN LATERAL ( ' + opts.q3 + ' ) p ON true ' +
   'LEFT JOIN LATERAL ( ' + opts.q4 + ' ) tv ON true ' +
   'LEFT JOIN LATERAL ( ' + opts.q5 + ' ) pl ON true ' +
-  'ORDER BY tlist.created_at DESC';
+  'ORDER BY tlist.' + opts.sortField + ' ' + opts.sortOrder;
   return db.sqlQuery(query, [boardId, userId])
   .map(function(thread) { return common.formatThread(thread, userId); });
 };
