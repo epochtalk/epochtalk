@@ -7,6 +7,8 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.board = pageData.board;
     this.page = pageData.page; // this page
     this.limit = pageData.limit;
+    this.field = pageData.field;
+    this.desc = pageData.desc;
     this.threads = pageData.normal;
     this.stickyThreads = pageData.sticky;
 
@@ -14,6 +16,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.parent.loggedIn = Session.isAuthenticated;
     this.parent.board  = pageData.board;
     this.parent.page = pageData.page;
+    this.parent.queryParams = $location.search();
     this.parent.pageCount = Math.ceil((ctrl.board.thread_count - ctrl.board.sticky_thread_count) / ctrl.limit) || 1;
     // TODO: This will not be here once actual boards are stored in this array
     this.parent.bannedFromBoard = BanSvc.banStatus();
@@ -90,6 +93,40 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.threads.forEach(threadPageCount);
     this.stickyThreads.forEach(threadPageCount);
 
+    this.setSortField = function(sortField) {
+      // Sort Field hasn't changed just toggle desc
+      var unchanged = sortField === ctrl.field || (sortField === 'username' && !ctrl.field);
+      if (unchanged) { ctrl.desc = ctrl.desc ? 'false' : 'true'; } // bool to str
+      // Sort Field changed default to ascending order
+      else { ctrl.desc = 'false'; }
+      ctrl.field = sortField;
+      ctrl.page = 1;
+      ctrl.parent.page = 1;
+      $location.search('page', ctrl.page);
+      $location.search('desc', ctrl.desc);
+      $location.search('field', sortField);
+
+      // Update queryParams (forces pagination to refresh)
+      ctrl.parent.queryParams = $location.search();
+    };
+
+    this.getSortClass = function(sortField) {
+      var sortClass;
+      var desc = ctrl.desc;
+      // Username is sorted asc by default
+      if (sortField === 'username' && !ctrl.field && !desc) {
+        sortClass = 'fa fa-sort-asc';
+      }
+      else if (ctrl.field === sortField && desc) {
+        sortClass = 'fa fa-sort-desc';
+      }
+      else if (ctrl.field === sortField && !desc) {
+        sortClass = 'fa fa-sort-asc';
+      }
+      else { sortClass = 'fa fa-sort'; }
+      return sortClass;
+    };
+
     // Scroll fix for nested state
     $timeout($anchorScroll);
 
@@ -97,8 +134,12 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       var params = $location.search();
       var page = Number(params.page) || 1;
       var limit = Number(params.limit);
+      var field = params.field;
+      var descending = params.desc === 'true';
       var pageChanged = false;
       var limitChanged = false;
+      var fieldChanged = false;
+      var descChanged = false;
 
       if (page && page !== ctrl.page) {
         pageChanged = true;
@@ -109,8 +150,15 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
         limitChanged = true;
         ctrl.limit = limit;
       }
-
-      if(pageChanged || limitChanged) { ctrl.pullPage(); }
+      if (field && field !== ctrl.field) {
+        fieldChanged = true;
+        ctrl.field = field;
+      }
+      if (descending !== ctrl.desc) {
+        descChanged = true;
+        ctrl.desc = descending;
+      }
+      if(pageChanged || limitChanged || fieldChanged || descChanged) { ctrl.pullPage(); }
     });
     $scope.$on('$destroy', function() { ctrl.offLCS(); });
 
@@ -118,13 +166,19 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       var query = {
         board_id: ctrl.board.id,
         page: ctrl.page,
-        limit: ctrl.limit
+        limit: ctrl.limit,
+        desc: ctrl.desc,
+        field: ctrl.field
       };
 
       // replace current threads with new threads
       Threads.byBoard(query).$promise
       .then(function(pageData) {
         ctrl.parent.pageCount = Math.ceil((pageData.board.thread_count - pageData.board.sticky_thread_count) / ctrl.limit) || 1;
+        ctrl.page = pageData.page;
+        ctrl.limit = pageData.limit;
+        ctrl.field = pageData.field;
+        ctrl.desc = pageData.desc;
         ctrl.threads = pageData.normal;
         ctrl.stickyThreads = pageData.sticky;
         ctrl.threads.forEach(threadPageCount);

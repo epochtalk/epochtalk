@@ -92,7 +92,9 @@ module.exports = {
       query: Joi.object({
         board_id: Joi.string().required(),
         page: Joi.number().default(1),
-        limit: Joi.number().integer().min(1).max(100).default(25)
+        field: Joi.string().trim().valid('views', 'created_at', 'updated_at', 'post_count'),
+        limit: Joi.number().integer().min(1).max(100).default(25),
+        desc: Joi.boolean().default(true)
       })
     },
     pre: [
@@ -118,7 +120,9 @@ function processing(request) {
   var boardId = request.query.board_id;
   var opts = {
     limit: request.query.limit,
-    page: request.query.page
+    page: request.query.page,
+    sortField: request.query.field,
+    desc: request.query.desc
   };
 
   var getWriteAccess = request.db.boards.getBoardWriteAccess(boardId, userPriority);
@@ -134,6 +138,8 @@ function processing(request) {
       write_access: writeAccess,
       page: request.query.page,
       limit: request.query.limit, // limit can be modified by query
+      field: request.query.field,
+      desc: request.query.desc,
       normal: threads.normal,
       sticky: threads.sticky
     };
