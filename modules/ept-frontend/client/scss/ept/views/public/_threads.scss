@@ -24,11 +24,11 @@
       @include clearfix;
       @include pad(0 0 1rem 0);
       .info {
-        @include span-columns(7);
+        @include span-columns(8.25);
         .description { font-size: 0.875rem; }
       }
-      .view-count { @include span-columns(2); @include info-text; }
-      .last-post { @include span-columns(3); @include omega; @include info-text;}
+      .view-count { @include span-columns(1.25); @include info-text; }
+      .last-post { @include span-columns(1.5); @include omega; @include info-text;}
     }
   }
   .threads-header {
