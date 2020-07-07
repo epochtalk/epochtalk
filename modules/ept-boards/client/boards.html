@@ -91,7 +91,7 @@
               <a ui-sref="threads.data({ boardId: board.id })" class="board-name" ng-bind-html="board.name"></a>
             </h2>
             <!-- Board Description -->
-            <div class="description" ng-bind-html="::board.description"></div>
+            <div class="description" ng-if="board.description.length > 0" ng-bind-html="::board.description"></div>
             <!-- Moderators -->
             <div class="moderators" ng-if="board.moderators.length > 0">
               <span class="label">Moderators: </span>
