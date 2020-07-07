@@ -34,8 +34,8 @@
   .threads-header {
     .mobile-header { display: none; }
     .subject { @include span-columns(7); }
-    .replies, .views { @include span-columns(1); text-align: center; }
-    .last-reply, .actions { @include span-columns(3); @include omega; }
+    .replies, .views { @include span-columns(1.25); text-align: center; }
+    .last-reply, .actions { @include span-columns(2.5); @include omega; }
   }
   .threads-data {
     @include clearfix;
@@ -56,8 +56,8 @@
       .started-by, .pages { font-size: 0.875rem; }
       .mobile-stats { @include info-text; display: none; }
     }
-    .replies, .views { @include span-columns(1); @include info-text; text-align: center; }
-    .last-reply, .actions { @include span-columns(3); @include omega; @include info-text; }
+    .replies, .views { @include span-columns(1.25); @include info-text; text-align: center; }
+    .last-reply, .actions { @include span-columns(2.5); @include omega; @include info-text; }
   }
   .threads-data.compact {
     @include clearfix;
