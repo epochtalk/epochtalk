@@ -101,6 +101,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       else { ctrl.desc = 'false'; }
       ctrl.field = sortField;
       ctrl.page = 1;
+      ctrl.parent.page = 1;
       $location.search('page', ctrl.page);
       $location.search('desc', ctrl.desc);
       $location.search('field', sortField);
