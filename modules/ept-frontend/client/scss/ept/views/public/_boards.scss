@@ -293,9 +293,11 @@
         font-size: $font-size-sm;
         line-height: 1;
         margin-bottom: 0.5rem;
+      }
 
-        a {
-
+      .childboards {
+        .board-name {
+          font-weight: 600;
         }
       }
 
