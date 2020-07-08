@@ -34,7 +34,7 @@
 img.avatar-small {
   &.circle { @include border-radius(100px); }
   &.circle, &.rect {
-    border: 1px solid $border-color;
+    // border: 1px solid $border-color;
     opacity: 1;
     margin: 0 0.1rem;
     height: 1rem;
