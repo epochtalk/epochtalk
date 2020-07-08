@@ -3,13 +3,13 @@
 .threads-posted-in {
   main {
     #public-content {
-      grid-template-areas:  
+      grid-template-areas:
         "header header"
         "main sidebar"
         "main sidebar";
-      
+
       @include break-max-large {
-        grid-template-areas: 
+        grid-template-areas:
           "header header"
           "sidebar sidebar"
           "main main";
@@ -109,7 +109,7 @@
     .pagination-bottom {
       justify-self: end;
     }
-    
+
     @media screen and (max-width: 1280px) {
       padding: 0.75rem 1.5rem;
 
@@ -335,7 +335,7 @@
     tr {
       td, th {
         font-size: $base-font-size;
-        padding: 0; 
+        padding: 0;
         line-height: 20px;
       }
     }
@@ -399,7 +399,7 @@
   .thread-state {
     display: flex;
     align-items: center;
-    justify-content: flex-end; 
+    justify-content: flex-end;
     position: absolute;
     top: 0;
     left: -1.625rem;
@@ -523,7 +523,7 @@
 
     .views {
       &:after {
-        content: ' views'; 
+        content: ' views';
       }
     }
   }

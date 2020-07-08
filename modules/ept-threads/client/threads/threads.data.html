@@ -7,7 +7,7 @@
       <td class="board-name">
         <a ui-sref="threads.data({ boardId: childBoard.id })" class="board-name" ng-bind-html="childBoard.name"></a>
         <div class="description" ng-bind-html="childBoard.description"></div>
-        
+
         <div class="children" ng-if="childBoard.children.length > 0">
           <span class="label">Child Boards:</span>
           <span ng-repeat="child in childBoard.children">
@@ -52,14 +52,25 @@
     <tr>
       <th class="subject">Threads</th>
       <th class="views-replies">
-        <span>Replies</span>
-        <span>Views</span>
+        <span class="pointer" ng-click="ThreadsCtrl.setSortField('post_count')">
+          <span ng-class="ThreadsCtrl.getSortClass('post_count')"></span>&nbsp;
+          Replies
+        </span>
+        <span class="pointer" ng-click="ThreadsCtrl.setSortField('views')">
+          <span ng-class="ThreadsCtrl.getSortClass('views')"></span>&nbsp;
+          Views
+        </span>
       </th>
-      <th class="last-post">Last Post</th>
+      <th class="last-post">
+        <span class="pointer" ng-click="ThreadsCtrl.setSortField('updated_at')">
+          <span ng-class="ThreadsCtrl.getSortClass('updated_at')"></span>&nbsp;
+          Last Post
+        </span>
+      </th>
     </tr>
   </thead>
   <tbody>
-    
+
     <!-- Sticky Threads -->
     <tr class="threads-data sticky" ng-repeat="thread in ThreadsCtrl.stickyThreads track by thread.id">
       <td class="subject">
@@ -70,7 +81,7 @@
               <path
                 d="m12 14.52a3 3 0 0 0 -4.24 4.24l5.66 5.66-11.3 11.31-2.12 4.95 5-2.12 11.26-11.31 5.66 5.66a3 3 0 0 0 4.24-4.25z" />
               <path d="m17.46 9.23h16v12h-16z" transform="matrix(.70710678 -.70710678 .70710678 .70710678 -3.31 22.46)" /></svg>
-            
+
             <svg ng-if="thread.has_new_post" class="is-unread" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
               <title>icon__unread</title>
               <g id="icons">
@@ -94,7 +105,7 @@
             </span>
           </div>
         </div>
-        
+
         <div class="started-by">
           Started by
           <span ng-if="thread.user.deleted">deleted</span>
@@ -151,7 +162,7 @@
             </span>
           </div>
         </div>
-        
+
         <div class="started-by">
           Started by
           <span ng-if="thread.user.deleted">deleted</span>

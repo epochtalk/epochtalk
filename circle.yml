@@ -101,6 +101,26 @@ jobs:
       - run:
           command: npx semantic-release
           no_output_timeout: 20m
+      - run:
+          name: Get aws cli
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+              && unzip awscliv2.zip \
+              && sudo ./aws/install
+            fi
+      - run:
+          name: build docs
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              yarn run docs:build:all
+            fi
+      - run:
+          name: deploy docs
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              aws s3 sync docs/.vuepress/dist $DOCS_S3_URI --region $DOCS_S3_REGION --delete
+            fi
 
 orbs:
   slack: circleci/slack@3.4.2

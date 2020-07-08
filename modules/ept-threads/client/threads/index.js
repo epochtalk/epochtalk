@@ -11,7 +11,7 @@ var route = ['$stateProvider', function($stateProvider) {
     }
   })
   .state('threads.data', {
-    url: '/boards/{boardId}?limit&page',
+    url: '/boards/{boardId}?limit&page&field&desc',
     reloadOnSearch: false,
     views: {
       'data@threads': {
@@ -43,7 +43,9 @@ var route = ['$stateProvider', function($stateProvider) {
         var query = {
           board_id: $stateParams.boardId,
           limit: Number($stateParams.limit) || prefs.threads_per_page || 25,
-          page: Number($stateParams.page) || 1
+          page: Number($stateParams.page) || 1,
+          field: $stateParams.field,
+          desc: $stateParams.desc
         };
         return Threads.byBoard(query).$promise;
       }]

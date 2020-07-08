@@ -92,7 +92,7 @@ module.exports = {
       query: Joi.object({
         board_id: Joi.string().required(),
         page: Joi.number().default(1),
-        sort: Joi.string().trim().valid('views', 'created_at', 'updated_at', 'post_count'),
+        field: Joi.string().trim().valid('views', 'created_at', 'updated_at', 'post_count'),
         limit: Joi.number().integer().min(1).max(100).default(25),
         desc: Joi.boolean().default(true)
       })
@@ -121,7 +121,7 @@ function processing(request) {
   var opts = {
     limit: request.query.limit,
     page: request.query.page,
-    sortField: request.query.sort,
+    sortField: request.query.field,
     desc: request.query.desc
   };
 
@@ -138,6 +138,8 @@ function processing(request) {
       write_access: writeAccess,
       page: request.query.page,
       limit: request.query.limit, // limit can be modified by query
+      field: request.query.field,
+      desc: request.query.desc,
       normal: threads.normal,
       sticky: threads.sticky
     };
