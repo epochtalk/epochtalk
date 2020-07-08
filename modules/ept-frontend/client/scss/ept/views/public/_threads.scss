@@ -320,7 +320,7 @@
   display: grid;
   grid-template-columns: minmax(400px, 800px) minmax(100px, auto) minmax(200px, 400px);
   column-gap: 1.5rem;
-  row-gap: 1rem;
+  row-gap: 1.5rem;
 
   caption {
     display: none;
@@ -368,6 +368,10 @@
   .replies,
   .views,
   .last-post {
+    font-size: $font-size-sm;
+  }
+
+  .started-by {
     font-size: $font-size-sm;
   }
 
