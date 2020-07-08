@@ -437,14 +437,13 @@
   }
 
   .thread-title {
-    flex: 1 0 auto;
+    flex: 1 0 calc(100% - 36px);
     margin-bottom: 0;
     max-width: 100%;
   }
 
   .thread-state-secondary {
     display: flex;
-    align-items: center;
 
     .thread-state-locked,
     .thread-state-hasPoll {

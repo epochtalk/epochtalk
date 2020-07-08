@@ -76,18 +76,20 @@
       <td class="subject">
         <div class="title">
           <div class="thread-state">
-            <svg ng-if="thread.sticky" class="is-sticky" viewBox="0 0 40.68 40.68" xmlns="http://www.w3.org/2000/svg">
-              <path d="m40 9.92-9.24-9.19a2.5 2.5 0 0 0 -3.54 3.54l9.2 9.19a2.5 2.5 0 0 0 3.58-3.54z" />
-              <path
-                d="m12 14.52a3 3 0 0 0 -4.24 4.24l5.66 5.66-11.3 11.31-2.12 4.95 5-2.12 11.26-11.31 5.66 5.66a3 3 0 0 0 4.24-4.25z" />
-              <path d="m17.46 9.23h16v12h-16z" transform="matrix(.70710678 -.70710678 .70710678 .70710678 -3.31 22.46)" /></svg>
-
             <svg ng-if="thread.has_new_post" class="is-unread" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
               <title>icon__unread</title>
               <g id="icons">
                 <circle cx="16" cy="16" r="16" />
               </g>
             </svg>
+
+            <svg ng-if="thread.sticky" class="is-sticky" viewBox="0 0 40.68 40.68" xmlns="http://www.w3.org/2000/svg">
+              <path d="m40 9.92-9.24-9.19a2.5 2.5 0 0 0 -3.54 3.54l9.2 9.19a2.5 2.5 0 0 0 3.58-3.54z" />
+              <path
+                d="m12 14.52a3 3 0 0 0 -4.24 4.24l5.66 5.66-11.3 11.31-2.12 4.95 5-2.12 11.26-11.31 5.66 5.66a3 3 0 0 0 4.24-4.25z" />
+              <path d="m17.46 9.23h16v12h-16z" transform="matrix(.70710678 -.70710678 .70710678 .70710678 -3.31 22.46)" />
+            </svg>
+            
           </div>
           <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ threadId: thread.id })"
             ng-bind-html="thread.title"></a>
