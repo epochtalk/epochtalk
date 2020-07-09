@@ -44,6 +44,8 @@ function ($state, $stateParams, $location, Breadcrumbs) {
       delete routeParams.page;
       delete routeParams.start;
       delete routeParams.purged;
+      delete routeParams.field;
+      delete routeParams.desc;
 
       // Maps routeParams key to breadcrumb type
       var keyToType = {
