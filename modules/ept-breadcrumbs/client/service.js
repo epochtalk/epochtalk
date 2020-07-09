@@ -57,7 +57,7 @@ function ($state, $stateParams, $location, Breadcrumbs) {
 
       // matches, route is dynamic
       if (!isEmpty(matches)) {
-        var idKey = routeParamKeys.reverse()[0];
+        var idKey = routeParamKeys[0];
         Breadcrumbs.getBreadcrumbs({ id: routeParams[idKey], type: keyToType[idKey] },
         function(partialCrumbs) {
           breadcrumbs = breadcrumbs.concat(partialCrumbs);
