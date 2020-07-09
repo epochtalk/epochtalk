@@ -364,6 +364,10 @@
           font-weight: 400;
           text-transform: uppercase;
         }
+
+        &.last-post {
+          text-align: right;
+        }
       }
     }
   }
@@ -504,7 +508,10 @@
     tbody, thead {
       tr {
         td, th {
-          line-height: 18px;
+          border-bottom: 0;
+          line-height: 20px;
+          margin-bottom: 0;
+          padding-bottom: 0;;
         }
       }
     }
@@ -518,7 +525,9 @@
         margin-top: 0.5rem;
       }
       &:last-child {
-        margin-bottom: 1.5rem;
+        border-bottom: $border-trans;
+        margin-bottom: 1rem;
+        padding-bottom: 1.25rem;
       }
     }
 
