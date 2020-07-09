@@ -155,7 +155,7 @@ ad-viewer {
     @include transition(background-color 250ms ease-in);
     min-height: 11rem;
     // max-width: calc(#{$view-maxWidth} - #{$sidebarWidth} - 2rem);
-    border-bottom: $border;
+    border-bottom: $border-trans;
     padding: 1.5rem 0.5rem 2rem;
 
     &.highlighted {

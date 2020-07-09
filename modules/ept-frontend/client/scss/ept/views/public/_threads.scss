@@ -336,7 +336,7 @@
   thead, tbody {
     tr {
       td, th {
-        border-bottom: 1px solid rgba($border-color, .35);
+        border-bottom: $border-trans;
         font-size: $base-font-size;
         margin-bottom: 1rem;
         padding: 0;

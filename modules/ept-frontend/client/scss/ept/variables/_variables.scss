@@ -122,6 +122,7 @@ $footer-link-hover-color: $color-primary;
 
 // Borders (post color calculations)
 $border: 1px solid $border-color;
+$border-trans: 1px solid rgba($border-color, 0.35);
 $border-alt: 1px solid $border-color-alt;
 $border-quote: 2px solid rgba($border-color, 0.5);
 
