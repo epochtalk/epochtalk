@@ -319,8 +319,10 @@
 .threads-list {
   display: grid;
   grid-template-columns: minmax(400px, 800px) minmax(100px, auto) minmax(200px, 400px);
-  column-gap: 1.5rem;
-  row-gap: 1.5rem;
+  // column-gap: 1.5rem;
+  // row-gap: 1.5rem;
+  column-gap: 0;
+  row-gap: 0;
 
   caption {
     display: none;
@@ -334,9 +336,17 @@
   thead, tbody {
     tr {
       td, th {
+        border-bottom: 1px solid rgba($border-color, .35);
         font-size: $base-font-size;
+        margin-bottom: 1rem;
         padding: 0;
+        padding-bottom: 0.5rem;
+        padding-right: 1rem;
         line-height: 20px;
+
+        &:last-child {
+          padding-right: 0;
+        }
       }
     }
   }
@@ -353,6 +363,21 @@
           font-size: $font-size-xs;
           font-weight: 400;
           text-transform: uppercase;
+        }
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      td {
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+      }
+
+      &:last-child {
+        td {
+          border-color: transparent;
         }
       }
     }
