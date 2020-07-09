@@ -530,4 +530,31 @@
       }
     }
   }
+
+  .pointer {
+    .fa {
+      color: rgba($border-color, .5);
+      transition: color 150ms ease-in-out;
+    }
+
+    &:hover {
+      .fa {
+        color: rgba($border-color, 1);
+      }
+
+      .fa-sort-asc,
+      .fa-sort-desc {
+        color: $secondary-font-color;
+      }
+    }
+
+    .fa-sort-asc,
+    .fa-sort-desc {
+      color: $secondary-font-color;
+    } 
+  }
+
+  .do-sort {
+    padding-left: 0.125rem;
+  }
 }
