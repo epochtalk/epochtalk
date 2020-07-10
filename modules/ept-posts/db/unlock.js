@@ -28,6 +28,7 @@ module.exports = function(id) {
         delete post.metadata.locked_by_id;
         delete post.metadata.locked_by_priority;
         delete post.metadata.locked_by_username;
+        delete post.metadata.locked_at;
         var metadata = Object.keys(post.metadata).length ? post.metadata : null;
         q = 'UPDATE posts SET locked = FALSE, metadata = $1 WHERE id = $2';
         return client.query(q, [metadata, id]);
