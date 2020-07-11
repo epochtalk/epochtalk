@@ -491,7 +491,10 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
 
     this.lockPost = function(post) {
       Posts.lock({id: post.id}).$promise
-      .then(function() { post.locked = true; })
+      .then(function(dbPost) {
+        post.locked = true;
+        post.metadata = dbPost.metadata;
+      })
       .then(function() { Alert.success('Post Locked'); })
       .catch(function(e) {
         var msg = 'Failed to lock post';
