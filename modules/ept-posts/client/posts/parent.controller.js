@@ -508,7 +508,10 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
 
     this.unlockPost = function(post) {
       Posts.unlock({id: post.id}).$promise
-      .then(function() { post.locked = false; })
+      .then(function(dbPost) {
+        post.locked = false;
+        post.metadata = dbPost.metadata;
+      })
       .then(function() { Alert.success('Post Unlocked.'); })
       .catch(function(e) {
         var msg = 'Failed to unlock post';
