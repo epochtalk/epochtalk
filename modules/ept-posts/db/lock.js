@@ -30,13 +30,17 @@ module.exports = function(req) {
           var priority =  _.min(_.map(locker.roles, 'priority'))
           if (post.metadata) {
             post.metadata.locked_by_id = lockerId;
+            post.metadata.locked_by_username = locker.username;
             post.metadata.locked_by_priority = priority;
-            return post.metadata
+            post.metadata.locked_at = new Date();
+            return post.metadata;
           }
           else {
             return {
               locked_by_id: lockerId,
-              locked_by_priority: priority
+              locked_by_username: locker.username,
+              locked_by_priority: priority,
+              locked_at: new Date()
             };
           }
         });
