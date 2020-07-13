@@ -30,7 +30,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       {
         id: 4,
         value: 'post_count',
-        label: 'Posts'
+        label: 'Replies'
       }
     ];
     this.sortVal = this.sortItems[0];
@@ -207,13 +207,20 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.stickyThreads.forEach(threadPageCount);
 
     this.setSortField = function(sortField) {
-      if (!sortField) { sortField = ctrl.sortVal.value; }
+      console.log('A: SORT FIELD', sortField)
+      if (!sortField) {
+        sortField = ctrl.sortVal.value;
+        console.log('B: FIELD!!!!', ctrl.field);
+        console.log('B2: TEST', ctrl.field === sortField)
+      }
+      console.log('C: sortfield', sortField);
 
       // Sort Field hasn't changed just toggle desc
-      var unchanged = sortField === ctrl.field || (sortField === 'username' && !ctrl.field);
-      if (unchanged) { ctrl.desc = ctrl.desc ? 'false' : 'true'; } // bool to str
+      var unchanged = sortField === ctrl.field || (sortField === 'updated_at' && !ctrl.field);
+      console.log('D: unchanged', unchanged);
+      if (unchanged) { ctrl.desc = ctrl.desc  ? 'false' : 'true'; } // bool to str
       // Sort Field changed default to ascending order
-      else { ctrl.desc = 'false'; }
+      else { ctrl.desc = 'true'; }
       ctrl.field = sortField;
       ctrl.page = 1;
       ctrl.parent.page = 1;
@@ -228,9 +235,8 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.getSortClass = function(sortField) {
       var sortClass;
       var desc = ctrl.desc;
-      // Username is sorted asc by default
-      if (sortField === 'username' && !ctrl.field && !desc) {
-        sortClass = 'fa fa-sort-asc';
+      if (sortField === 'updated_at' && !ctrl.field && !desc) {
+        sortClass = 'fa fa-sort-desc';
       }
       else if (ctrl.field === sortField && desc) {
         sortClass = 'fa fa-sort-desc';
@@ -250,7 +256,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       var page = Number(params.page) || 1;
       var limit = Number(params.limit);
       var field = params.field;
-      var descending = params.desc === 'true';
+      var descending = params.desc === 'true' || params.desc === undefined;
       var pageChanged = false;
       var limitChanged = false;
       var fieldChanged = false;

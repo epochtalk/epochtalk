@@ -45,7 +45,7 @@
 </table>
 
 <!-- Mobile Sorting -->
-<div class="thread-sort">Sort <a href="">ascending</a> by
+<div class="thread-sort">Sort <a href="" ng-click="ThreadsCtrl.setSortField()">{{ ThreadsCtrl.desc === true ? 'descending' : 'ascending' }}</a> by
   <select ng-model="ThreadsCtrl.sortVal" name="select-thread-sort" class="select-clean" ng-options="s.label for s in ThreadsCtrl.sortItems" ng-change="ThreadsCtrl.setSortField()"></select>
 </div>
 
