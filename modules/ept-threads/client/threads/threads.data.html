@@ -46,12 +46,7 @@
 
 <!-- Mobile Sorting -->
 <div class="thread-sort">Sort <a href="">ascending</a> by
-  <select name="select-thread-sort" class="select-clean" id="">
-    <option value="Last Post">Last Post</option>
-    <option value="Created on">Created on</option>
-    <option value="Replies">Replies</option>
-    <option value="Views">Views</option>
-  </select>
+  <select ng-model="ThreadsCtrl.sortVal" name="select-thread-sort" class="select-clean" ng-options="s.label for s in ThreadsCtrl.sortItems" ng-change="ThreadsCtrl.setSortField()"></select>
 </div>
 
 <!-- Threads (table) -->

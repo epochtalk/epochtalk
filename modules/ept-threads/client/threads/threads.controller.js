@@ -11,7 +11,29 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.desc = pageData.desc;
     this.threads = pageData.normal;
     this.stickyThreads = pageData.sticky;
-
+    this.sortItems = [
+      {
+        id: 1,
+        value: 'updated_at',
+        label: 'Last Post'
+      },
+      {
+        id: 2,
+        value: 'created_at',
+        label: 'Created On'
+      },
+      {
+        id: 3,
+        value: 'views',
+        label: 'Views'
+      },
+      {
+        id: 4,
+        value: 'post_count',
+        label: 'Posts'
+      }
+    ];
+    this.sortVal = this.sortItems[0];
     this.parent = $scope.$parent.ThreadsWrapperCtrl;
     this.parent.loggedIn = Session.isAuthenticated;
     this.parent.board  = pageData.board;
@@ -185,6 +207,8 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
     this.stickyThreads.forEach(threadPageCount);
 
     this.setSortField = function(sortField) {
+      if (!sortField) { sortField = ctrl.sortVal.value; }
+
       // Sort Field hasn't changed just toggle desc
       var unchanged = sortField === ctrl.field || (sortField === 'username' && !ctrl.field);
       if (unchanged) { ctrl.desc = ctrl.desc ? 'false' : 'true'; } // bool to str
