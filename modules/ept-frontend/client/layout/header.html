@@ -60,7 +60,7 @@
           Epochtalk
         </a>
       </h1>
-  
+
       <!-- Login Section -->
       <ul class="signed-out" ng-if="!HeaderCtrl.loggedIn()">
         <li>
@@ -70,7 +70,7 @@
           <a id="login-link" ng-click="HeaderCtrl.showLogin = true">LOGIN</a>
         </li>
       </ul>
-  
+
       <!-- User Dropdown Mobile -->
       <ul ng-if="HeaderCtrl.loggedIn()" class="burger-icon">
         <div class="burger-notification show-mobile" ng-if="HeaderCtrl.notificationMessages() || HeaderCtrl.notificationMentions()"></div>
@@ -83,7 +83,7 @@
           </svg>
         </span>
       </ul>
-  
+
       <!-- User Dropdown -->
       <ul ng-if="HeaderCtrl.loggedIn()">
         <li ng-if="HeaderCtrl.hasPermission('posts.search.allow')" class="search" ng-init="HeaderCtrl.focusSearch = false" >
@@ -98,14 +98,14 @@
           <div ng-if="HeaderCtrl.hasPermission('users.pagePublic.allow')" class="tray-icon" ui-sref="user-search" ui-sref-opts="{ reload: true }" data-balloon="Member Search" data-balloon-pos="down">
             <i class="fa fa-users"></i>
           </div>
-  
+
           <mentions-tray></mentions-tray>
-  
+
           <div class="tray-icon" ui-sref="messages" ui-sref-opts="{ reload: true }" ng-click="HeaderCtrl.dismissNotifications({ type: 'message' })" data-balloon="Messages" data-balloon-pos="down">
             <i class="fa fa-envelope"></i>
             <div class="count" ng-if="HeaderCtrl.notificationMessages()" ng-bind-html="HeaderCtrl.notificationMessages()"></div>
           </div>
-  
+
           <!-- <div class="tray-icon">
             <i class="fa fa-globe"></i>
             <div class="count" ng-if="HeaderCtrl.notificationOther" ng-bind-html="HeaderCtrl.notificationOther"></div>
@@ -156,14 +156,15 @@
       </ul>
     </nav>
   </div>
-  
+
   <!-- Breadcrumbs -->
   <div id="breadcrumbs-wrap">
     <div id="breadcrumbs">
       <ul>
         <li ng-repeat="breadcrumb in HeaderCtrl.breadcrumbs()" ng-if="breadcrumb.label" ng-class="{ active: $last }">
-            <a ng-if="!$last && breadcrumb.state" title="{{breadcrumb.label}}" ui-sref="{{breadcrumb.state}}({{breadcrumb.opts}})" ui-sref-opts="{ reload: true }" ng-bind-html="breadcrumb.label | truncate:30"></a>
-            <span ng-if="$last || !breadcrumb.state" title="{{breadcrumb.label}}" ng-bind-html="breadcrumb.label | truncate:30"></span>
+          <a ng-if="!$last && breadcrumb.state" title="{{breadcrumb.label}}" ui-sref="{{breadcrumb.state}}({{breadcrumb.opts}})" ui-sref-opts="{ reload: true }" ng-bind-html="breadcrumb.label | truncate:30"></a>
+          <span ng-if="$last || !breadcrumb.state" title="{{breadcrumb.label}}" ng-bind-html="breadcrumb.label | truncate:30"></span>
+          <span ng-if="($last || !breadcrumb.state) && breadcrumb.opts.locked" title="Locked" class="breadcrumbs-locked"><strong>(locked)</strong></span>
         </li>
       </ul>
     </div>
