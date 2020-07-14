@@ -46,7 +46,18 @@ module.exports = function(objId, objType, request) {
         nextType = type.board;
         nextId = obj.board_id;
       }
-      return buildCrumbs(nextId, nextType, crumbs);
+      if (curType === type.thread) {
+        var q = 'SELECT locked FROM threads WHERE id = $1';
+        var threadId = helper.deslugify(id);
+        return db.scalar(q, [threadId])
+        .then(function(post) {
+          crumbs[0].opts.locked = post.locked;
+          return buildCrumbs(nextId, nextType, crumbs);
+        });
+      }
+      else {
+        return buildCrumbs(nextId, nextType, crumbs);
+      }
     });
   };
 
