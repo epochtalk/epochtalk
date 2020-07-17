@@ -19,6 +19,14 @@ var resource = ['$resource',
         method: 'GET',
         params: { username: '@username' }
       },
+      getPostDraft: {
+        url: '/api/posts/draft',
+        method: 'GET'
+      },
+      updatePostDraft: {
+        url: '/api/posts/draft',
+        method: 'PUT'
+      },
       pageStartedByUser: {
         url: '/api/posts/user/:username/started',
         method: 'GET',
