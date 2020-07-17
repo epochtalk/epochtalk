@@ -16,13 +16,13 @@ var path = require('path');
   */
 module.exports = {
   method: 'PUT',
-  path: '/api/posts/draft/update',
+  path: '/api/posts/draft',
   options: {
     app: { hook: 'posts.updatePostDraft' },
     auth: { strategy: 'jwt' },
     validate: {
       payload: Joi.object({
-        draft: Joi.string().min(1).max(64000).required()
+        draft: Joi.string().min(1).max(64000).required().allow(null)
       }),
     },
     pre: [
