@@ -4,16 +4,15 @@ var path = require('path');
 /**
   * @apiVersion 0.4.0
   * @apiGroup Posts
-  * @api {GET} /posts/drafts Find
+  * @api {GET} /posts/drafts Get Post Draft
   * @apiName GetPostDraft
   * @apiDescription Used to find a user's post draft.
   *
-  * @apiUse PostObjectSuccess
   * @apiSuccess {string} user_id The id of the user
   * @apiSuccess {string} draft The user's latest draft
   * @apiSuccess {timestamp} updated_at The updated at timestamp of the draft
   *
-  * @apiError (Error 500) InternalServerError There was an issue finding the post
+  * @apiError (Error 500) InternalServerError There was an issue finding the post draft
   */
 module.exports = {
   method: 'GET',
