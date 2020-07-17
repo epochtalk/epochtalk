@@ -7,7 +7,10 @@ var NotFoundError = errors.NotFoundError;
 
 module.exports = function(userId, draft) {
   userId = helper.deslugify(userId);
-  var q = 'WITH upsert AS (UPDATE posts.user_drafts SET draft = $2 WHERE user_id = $1 AND updated_at = now() RETURNING *) INSERT INTO posts.user_drafts (user_id, draft, updated_at) SELECT $1, $2, $3 WHERE NOT EXISTS (SELECT * FROM upsert)';
+  var q = 'INSERT INTO posts.user_drafts (user_id, draft, updated_at) VALUES ($1, $2, now()) ON CONFLICT (user_id) DO UPDATE SET draft = $2, updated_at = now() RETURNING *';
   return db.scalar(q, [userId, draft])
+  .then(function(data) {
+    return data;
+  })
   .then(helper.slugify);
 };
