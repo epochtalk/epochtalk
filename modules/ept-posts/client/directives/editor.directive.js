@@ -1,4 +1,4 @@
-var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeout, $window, $rootScope, $filter) {
+var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', function($timeout, $window, $rootScope, $filter, Posts) {
   return {
     restrict: 'E',
     scope: {
@@ -120,6 +120,7 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
           $scope.body = $scope.bodyHtml;
         }
         onChange();
+        saveDraft();
       };
 
       $scope.insertQuote = function(newQuote) {
@@ -155,6 +156,7 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
       // turns off page exit events
       $scope.exitEditor = function(value) {
         if (value === true) {
+          clearTimeout(draftTimeout);
           $window.onbeforeunload = undefined;
           if (destroyRouteBlocker) { destroyRouteBlocker(); }
         }
@@ -174,34 +176,26 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
 
       // -- Post Drafts
       $scope.draftStatus = '';
-
+      var draftTimeout;
       function saveDraft() {
-        console.log('Saving draft!');
+        console.log('Check draft');
         var rawText = $editor.val();
-        Posts.updatePostDraft({ draft: rawText }).$promise
-        .then(function(draft) {
-          $scope.draftStatus = 'Draft saved!';
-          console.log('Saving draft success!');
-
-          setTimeout(function() { $scope.draftStatus = ''; }, 3000);
-          return draft;
-        })
-        .catch(function(err) {
-          console.log(err);
-          $scope.draftStatus = 'Error saving draft!';
-          setTimeout(function() { $scope.draftStatus = ''; }, 3000);
-        });
+        draftTimeout = setTimeout(function() { saveDraft(); }, 30000);
+        if (rawText.length) {
+          Posts.updatePostDraft({ draft: rawText }).$promise
+          .then(function(draft) {
+            $scope.draftStatus = 'Draft saved!';
+            console.log('Saving draft success!');
+            setTimeout(function() { $scope.draftStatus = ''; }, 3000);
+            return draft;
+          })
+          .catch(function(err) {
+            console.log(err);
+            $scope.draftStatus = 'Error saving draft!';
+            setTimeout(function() { $scope.draftStatus = ''; }, 3000);
+          });
+        }
       };
-
-      // debounce save on input (15000ms)
-      var debounceInput;
-      var onChangeSave = function() {
-        console.log('onChangeSave');
-        $timeout.cancel(debounceInput);
-        debounceInput = $timeout(function() { saveDraft(); }, 15000);
-      };
-      $editor.on('blur', onChangeSave);
-      $editor.on('input', onChangeSave);
     }
   };
 }];
