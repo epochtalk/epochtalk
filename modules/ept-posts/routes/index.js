@@ -7,6 +7,7 @@ module.exports = [
   require(path.normalize(__dirname + '/find')),
   require(path.normalize(__dirname + '/pageFirstPostByUser')),
   require(path.normalize(__dirname + '/getPostDraft')),
+  require(path.normalize(__dirname + '/updatePostDraft')),
   require(path.normalize(__dirname + '/lock')),
   require(path.normalize(__dirname + '/meta-byThread')),
   require(path.normalize(__dirname + '/pageByUser')),
