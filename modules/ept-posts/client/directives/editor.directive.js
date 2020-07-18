@@ -156,6 +156,7 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', functi
       // turns off page exit events
       $scope.exitEditor = function(value) {
         if (value === true) {
+          loadDraft();
           $window.onbeforeunload = undefined;
           if (destroyRouteBlocker) { destroyRouteBlocker(); }
         }
@@ -196,6 +197,15 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', functi
             setTimeout(function() { $scope.draftStatus = ''; }, 3000);
           });
         }
+      };
+
+      function loadDraft() {
+        Posts.getPostDraft().$promise
+        .then(function(data) {
+          if (data.draft && confirm("Load Draft?")) {
+            $editor.val(data.draft);
+          }
+        });
       };
     }
   };
