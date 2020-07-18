@@ -176,16 +176,17 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', functi
 
       // -- Post Drafts
       $scope.draftStatus = '';
+      var oldDraft;
+      var loadedDraft;
       var draftTimeout;
+
       function saveDraft() {
-        console.log('Check draft');
         var rawText = $editor.val();
         draftTimeout = setTimeout(function() { saveDraft(); }, 30000);
-        if (rawText.length) {
+        if (rawText.length && oldDraft !== rawText) {
           Posts.updatePostDraft({ draft: rawText }).$promise
           .then(function(draft) {
-            $scope.draftStatus = 'Draft saved!';
-            console.log('Saving draft success!');
+            oldDraft = rawText;
             setTimeout(function() { $scope.draftStatus = ''; }, 3000);
             return draft;
           })
