@@ -191,13 +191,13 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', functi
           .then(function(draft) {
             $scope.draftStatus = 'Draft saved...'
             oldDraft = rawText;
-            setTimeout(function() { $scope.draftStatus = ''; }, 3000);
+            $timeout(function() { $scope.draftStatus = ''; }, 5000);
             return draft;
           })
           .catch(function(err) {
             console.log(err);
             $scope.draftStatus = 'Error saving draft!';
-            setTimeout(function() { $scope.draftStatus = ''; }, 3000);
+            $timeout(function() { $scope.draftStatus = ''; }, 5000);
           });
         }
       };
