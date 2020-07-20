@@ -120,7 +120,10 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', functi
           $scope.body = $scope.bodyHtml;
         }
         onChange();
-        if ($scope.exitSwitch) { saveDraft(); }
+        if ($scope.exitSwitch && !$scope.body.length) {
+          loadDraft();
+          saveDraft();
+        }
       };
 
       $scope.insertQuote = function(newQuote) {
@@ -156,7 +159,6 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', functi
       // turns off page exit events
       $scope.exitEditor = function(value) {
         if (value === true) {
-          loadDraft();
           $window.onbeforeunload = undefined;
           if (destroyRouteBlocker) { destroyRouteBlocker(); }
         }
