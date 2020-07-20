@@ -189,6 +189,7 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', functi
         if (rawText.length && oldDraft !== rawText) {
           Posts.updatePostDraft({ draft: rawText }).$promise
           .then(function(draft) {
+            $scope.draftStatus = 'Draft saved...'
             oldDraft = rawText;
             setTimeout(function() { $scope.draftStatus = ''; }, 3000);
             return draft;
