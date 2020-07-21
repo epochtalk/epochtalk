@@ -1,6 +1,7 @@
 <div class="editor-header">
   <a ng-href="#" class="first" ng-class="{'selected': !preview }" tabindex="-1" ng-click="preview = false">Compose</a>
   <a ng-href="#" ng-class="{'selected': preview }" tabindex="-1" ng-click="preview = true">Preview</a>
+  <span>{{draftStatus}}</span>
 </div>
 
 <div class="editor-body" ng-init="preview = false;">

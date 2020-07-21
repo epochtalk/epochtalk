@@ -18,6 +18,8 @@ module.exports = {
   getPostsBoardInBoardMapping: require(path.normalize(__dirname + '/getPostsBoardInBoardMapping')),
   getBoardWriteAccess: require(path.normalize(__dirname + '/getBoardWriteAccess')),
   getThreadFirstPost: require(path.normalize(__dirname + '/getThreadFirstPost')),
+  getPostDraft: require(path.normalize(__dirname + '/getPostDraft')),
+  updatePostDraft: require(path.normalize(__dirname + '/updatePostDraft')),
   isPostsThreadModerated: require(path.normalize(__dirname + '/isPostsThreadModerated')),
   isPostsThreadOwner: require(path.normalize(__dirname + '/isPostsThreadOwner'))
 };

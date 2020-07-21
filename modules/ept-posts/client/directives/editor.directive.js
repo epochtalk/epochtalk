@@ -1,4 +1,4 @@
-var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeout, $window, $rootScope, $filter) {
+var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', function($timeout, $window, $rootScope, $filter, Posts) {
   return {
     restrict: 'E',
     scope: {
@@ -120,6 +120,10 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
           $scope.body = $scope.bodyHtml;
         }
         onChange();
+        if ($scope.exitSwitch && !$scope.body.length) {
+          loadDraft();
+          saveDraft();
+        }
       };
 
       $scope.insertQuote = function(newQuote) {
@@ -159,6 +163,7 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
           if (destroyRouteBlocker) { destroyRouteBlocker(); }
         }
         else if (value === false) {
+          clearTimeout(draftTimeout);
           $window.onbeforeunload = exitFunction;
           if (destroyRouteBlocker) { destroyRouteBlocker(); }
           destroyRouteBlocker = routeLeaveFunction();
@@ -171,6 +176,40 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', function($timeo
         $window.onbeforeunload = undefined;
         if (destroyRouteBlocker) { destroyRouteBlocker(); }
       });
+
+      // -- Post Drafts
+      $scope.draftStatus = '';
+      var oldDraft;
+      var loadedDraft;
+      var draftTimeout;
+
+      function saveDraft() {
+        var rawText = $editor.val();
+        draftTimeout = setTimeout(function() { saveDraft(); }, 30000);
+        if (rawText.length && oldDraft !== rawText) {
+          Posts.updatePostDraft({ draft: rawText }).$promise
+          .then(function(draft) {
+            $scope.draftStatus = 'Draft saved...'
+            oldDraft = rawText;
+            $timeout(function() { $scope.draftStatus = ''; }, 5000);
+            return draft;
+          })
+          .catch(function(err) {
+            console.log(err);
+            $scope.draftStatus = 'Error saving draft!';
+            $timeout(function() { $scope.draftStatus = ''; }, 5000);
+          });
+        }
+      };
+
+      function loadDraft() {
+        Posts.getPostDraft().$promise
+        .then(function(data) {
+          if (data.draft && confirm("Load Draft?")) {
+            $editor.val(data.draft);
+          }
+        });
+      };
     }
   };
 }];

@@ -404,6 +404,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
             delete params['threadId'];
             $location.search(params).hash(data.id);
             if (ctrl.page === lastPage) { ctrl.pullPage(); }
+            return Posts.updatePostDraft({ draft: null });
           }
           else if (type === 'update') {
             var filtered = ctrl.posts.filter(function(p) { return p.id === data.id; });
