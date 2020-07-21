@@ -2,8 +2,6 @@ var path = require('path');
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
 var helper = dbc.helper;
-var errors = dbc.errors;
-var NotFoundError = errors.NotFoundError;
 
 module.exports = function(userId, draft) {
   userId = helper.deslugify(userId);
