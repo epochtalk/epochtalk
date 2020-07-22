@@ -7,6 +7,7 @@ module.exports = {
             { text: 'Get Started', link: '/get-started/installation' },
             { text: 'Features', link: '/reference/features' },
             { text: 'API', link: '/reference/api-reference' },
+            { text: 'Design System', link: 'design-system' },
             { text: 'Github', link: 'https://github.com/epochtalk/epochtalk' },
         ],
         sidebar: [
@@ -28,7 +29,15 @@ module.exports = {
                     '/reference/contributions',
                     '/reference/license'
                 ]
-            }
+            },
+            { 
+                title: 'Design System',
+                collapsable: false,
+                sidebarDepth: 2,
+                children: [
+                    '/design-system/'
+                ]
+            }    
         ]
     }
 }
