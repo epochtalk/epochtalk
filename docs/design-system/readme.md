@@ -156,6 +156,6 @@ Text field labels will appear inside the field’s outline.
 
 ### Text field variations
 #### Plain text field (no label)
-![plain text field](./image.png)
+![test images](./img/field/text/empty@2x.png)
 
 This type of field is only used when a section header or other text functions as a label for a single field, so an embedded label is not necessary.
