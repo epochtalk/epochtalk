@@ -186,7 +186,7 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', 'Messa
 
       function saveDraft() {
         var rawText = $editor.val();
-        draftTimeout = setTimeout(function() { saveDraft(); }, 10000);
+        draftTimeout = setTimeout(function() { saveDraft(); }, 30000);
         if (rawText.length && oldDraft !== rawText) {
           var draftPromise = Posts.updatePostDraft;
           if ($scope.editorConvoMode) {
