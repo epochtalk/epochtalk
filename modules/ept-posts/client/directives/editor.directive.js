@@ -186,9 +186,13 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', 'Messa
 
       function saveDraft() {
         var rawText = $editor.val();
-        draftTimeout = setTimeout(function() { saveDraft(); }, 30000);
+        draftTimeout = setTimeout(function() { saveDraft(); }, 10000);
         if (rawText.length && oldDraft !== rawText) {
-          Posts.updatePostDraft({ draft: rawText }).$promise
+          var draftPromise = Posts.updatePostDraft;
+          if ($scope.editorConvoMode) {
+            draftPromise = Messages.updateMessageDraft;
+          }
+          draftPromise({ draft: rawText }).$promise
           .then(function(draft) {
             $scope.draftStatus = 'Draft saved...'
             oldDraft = rawText;
@@ -204,7 +208,11 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', 'Messa
       };
 
       function loadDraft() {
-        Posts.getPostDraft().$promise
+        var draftPromise = Posts.getPostDraft;
+        if ($scope.editorConvoMode) {
+          draftPromise = Messages.getMessageDraft;
+        }
+        draftPromise().$promise
         .then(function(data) {
           if (data.draft && confirm("Load Draft?")) {
             $editor.val(data.draft);
