@@ -1,4 +1,4 @@
-var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', function($timeout, $window, $rootScope, $filter, Posts) {
+var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', 'Messages', function($timeout, $window, $rootScope, $filter, Posts, Messages) {
   return {
     restrict: 'E',
     scope: {
@@ -9,7 +9,8 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', functi
       focusSwitch: '=',
       exitSwitch: '=',
       dirty: '=',
-      rightToLeft: '='
+      rightToLeft: '=',
+      editorConvoMode: '='
     },
     template: require('./editor.html'),
     controller: ['$scope', '$element', function($scope) {
