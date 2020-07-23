@@ -38,11 +38,11 @@ var messagesResource = ['$resource',
         method: 'GET',
         url: '/api/messages/settings'
       },
-      getPostDraft: {
+      getMessageDraft: {
         url: '/api/messages/draft',
         method: 'GET'
       },
-      updatePostDraft: {
+      updateMessageDraft: {
         url: '/api/messages/draft',
         method: 'PUT'
       },
