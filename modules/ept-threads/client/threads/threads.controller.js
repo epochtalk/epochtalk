@@ -97,7 +97,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       if (!ctrl.parent.thread.addPoll || !ctrl.parent.thread.pollValid) { delete ctrl.parent.thread.poll; }
 
       // create a new thread and post
-      Threads.save(ctrl.parent.thread).$promise
+      return Threads.save(ctrl.parent.thread).$promise
       .then(function(thread) { $location.path('/threads/' + thread.thread_id + '/posts'); })
       .catch(function(err) {
         var error = 'Could not create thread: ' + err.data.message;

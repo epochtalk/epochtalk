@@ -372,7 +372,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       if (post.id) { postPromise = Posts.update(post).$promise; }
       else { postPromise = Posts.save(post).$promise; }
 
-      postPromise.then(function(data) {
+      return postPromise.then(function(data) {
         if (type === 'create') {
           // Increment post count and recalculate ctrl.pageCount
           ctrl.thread.post_count++;

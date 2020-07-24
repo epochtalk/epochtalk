@@ -202,8 +202,11 @@ var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$
         $scope.showFormatting = false;
       };
 
-      function closeEditor() {
-        clearTimeout(draftTimeout);
+      $scope.closeEditor = function() {
+        if (draftTimeout) {
+          clearTimeout(draftTimeout);
+          draftTimeout = null;
+        }
         if ($scope.threadEditorMode) {
           $scope.thread = {
             title: '',
@@ -232,7 +235,7 @@ var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$
         $scope.dirty = false;
         $scope.showFormatting = false;
         $scope.showSwitch = false;
-      }
+      };
 
       $scope.loadEditor = function(focus) {
         if (discardAlert()) {
@@ -265,7 +268,7 @@ var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$
       };
 
       $scope.cancel = function() {
-        if (discardAlert()) { closeEditor(); }
+        if (discardAlert()) { $scope.closeEditor(); }
       };
 
 
