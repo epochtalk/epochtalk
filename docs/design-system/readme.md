@@ -1,5 +1,6 @@
 ---
 title: Epochtalk Design System
+sidebarDepth: 1
 ---
 
 <a name="top"></a>
@@ -10,7 +11,7 @@ The Epochtalk Design System provides a set of product design principles and guid
 We are starting the system with documentation and guidelines for all interface elements in the new Epochtalk experience. Future iterations of the system will include working code and design resources.
 
 # Core
-The smallest components of the design system
+The smallest building blocks of the design system.
 
 ## Colors
 Colors were chosen to emphasize actionable elements, while allowing the forum content to remain highly visible–since text and images are the most important elements on a discussion forum. 
@@ -255,8 +256,11 @@ Rows can have actions associated with them (delete, edit, etc). Actions will app
 
 
 ## Tooltips
+<video width="349" height="150" autoplay loop muted>
+  <source src="./img/ux/tooltip.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video> 
 
-![Tooltips](./img/ux/tooltip.png)
 Tooltips are small text overlays that help users understand the context of a field, button or other element of the interface. Tooltips appear when the user hovers over the “i” icon next to an element.
 
 
@@ -283,7 +287,7 @@ Drag rows are a special type of table row that allows data to be rearranged by c
 Organisms are larger elements formed by assembling the atoms and molecules.
 
 ## Navigation / menu bar
-![Navigation Bar with badge](./img/nav/admin/vert-moderation@2x.png)
+![Navigation Bar with badge](./img/nav/admin/examples@2x.png)
 
 The Navigation Bar is a persistent vertical bar that appears  along the primary edge of a set of views. The bar contains the main navigation actions for the views. The Navigation Bar is fixed along the primary edge, remaining in the same position across all views, regardless of where the user has scrolled. This allows the user to easily navigate to each view.
 
@@ -324,12 +328,19 @@ The Pagination Controls are pinned to the bottom of the view so they are always 
 
 
 ## Cards
-![Cards](./img/components/cards.png)
+<video width="667" height="388" autoplay loop muted>
+  <source src="./img/components/cards.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video> 
+
 Cards group several info and interaction elements into a single, easy-to-scan element. Cards provide higher visibility to their content, making them good for elements that are new or important to the user.
 
 
 ## Collapsible tables / lists
-![Collapsible tables / lists](./img/components/collapsibleList.png)
+<video width="786" height="386" autoplay loop muted>
+  <source src="./img/components/collapsibleList.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video> 
 
 Collapsible lists allow users to condense long lists of elements. If some elements are less important to the user, they can choose to collapse them, reducing the number of items the user must look through while remaining easily accessible if needed.
 
@@ -389,6 +400,7 @@ Page have several layout variations:
 
 ## Admin Views
 * Moderation
+* Management
 * Settings
 
 
