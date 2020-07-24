@@ -47,7 +47,6 @@ var route = ['$stateProvider', function($stateProvider) {
           field: $stateParams.field,
           desc: $stateParams.desc
         };
-        console.log('QUERY PARAMS', query);
         return Threads.byBoard(query).$promise;
       }]
     }

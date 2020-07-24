@@ -41,7 +41,7 @@
           </div>
         </div>
         <div class="badge sticky" ng-if="PostsParentCtrl.thread.sticky">
-          <a ng-href="#" id="badge__stickyThread" 
+          <a ng-href="#" id="badge__stickyThread"
             ng-class="{'clicked' : PostsParentCtrl.thread.sticky }"
             ng-if="PostsParentCtrl.canSticky()"
             ng-click="PostsParentCtrl.updateThreadSticky()" class="badgeContents"
@@ -53,7 +53,7 @@
             </svg>
             Sticky
           </a>
-          <span id="badge__cannotStickyThread" 
+          <span id="badge__cannotStickyThread"
             ng-class="{'clicked' : PostsParentCtrl.thread.sticky }"
             ng-if="!PostsParentCtrl.canSticky()"
             class="badgeContents">

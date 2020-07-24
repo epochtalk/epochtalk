@@ -1,4 +1,4 @@
-var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$filter', function(User, $transitions, $timeout, $window, $rootScope, $filter) {
+var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$filter', 'Posts', 'Messages', function(User, $transitions, $timeout, $window, $rootScope, $filter, Posts, Messages) {
   return {
     restrict: 'E',
     scope: {
@@ -203,6 +203,7 @@ var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$
       };
 
       function closeEditor() {
+        clearTimeout(draftTimeout);
         if ($scope.threadEditorMode) {
           $scope.thread = {
             title: '',
@@ -251,6 +252,11 @@ var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$
             }
           }
 
+          if ($scope.showSwitch && !$scope.body.length) {
+            loadDraft();
+            saveDraft();
+          }
+
           $scope.resetEditor = true;
           $scope.showEditor = true;
           if (focus === false) { $scope.focusSwitch = false; }
@@ -269,6 +275,49 @@ var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$
         $scope.focusSwitch = false;
       };
 
+      // -- Post Drafts
+      $scope.draftStatus = '';
+      var oldDraft;
+      var loadedDraft;
+      var draftTimeout;
+
+      function saveDraft() {
+        var rawText = $editor.val();
+        draftTimeout = setTimeout(function() { saveDraft(); }, 10000);
+        if (rawText.length && oldDraft !== rawText) {
+          var draftPromise;
+          if ($scope.postEditorMode || $scope.threadEditorMode) {
+            draftPromise = Posts.updatePostDraft;
+          }
+          else { draftPromise = Messages.updateMessageDraft; }
+          draftPromise({ draft: rawText }).$promise
+          .then(function(draft) {
+            $scope.draftStatus = 'Draft saved...'
+            oldDraft = rawText;
+            $timeout(function() { $scope.draftStatus = ''; }, 5000);
+            return draft;
+          })
+          .catch(function(err) {
+            console.log(err);
+            $scope.draftStatus = 'Error saving draft!';
+            $timeout(function() { $scope.draftStatus = ''; }, 5000);
+          });
+        }
+      };
+
+      function loadDraft() {
+        var draftPromise;
+        if ($scope.postEditorMode || $scope.threadEditorMode) {
+          draftPromise = Posts.getPostDraft;
+        }
+        else { draftPromise = Messages.getMessageDraft; }
+        draftPromise().$promise
+        .then(function(data) {
+          if (data.draft && confirm("Load Draft?")) {
+            $editor.val(data.draft);
+          }
+        });
+      };
     }
   };
 }];
