@@ -1,4 +1,4 @@
-var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', function($timeout, $window, $rootScope, $filter, Posts) {
+var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', 'Messages', function($timeout, $window, $rootScope, $filter, Posts, Messages) {
   return {
     restrict: 'E',
     scope: {
@@ -9,7 +9,8 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', functi
       focusSwitch: '=',
       exitSwitch: '=',
       dirty: '=',
-      rightToLeft: '='
+      rightToLeft: '=',
+      editorConvoMode: '='
     },
     template: require('./editor.html'),
     controller: ['$scope', '$element', function($scope) {
@@ -187,7 +188,11 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', functi
         var rawText = $editor.val();
         draftTimeout = setTimeout(function() { saveDraft(); }, 30000);
         if (rawText.length && oldDraft !== rawText) {
-          Posts.updatePostDraft({ draft: rawText }).$promise
+          var draftPromise = Posts.updatePostDraft;
+          if ($scope.editorConvoMode) {
+            draftPromise = Messages.updateMessageDraft;
+          }
+          draftPromise({ draft: rawText }).$promise
           .then(function(draft) {
             $scope.draftStatus = 'Draft saved...'
             oldDraft = rawText;
@@ -203,7 +208,11 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', functi
       };
 
       function loadDraft() {
-        Posts.getPostDraft().$promise
+        var draftPromise = Posts.getPostDraft;
+        if ($scope.editorConvoMode) {
+          draftPromise = Messages.getMessageDraft;
+        }
+        draftPromise().$promise
         .then(function(data) {
           if (data.draft && confirm("Load Draft?")) {
             $editor.val(data.draft);

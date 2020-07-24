@@ -38,6 +38,14 @@ var messagesResource = ['$resource',
         method: 'GET',
         url: '/api/messages/settings'
       },
+      getMessageDraft: {
+        url: '/api/messages/draft',
+        method: 'GET'
+      },
+      updateMessageDraft: {
+        url: '/api/messages/draft',
+        method: 'PUT'
+      },
       pageIgnoredUsers: {
         method: 'GET',
         url: '/api/messages/ignored',

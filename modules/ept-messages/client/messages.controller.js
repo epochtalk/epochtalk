@@ -185,6 +185,7 @@ var ctrl = [
         savedMessage.sender_username = Session.user.username;
         Alert.success('New Conversation Started!');
         ctrl.loadRecentMessages();
+        return Messages.updateMessageDraft({ draft: null });
       })
       .then(function() {
         ctrl.receivers = [];
@@ -250,6 +251,7 @@ var ctrl = [
           message.viewed = true;
         });
         closeEditor();
+        return Messages.updateMessageDraft({ draft: null });
       })
       .catch(function(err) {
         var msg = 'Message could not be sent';

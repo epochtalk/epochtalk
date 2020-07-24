@@ -10,6 +10,8 @@ module.exports = [
   require(path.normalize(__dirname + '/ignoreUser')),
   require(path.normalize(__dirname + '/unignoreUser')),
   require(path.normalize(__dirname + '/getMessageSettings')),
+  require(path.normalize(__dirname + '/getMessageDraft')),
+  require(path.normalize(__dirname + '/updateMessageDraft')),
   require(path.normalize(__dirname + '/enableMessageEmails')),
   require(path.normalize(__dirname + '/enableNewbieMessages')),
   require(path.normalize(__dirname + '/pageIgnoredUsers'))

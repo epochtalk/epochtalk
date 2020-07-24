@@ -12,5 +12,7 @@ module.exports = {
   enableMessageEmails: require(path.normalize(__dirname + '/enableMessageEmails')),
   enableNewbieMessages: require(path.normalize(__dirname + '/enableNewbieMessages')),
   getMessageSettings: require(path.normalize(__dirname + '/getMessageSettings')),
+  getMessageDraft: require(path.normalize(__dirname + '/getMessageDraft')),
+  updateMessageDraft: require(path.normalize(__dirname + '/updateMessageDraft')),
   pageIgnoredUsers: require(path.normalize(__dirname + '/pageIgnoredUsers'))
 };
