@@ -1,4 +1,4 @@
-var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Threads', 'Alert', 'board', function($anchorScroll, $stateParams, $location, Session, Threads, Alert, board) {
+var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Threads', 'Posts', 'Alert', 'board', function($anchorScroll, $stateParams, $location, Session, Threads, Posts, Alert, board) {
     $anchorScroll();
     var ctrl = this;
     this.loggedIn = Session.isAuthenticated;
@@ -74,7 +74,10 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
 
       // create a new thread and post
       Threads.save(ctrl.thread).$promise
-      .then(function(thread) { $location.path('/threads/' + thread.thread_id + '/posts'); })
+      .then(function(thread) {
+        $location.path('/threads/' + thread.thread_id + '/posts');
+        return Posts.updatePostDraft({ draft: null });
+      })
       .catch(function(err) {
         ctrl.exitEditor = false;
         var error = 'Could not create thread: ' + err.data.message;
