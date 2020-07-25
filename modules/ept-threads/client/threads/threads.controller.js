@@ -1,5 +1,5 @@
-var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Alert', 'BanSvc', 'Session', 'Threads', 'Watchlist', 'PreferencesSvc', 'pageData',
-  function($rootScope, $scope, $anchorScroll, $location, $timeout, Alert, BanSvc, Session, Threads, Watchlist, PreferencesSvc, pageData) {
+var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Alert', 'BanSvc', 'Session', 'Threads', 'Posts', 'Watchlist', 'PreferencesSvc', 'pageData',
+  function($rootScope, $scope, $anchorScroll, $location, $timeout, Alert, BanSvc, Session, Threads, Posts, Watchlist, PreferencesSvc, pageData) {
     var ctrl = this;
     var prefs = PreferencesSvc.preferences;
     var ignoredBoards = prefs.ignored_boards || [];
@@ -98,7 +98,10 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
 
       // create a new thread and post
       return Threads.save(ctrl.parent.thread).$promise
-      .then(function(thread) { $location.path('/threads/' + thread.thread_id + '/posts'); })
+      .then(function(thread) {
+        $location.path('/threads/' + thread.thread_id + '/posts');
+        return Posts.updatePostDraft({ draft: null });
+      })
       .catch(function(err) {
         var error = 'Could not create thread: ' + err.data.message;
         if (err.status === 429) { error = 'New Thread Rate Limit Exceeded'; }
