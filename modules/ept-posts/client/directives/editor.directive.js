@@ -10,7 +10,8 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', 'Messa
       exitSwitch: '=',
       dirty: '=',
       rightToLeft: '=',
-      editorConvoMode: '='
+      editorConvoMode: '=',
+      threadEditorMode: '='
     },
     template: require('./editor.html'),
     controller: ['$scope', '$element', function($scope) {
@@ -121,7 +122,7 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', 'Messa
           $scope.body = $scope.bodyHtml;
         }
         onChange();
-        if ($scope.exitSwitch && !$scope.body.length) {
+        if ($scope.exitSwitch && !$scope.body.length || $scope.threadEditorMode) {
           loadDraft();
           saveDraft();
         }
@@ -160,11 +161,12 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', 'Messa
       // turns off page exit events
       $scope.exitEditor = function(value) {
         if (value === true) {
+          if ($scope.threadEditorMode) { clearTimeout(draftTimeout); }
           $window.onbeforeunload = undefined;
           if (destroyRouteBlocker) { destroyRouteBlocker(); }
         }
         else if (value === false) {
-          clearTimeout(draftTimeout);
+          if (!$scope.threadEditorMode) { clearTimeout(draftTimeout); }
           $window.onbeforeunload = exitFunction;
           if (destroyRouteBlocker) { destroyRouteBlocker(); }
           destroyRouteBlocker = routeLeaveFunction();
