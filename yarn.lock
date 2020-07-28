@@ -1456,7 +1456,7 @@
   dependencies:
     nprogress "^0.2.0"
 
-"@vuepress/plugin-register-components@1.5.2":
+"@vuepress/plugin-register-components@1.5.2", "@vuepress/plugin-register-components@^1.5.2":
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/@vuepress/plugin-register-components/-/plugin-register-components-1.5.2.tgz#36a6807e523c17057bc3e9c0722bd26558f4dd1a"
   integrity sha512-e0GYZG6KXa7axy8GO9sNtLaZNW+lXlidWCURg61/gfKISG5yzKr71n75j5V7pyEJ/idAV/sAakunp7+6nsShDg==

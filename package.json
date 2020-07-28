@@ -102,6 +102,7 @@
   },
   "devDependencies": {
     "@goy/vuepress-plugin-svg-icons": "^4.2.0",
+    "@vuepress/plugin-register-components": "^1.5.2",
     "apidoc": "^0.23.0",
     "apidoc-markdown": "^5.1.4",
     "brototype": "0.0.6",

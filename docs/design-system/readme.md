@@ -6,7 +6,7 @@ sidebarDepth: 1
 <a name="top"></a>
 
 # Epochtalk Design System
-The Epochtalk Design System provides a set of product design principles and guidelines that help build a cohesive user experience. 
+The Epochtalk Design System provides a set of product design principles and guidelines that help build a cohesive user experience.
 
 We are starting the system with documentation and guidelines for all interface elements in the new Epochtalk experience. Future iterations of the system will include working code and design resources.
 
@@ -14,7 +14,7 @@ We are starting the system with documentation and guidelines for all interface e
 The smallest building blocks of the design system.
 
 ## Colors
-Colors were chosen to emphasize actionable elements, while allowing the forum content to remain highly visible–since text and images are the most important elements on a discussion forum. 
+Colors were chosen to emphasize actionable elements, while allowing the forum content to remain highly visible–since text and images are the most important elements on a discussion forum.
 
 The initial color theme for Epochtalk was chosen for maximum legibility. The white background with dark gray text allows for best readability. Orange is used at the primary highlight color to allow high visibility (contrast with the background and body text) without being obtrusive.
 
@@ -56,7 +56,7 @@ Font sizes were chosen to maintain legibility of the main content (post body), a
 | Extra small / caption text: | 12px (0.75rem) |
 
 ### Line Height
-Line height has been selected for increased information density. We selected this value to maintain legibility while allowing more text to be displayed in a given space. 
+Line height has been selected for increased information density. We selected this value to maintain legibility while allowing more text to be displayed in a given space.
 
 **Base line-height: 1.3**
 
@@ -81,205 +81,207 @@ The base icon size is 16px (equivalent to the body font size). Icons should be s
 
 Icons can be used in larger sizes when an action or state requires more emphasis.
 
-Epochtalk's icons are transitioning from a custom icon font to SVG. The SVG icons are more flexible, maintainable and faster  than the icon font (learn more about SVG icons). 
+Epochtalk's icons are transitioning from a custom icon font to SVG. The SVG icons are more flexible, maintainable and faster  than the icon font (learn more about SVG icons).
+
 
 Icons:
+<!--<IconGrid/>-->
 (insert icons here)
 <div class="grid icons">
   <div class="gridCell">
-    <img src="./img/icon/add.svg" alt="">
+    <img src="~@assets/img/icon/add.svg" alt="">
     Add
   </div>
   <div class="gridCell">
-    <img src="./img/icon/addFilled.svg" alt="">
+    <img src="~@assets/img/icon/addFilled.svg" alt="">
     Add (filled)
   </div>
   <div class="gridCell">
-    <img src="./img/icon/admin.svg" alt="">
+    <img src="~@assets/img/icon/admin.svg" alt="">
     Admin
   </div>
   <div class="gridCell">
-    <img src="./img/icon/adminCircle.svg" alt="">
+    <img src="~@assets/img/icon/adminCircle.svg" alt="">
     Admin (circle)
   </div>
   <div class="gridCell">
-    <img src="./img/icon/alarm.svg" alt="">
+    <img src="~@assets/img/icon/alarm.svg" alt="">
     Alarm
   </div>
   <div class="gridCell">
-    <img src="./img/icon/backCircle.svg" alt="">
+    <img src="~@assets/img/icon/backCircle.svg" alt="">
     Back
   </div>
   <div class="gridCell">
-    <img src="./img/icon/ban.svg" alt="">
+    <img src="~@assets/img/icon/ban.svg" alt="">
     Ban
   </div>
   <div class="gridCell">
-    <img src="./img/icon/caret.svg" alt="">
+    <img src="~@assets/img/icon/caret.svg" alt="">
     Caret
   </div>
   <div class="gridCell">
-    <img src="./img/icon/chart.svg" alt="">
+    <img src="~@assets/img/icon/chart.svg" alt="">
     Chart
   </div>
   <div class="gridCell">
-    <img src="./img/icon/close.svg" alt="">
+    <img src="~@assets/img/icon/close.svg" alt="">
     Close
   </div>
   <div class="gridCell">
-    <img src="./img/icon/close__circle.svg" alt="">
+    <img src="~@assets/img/icon/close__circle.svg" alt="">
     Close (circle)
   </div>
   <div class="gridCell">
-    <img src="./img/icon/completed.svg" alt="">
+    <img src="~@assets/img/icon/completed.svg" alt="">
     Completed
   </div>
   <div class="gridCell">
-    <img src="./img/icon/completedCircle.svg" alt="">
+    <img src="~@assets/img/icon/completedCircle.svg" alt="">
     Completed (circle)
   </div>
   <div class="gridCell">
-    <img src="./img/icon/delete.svg" alt="">
+    <img src="~@assets/img/icon/delete.svg" alt="">
     Delete
   </div>
   <div class="gridCell">
-    <img src="./img/icon/drag5.svg" alt="">
+    <img src="~@assets/img/icon/drag5.svg" alt="">
     Drag
   </div>
   <div class="gridCell">
-    <img src="./img/icon/edit.svg" alt="">
+    <img src="~@assets/img/icon/edit.svg" alt="">
     Edit
   </div>
   <div class="gridCell">
-    <img src="./img/icon/expand.svg" alt="">
+    <img src="~@assets/img/icon/expand.svg" alt="">
     Expand
   </div>
   <div class="gridCell">
-    <img src="./img/icon/expand.svg" alt="">
+    <img src="~@assets/img/icon/expand.svg" alt="">
     Expand
   </div>
   <div class="gridCell">
-    <img src="./img/icon/forward.svg" alt="">
+    <img src="~@assets/img/icon/forward.svg" alt="">
     Forward
   </div>
   <div class="gridCell">
-    <img src="./img/icon/heart.svg" alt="">
+    <img src="~@assets/img/icon/heart.svg" alt="">
     Like
   </div>
   <div class="gridCell">
-    <img src="./img/icon/help.svg" alt="">
+    <img src="~@assets/img/icon/help.svg" alt="">
     Help
   </div>
   <div class="gridCell">
-    <img src="./img/icon/help__circle.svg" alt="">
+    <img src="~@assets/img/icon/help__circle.svg" alt="">
     Help (circle)
   </div>
   <div class="gridCell">
-    <img src="./img/icon/hot.svg" alt="">
+    <img src="~@assets/img/icon/hot.svg" alt="">
     Hot
   </div>
   <div class="gridCell">
-    <img src="./img/icon/hotter.svg" alt="">
+    <img src="~@assets/img/icon/hotter.svg" alt="">
     Hotter
   </div>
   <div class="gridCell">
-    <img src="./img/icon/image__tall.svg" alt="">
+    <img src="~@assets/img/icon/image__tall.svg" alt="">
     Image
   </div>
   <div class="gridCell">
-    <img src="./img/icon/image__wide.svg" alt="">
+    <img src="~@assets/img/icon/image__wide.svg" alt="">
     Image (wide)
   </div>
   <div class="gridCell">
-    <img src="./img/icon/link.svg" alt="">
+    <img src="~@assets/img/icon/link.svg" alt="">
     Link
   </div>
   <div class="gridCell">
-    <img src="./img/icon/locked.svg" alt="">
+    <img src="~@assets/img/icon/locked.svg" alt="">
     Locked
   </div>
   <div class="gridCell">
-    <img src="./img/icon/mentions.svg" alt="">
+    <img src="~@assets/img/icon/mentions.svg" alt="">
     Mentions
   </div>
   <div class="gridCell">
-    <img src="./img/icon/message.svg" alt="">
+    <img src="~@assets/img/icon/message.svg" alt="">
     Message
   </div>
   <div class="gridCell">
-    <img src="./img/icon/minimize.svg" alt="">
+    <img src="~@assets/img/icon/minimize.svg" alt="">
     Minimize
   </div>
   <div class="gridCell">
-    <img src="./img/icon/moderator.svg" alt="">
+    <img src="~@assets/img/icon/moderator.svg" alt="">
     Moderator
   </div>
   <div class="gridCell">
-    <img src="./img/icon/pin.svg" alt="">
+    <img src="~@assets/img/icon/pin.svg" alt="">
     Pin
   </div>
   <div class="gridCell">
-    <img src="./img/icon/plusOne.svg" alt="">
+    <img src="~@assets/img/icon/plusOne.svg" alt="">
     Plus One
   </div>
   <div class="gridCell">
-    <img src="./img/icon/poll.svg" alt="">
+    <img src="~@assets/img/icon/poll.svg" alt="">
     Poll
   </div>
   <div class="gridCell">
-    <img src="./img/icon/quote.svg" alt="">
+    <img src="~@assets/img/icon/quote.svg" alt="">
     Quote
   </div>
   <div class="gridCell">
-    <img src="./img/icon/reset.svg" alt="">
+    <img src="~@assets/img/icon/reset.svg" alt="">
     Reset
   </div>
   <div class="gridCell">
-    <img src="./img/icon/return.svg" alt="">
+    <img src="~@assets/img/icon/return.svg" alt="">
     Return
   </div>
   <div class="gridCell">
-    <img src="./img/icon/search.svg" alt="">
+    <img src="~@assets/img/icon/search.svg" alt="">
     Search
   </div>
   <div class="gridCell">
-    <img src="./img/icon/searchMembers.svg" alt="">
+    <img src="~@assets/img/icon/searchMembers.svg" alt="">
     Search Members
   </div>
   <div class="gridCell">
-    <img src="./img/icon/settings.svg" alt="">
+    <img src="~@assets/img/icon/settings.svg" alt="">
     Settings
   </div>
   <div class="gridCell">
-    <img src="./img/icon/star.svg" alt="">
+    <img src="~@assets/img/icon/star.svg" alt="">
     Star
   </div>
   <div class="gridCell">
-    <img src="./img/icon/status.svg" alt="">
+    <img src="~@assets/img/icon/status.svg" alt="">
     Status
   </div>
   <div class="gridCell">
-    <img src="./img/icon/unlocked.svg" alt="">
+    <img src="~@assets/img/icon/unlocked.svg" alt="">
     Unlocked
   </div>
   <div class="gridCell">
-    <img src="./img/icon/unwatch.svg" alt="">
+    <img src="~@assets/img/icon/unwatch.svg" alt="">
     Unwatch
   </div>
   <div class="gridCell">
-    <img src="./img/icon/userStatusOnline.svg" alt="">
+    <img src="~@assets/img/icon/userStatusOnline.svg" alt="">
     User Online
   </div>
   <div class="gridCell">
-    <img src="./img/icon/verified.svg" alt="">
+    <img src="~@assets/img/icon/verified.svg" alt="">
     Verified
   </div>
   <div class="gridCell">
-    <img src="./img/icon/warning.svg" alt="">
+    <img src="~@assets/img/icon/warning.svg" alt="">
     Warning
   </div>
   <div class="gridCell">
-    <img src="./img/icon/watch.svg" alt="">
+    <img src="~@assets/img/icon/watch.svg" alt="">
     Watch
   </div>
 </div>
@@ -301,7 +303,7 @@ Collections of Atoms that create bigger components
 * Disabled
 
 ## Buttons
-Buttons are used to initiate actions. Buttons should clearly indicate the action that occurs when the user clicks them. Labels and icons should be used to communicate the button’s intended action. 
+Buttons are used to initiate actions. Buttons should clearly indicate the action that occurs when the user clicks them. Labels and icons should be used to communicate the button’s intended action.
 
 Text-only buttons are used most often since they clearly communicate their action. Icons can be added to text labels to improve recognition of buttons. See #icons for more information on the use of icons.
 
@@ -331,7 +333,7 @@ Badges are small text-based labels used to show states, status and roles. Exampl
 “Superadministrator” badge shown on users with advanced roles
 
 ## Avatars and User Details
-Avatars display a user’s chosen profile image. A default avatar is shown if the user has not uploaded their own image. 
+Avatars display a user’s chosen profile image. A default avatar is shown if the user has not uploaded their own image.
 
 Avatars are often accompanied by the user’s information. Examples include:
 
@@ -350,39 +352,39 @@ Labels help users identify fields. Labels can appear in various positions in the
 ### Text fields
 Text fields allow users to enter short text (as opposed to multi-line text fields which allow for long-form text entry).
 
-Text field labels will appear inside the field’s outline. 
+Text field labels will appear inside the field’s outline.
 
 
 ### Text field variations
 #### Plain text field (no label)
-![Plain text field (no label)](./img/field/text/empty@2x.png)
+![Plain text field (no label)](~@assets/img/field/text/empty@2x.png)
 
 This type of field is only used when a section header or other text functions as a label for a single field, so an embedded label is not necessary.
 
 #### Field with internal label
-![Field with internal label](./img/field/text/hasValue@2x.png)
+![Field with internal label](~@assets/img/field/text/hasValue@2x.png)
 
 This is the most commonly used text field. It includes a label placed within the outline of the field.
 
 #### Field with Caption
-![Field with caption](./img/field/text/captionInternal@2x.png)
+![Field with caption](~@assets/img/field/text/captionInternal@2x.png)
 
 This field includes additional informational text as a caption below the field. Some fields may require more than placeholder text and a label to communicate how the user should interact with the field.
 
 #### Field with internal Caption
-![Field with internal caption](./img/field/text/captionExternal@2x.png)
+![Field with internal caption](~@assets/img/field/text/captionExternal@2x.png)
 
-This field includes a caption inside the field. This type of field is used when the value needs qualifying data such as measurements, units, etc. 
+This field includes a caption inside the field. This type of field is used when the value needs qualifying data such as measurements, units, etc.
 
 Examples include: a field where the user enters weight (the caption will show “pounds” or “kilograms”), a field where the user enters a distance (the caption will show “feet”, “meters”, “kilometers”, etc).
 
 #### Field with icon
-![Field with icon](./img/field/text/iconInternal@2x.png)
+![Field with icon](~@assets/img/field/text/iconInternal@2x.png)
 
 This field includes an internal icon. The icon can be used to identify the field, but it is most often uses as an actionable button that will give the user more information–like a help icon that gives the user additional tips on what data to enter into the field.
 
 #### Field with color picker
-![Field with color picker](./img/field/text/colorPicker@2x.png)
+![Field with color picker](~@assets/img/field/text/colorPicker@2x.png)
 
 The Color Picker is a special text field that displays a color swatch along its right edge. This field allows users to enter a text value for color, or click the swatch to display a color picker modal.
 
@@ -391,22 +393,22 @@ The Color Picker is a special text field that displays a color swatch along its 
 Text fields can have many states, all of which have a distinct visual appearance:
 
 #### Placeholder
-![Placeholder](./img/field/text/placeholder@2x.png)
+![Placeholder](~@assets/img/field/text/placeholder@2x.png)
 
 No value has been entered into the field. The field displays helper text that guides the user to the proper action on the field.
 
 #### Active Field
-![Active field](./img/field/text/active@2x.png)
+![Active field](~@assets/img/field/text/active@2x.png)
 
 The user has placed focus on this field (by selecting it or entering text into the field). The outline and label color  helps users identify the field that will take their input.
 
 #### Field with Value
-![Field with value](./img/field/text/hasValue@2x.png)
+![Field with value](~@assets/img/field/text/hasValue@2x.png)
 
 Form fields with values entered by the user will show the value in a more prominent text color (to differentiate them from placeholder and error states).
 
 #### Field with Error
-![Field with error](./img/field/text/error@2x.png)
+![Field with error](~@assets/img/field/text/error@2x.png)
 
 Fields that have failed validation show an error state. The field’s label, outline and value will be shown in the error color (default error color is red).
 
@@ -414,29 +416,29 @@ Fields that have failed validation show an error state. The field’s label, out
 Multi-line text fields are variants of text fields that allow the user to enter long form text. Multi-line fields are generally taller than standard text fields, and can include a scrollbar on their secondary vertical edge (right edge on LTR languages).
 
 ### Dropdowns / Selection fields
-![Dropdown / Select field](./img/field/dropdown/hasValue@2x.png)
+![Dropdown / Select field](~@assets/img/field/dropdown/hasValue@2x.png)
 
 Dropdowns allow users to select from a predefined list of options. Dropdowns are useful when a large number of options are available to the user. Their appearance and states follow those shown in Text Fields.
 
 #### Dropdown States
-![Dropdown with no value](./img/field/dropdown/empty@2x.png)
-![Active Dropdown](./img/field/dropdown/active@2x.png)
-![Dropdown with caption](./img/field/dropdown/hasValueCaption@2x.png)
+![Dropdown with no value](~@assets/img/field/dropdown/empty@2x.png)
+![Active Dropdown](~@assets/img/field/dropdown/active@2x.png)
+![Dropdown with caption](~@assets/img/field/dropdown/hasValueCaption@2x.png)
 
 ### Radio buttons
-![Radio button](./img/control/radioButton__states@2x.png)
+![Radio button](~@assets/img/control/radioButton__states@2x.png)
 
 Radio buttons allow users to choose from a small number of predefined options. Radio buttons are used when a small number of options are available. They have the advantage of exposing all the options to the user (they do not require another click to expose the list of options)
 
 
 ### Checkboxes / Switches
-![Checkbox / Switch](./img/control/switch__example@2x.png)
+![Checkbox / Switch](~@assets/img/control/switch__example@2x.png)
 
-Checkboxes allow users to enable or disable a single option. Checkboxes in the Epochtalk Design System are rendered as “switches” 
+Checkboxes allow users to enable or disable a single option. Checkboxes in the Epochtalk Design System are rendered as “switches”
 
 
 ## Tables
-![Table screenshot](./img/table/example@2x.png)
+![Table screenshot](~@assets/img/table/example@2x.png)
 
 Tables are used to display larger data sets arranged in rows and columns. Tables consist of a title, column headers and data. A subtle horizontal line separates the header from the data.
 
@@ -444,36 +446,36 @@ To reduce visual clutter, white space is used to differentiate rows and columns 
 
 Tables can also have optional actions–like data filtering controls. These actions will appear in the right-edge of the table’s title.
 
-![Table actions](./img/table/tableActions@2x.png)
+![Table actions](~@assets/img/table/tableActions@2x.png)
 
 Columns can be sorted by clicking the column header.
 
 Rows can have actions associated with them (delete, edit, etc). Actions will appear in the right-most column of the row.
 
-![Row actions](./img/table/rowActions@2x.png)
+![Row actions](~@assets/img/table/rowActions@2x.png)
 
 
 ## Tooltips
 <video width="349" height="150" autoplay loop muted>
-  <source src="./img/ux/tooltip.mp4" type="video/mp4">
+  <source src="~@assets/img/ux/tooltip.mp4" type="video/mp4">
   Your browser does not support the video tag.
-</video> 
+</video>
 
 Tooltips are small text overlays that help users understand the context of a field, button or other element of the interface. Tooltips appear when the user hovers over the “i” icon next to an element.
 
 
 ## Action Bars (Button Groups)
 
-![Action Bars](./img/components/buttonGroup@2x.png)
+![Action Bars](~@assets/img/components/buttonGroup@2x.png)
 Action Bars organize actions by grouping related actions together. Action Bars consist of a primary action (button in Primary state) and one or more secondary actions.
 
 
 ## Draggable Rows
 
-![Draggable Rows](./img/table/dragControl@2x.png)
+![Draggable Rows](~@assets/img/table/dragControl@2x.png)
 Drag rows are a special type of table row that allows data to be rearranged by clicking and dragging. Rows can be dragged to change order and priority. Rows can also be dragged to change the nesting (parent-child relationship) of rows.
 
-![Draggable Indented Row](./img/table/dragControlIndent@2x.png)
+![Draggable Indented Row](~@assets/img/table/dragControlIndent@2x.png)
 
 
 ## Color Pickers
@@ -485,7 +487,7 @@ Drag rows are a special type of table row that allows data to be rearranged by c
 Organisms are larger elements formed by assembling the atoms and molecules.
 
 ## Navigation / menu bar
-![Navigation Bar with badge](./img/nav/admin/examples@2x.png)
+![Navigation Bar with badge](~@assets/img/nav/admin/examples@2x.png)
 
 The Navigation Bar is a persistent vertical bar that appears  along the primary edge of a set of views. The bar contains the main navigation actions for the views. The Navigation Bar is fixed along the primary edge, remaining in the same position across all views, regardless of where the user has scrolled. This allows the user to easily navigate to each view.
 
@@ -495,19 +497,19 @@ Icons can also show badges. The example above shows a badge representing the cou
 
 
 ## Panels
-![Panel example](./img/panel/thin@2x.png)
-![Panel example with actions](./img/panel/hasActions@2x.png)
+![Panel example](~@assets/img/panel/thin@2x.png)
+![Panel example with actions](~@assets/img/panel/hasActions@2x.png)
 
 Panels are layout elements that contain interface elements. Panels can be used to group similar form fields, or a large table.
 
-Panels consist of 
+Panels consist of
 * the header with the panel’s title
 * panel actions area which contains any actions that pertain to all the elements in the panel
 * the panel body
 
 
 ## Modals
-![Modal example](./img/components/modal__rolePermissions@2x.png)
+![Modal example](~@assets/img/components/modal__rolePermissions@2x.png)
 
 Modals are element containers that appear over the main views. Modals block interactions with the view behind the modal–users must finish using the modal and close it before interacting with the view in the background.
 
@@ -519,7 +521,7 @@ Modals can be simple message dialogs or complex groups of controls. All modals i
 
 
 ## Pagination Controls
-![Pagination Controls](./img/components/paginationControls.png)
+![Pagination Controls](~@assets/img/components/paginationControls.png)
 Pagination Controls allow the user to navigate through long threads. The Threads view’s default setting shows 25 replies per page. The Pagination Controls at the bottom of the view allow users to easily go to the next (or previous) page to view the more replies. Users can also jump directly to a specific page number.
 
 The Pagination Controls are pinned to the bottom of the view so they are always easily accessible.
@@ -527,28 +529,28 @@ The Pagination Controls are pinned to the bottom of the view so they are always 
 
 ## Cards
 <video width="667" height="388" autoplay loop muted>
-  <source src="./img/components/cards.mp4" type="video/mp4">
+  <source src="~@assets/img/components/cards.mp4" type="video/mp4">
   Your browser does not support the video tag.
-</video> 
+</video>
 
 Cards group several info and interaction elements into a single, easy-to-scan element. Cards provide higher visibility to their content, making them good for elements that are new or important to the user.
 
 
 ## Collapsible tables / lists
 <video width="786" height="386" autoplay loop muted>
-  <source src="./img/components/collapsibleList.mp4" type="video/mp4">
+  <source src="~@assets/img/components/collapsibleList.mp4" type="video/mp4">
   Your browser does not support the video tag.
-</video> 
+</video>
 
 Collapsible lists allow users to condense long lists of elements. If some elements are less important to the user, they can choose to collapse them, reducing the number of items the user must look through while remaining easily accessible if needed.
 
 
 ## Error Message Bar
-Error and warning messages are displayed in a bar at the bottom of the header. Along with the header, the Error Message Bar slides away when the user scrolls down, and reappears in the fixed position at the top of the view when the user scrolls up. This ensures that the error messages are easily visible. 
+Error and warning messages are displayed in a bar at the bottom of the header. Along with the header, the Error Message Bar slides away when the user scrolls down, and reappears in the fixed position at the top of the view when the user scrolls up. This ensures that the error messages are easily visible.
 
 
 ## Post Editor
-![Post Editor](./img/components/postEditor.png)
+![Post Editor](~@assets/img/components/postEditor.png)
 
 The Post Editor allows users to compose posts and replies. The Post Editor is opened by clicking the “Post Reply” button in the Actions Bar at the bottom of the Threads view.
 
@@ -563,10 +565,10 @@ Users can still interact with the Threads view behind the editor. This allows us
 
 
 ## Polls
-![Polls](./img/components/poll@2x.png)
+![Polls](~@assets/img/components/poll@2x.png)
 
-Polls can be added to Threads to get feedback from users. Polls appear along the right edge of the Threads view, below the actions bar. By default, 
-* A user can select 1 answer 
+Polls can be added to Threads to get feedback from users. Polls appear along the right edge of the Threads view, below the actions bar. By default,
+* A user can select 1 answer
 * The Poll component shows the current results after voting
 * Users cannot change their answer
 
@@ -574,7 +576,7 @@ All of the default settings can be changed by the poll creator.
 
 
 ### Poll Editor
-![Poll Editor](./img/components/pollEditor.png)
+![Poll Editor](~@assets/img/components/pollEditor.png)
 
 When a poll is created or edited, the user has the following options:
 

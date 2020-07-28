@@ -1,13 +1,16 @@
+var path = require('path');
+
 module.exports = {
     title: 'Epochtalk Documentation', // Title of the website
     // appears in the meta tag and as a subtitle
     description: "Next generation forum software",
-    plugins: [
-        // '@goy/svg-icons',
-        // {
-        //     svgDirs: 'design-system/img/icon',
-        // }
-    ],
+    configureWebpack: {
+        resolve: {
+            alias: {
+             "@assets": path.resolve(__dirname, '../assets')
+            }
+        }
+    },
     themeConfig: {
         nav: [
             { text: 'Get Started', link: '/get-started/installation' },
@@ -36,14 +39,14 @@ module.exports = {
                     '/reference/license'
                 ]
             },
-            { 
+            {
                 title: 'Design System',
                 collapsable: false,
                 sidebarDepth: 2,
                 children: [
                     '/design-system/'
                 ]
-            }    
+            }
         ]
     }
 }
