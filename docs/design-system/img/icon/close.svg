@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+  <defs>
+    <polygon id="close-a" points="12.721 5.179 11.542 4 8.36 7.182 5.179 4 4 5.179 7.182 8.361 4 11.543 5.179 12.721 8.36 9.539 11.542 12.721 12.721 11.543 9.539 8.361"/>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <mask id="close-b" fill="#fff">
+      <use xlink:href="#close-a"/>
+    </mask>
+    <g fill="#222" mask="url(#close-b)">
+      <rect width="16" height="16"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+  <defs>
+    <polygon id="completed-a" points="6.153 12.204 2 8.052 3.179 6.873 6.153 9.847 12 4 13.179 5.178"/>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <mask id="completed-b" fill="#fff">
+      <use xlink:href="#completed-a"/>
+    </mask>
+    <g fill="#222" mask="url(#completed-b)">
+      <rect width="16" height="16"/>
+    </g>
+  </g>
+</svg>

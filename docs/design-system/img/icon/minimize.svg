@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+  <defs>
+    <path id="minimize-a" d="M13.25,8.5 L2.75,8.5 C2.336,8.5 2,8.164 2,7.75 C2,7.336 2.336,7 2.75,7 L13.25,7 C13.664,7 14,7.336 14,7.75 C14,8.164 13.664,8.5 13.25,8.5"/>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <mask id="minimize-b" fill="#fff">
+      <use xlink:href="#minimize-a"/>
+    </mask>
+    <g fill="#222" mask="url(#minimize-b)">
+      <rect width="16" height="16"/>
+    </g>
+  </g>
+</svg>

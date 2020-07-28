@@ -72,7 +72,7 @@ Quoted text is indented from the starting edge of the content (left edge on left
 
 
 ## Icons
-Icons are used to help users complete their tasks. They help users identify available actions or the current states of an element .
+Icons help users complete their tasks. They represent available actions or the current states of an element .
 
 Icon forms should be simple and easy to understand. Avoid abstract icons. Avoid using ambiguous (or counterintuitive) icons. For clarity, icons should be paired with text whenever possible.
 
@@ -81,10 +81,208 @@ The base icon size is 16px (equivalent to the body font size). Icons should be s
 
 Icons can be used in larger sizes when an action or state requires more emphasis.
 
-Icons are transitioning from a custom icon font to SVG. The SVG icons are more flexible, maintainable and faster  than the icon font (learn more about SVG icons). 
+Epochtalk's icons are transitioning from a custom icon font to SVG. The SVG icons are more flexible, maintainable and faster  than the icon font (learn more about SVG icons). 
 
 Icons:
 (insert icons here)
+<div class="grid icons">
+  <div class="gridCell">
+    <img src="./img/icon/add.svg" alt="">
+    Add
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/addFilled.svg" alt="">
+    Add (filled)
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/admin.svg" alt="">
+    Admin
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/adminCircle.svg" alt="">
+    Admin (circle)
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/alarm.svg" alt="">
+    Alarm
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/backCircle.svg" alt="">
+    Back
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/ban.svg" alt="">
+    Ban
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/caret.svg" alt="">
+    Caret
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/chart.svg" alt="">
+    Chart
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/close.svg" alt="">
+    Close
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/close__circle.svg" alt="">
+    Close (circle)
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/completed.svg" alt="">
+    Completed
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/completedCircle.svg" alt="">
+    Completed (circle)
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/delete.svg" alt="">
+    Delete
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/drag5.svg" alt="">
+    Drag
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/edit.svg" alt="">
+    Edit
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/expand.svg" alt="">
+    Expand
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/expand.svg" alt="">
+    Expand
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/forward.svg" alt="">
+    Forward
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/heart.svg" alt="">
+    Like
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/help.svg" alt="">
+    Help
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/help__circle.svg" alt="">
+    Help (circle)
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/hot.svg" alt="">
+    Hot
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/hotter.svg" alt="">
+    Hotter
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/image__tall.svg" alt="">
+    Image
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/image__wide.svg" alt="">
+    Image (wide)
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/link.svg" alt="">
+    Link
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/locked.svg" alt="">
+    Locked
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/mentions.svg" alt="">
+    Mentions
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/message.svg" alt="">
+    Message
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/minimize.svg" alt="">
+    Minimize
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/moderator.svg" alt="">
+    Moderator
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/pin.svg" alt="">
+    Pin
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/plusOne.svg" alt="">
+    Plus One
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/poll.svg" alt="">
+    Poll
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/quote.svg" alt="">
+    Quote
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/reset.svg" alt="">
+    Reset
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/return.svg" alt="">
+    Return
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/search.svg" alt="">
+    Search
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/searchMembers.svg" alt="">
+    Search Members
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/settings.svg" alt="">
+    Settings
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/star.svg" alt="">
+    Star
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/status.svg" alt="">
+    Status
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/unlocked.svg" alt="">
+    Unlocked
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/unwatch.svg" alt="">
+    Unwatch
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/userStatusOnline.svg" alt="">
+    User Online
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/verified.svg" alt="">
+    Verified
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/warning.svg" alt="">
+    Warning
+  </div>
+  <div class="gridCell">
+    <img src="./img/icon/watch.svg" alt="">
+    Watch
+  </div>
+</div>
 
 ## Images
 Images uploaded to Epochtalk are displayed at the full width of the image’s container–on mobile, the container is usually the full-width of the browser, so the image appears full-width. On tablets and desktop browsers, the container is usually one column in a 2-column layout, so the images are displayed to the full width of the column.
