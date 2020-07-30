@@ -21,9 +21,18 @@ export default {
   methods: {
     importAllIcons(r) {
       r.keys().forEach(key => (
-        this.icons.push({ path: r(key), name: key.replace('./','').replace('.svg', '') })
+        this.icons.push({
+          path: r(key),
+          name: key.replace('./','')
+            .replace('.svg', '')
+            .replace('-', ' ')
+            .toLowerCase()
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ')
+        })
       ));
-    },
-  },
+    }
+  }
 };
 </script>
