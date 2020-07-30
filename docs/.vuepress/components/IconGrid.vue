@@ -1,27 +1,27 @@
 <template>
   <div class="grid icons">
-    <div class="gridCell" v-for="image in images">
-      <img :src="`${image['path']}`" />
-      {{image['name']}}
+    <div class="gridCell" v-for="icon in icons">
+      <img :src="`${icon['path']}`" />
+      {{icon['name']}}
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Icon',
+  name: 'IconGrid',
   data() {
     return {
-      images: []
+      icons: []
     };
   },
   mounted() {
-    this.importAll(require.context('@assets/img/icon/', true, /\.svg$/));
+    this.importAllIcons(require.context('@assets/img/icon/', false, /^.*\.svg$/));
   },
   methods: {
-    importAll(r) {
+    importAllIcons(r) {
       r.keys().forEach(key => (
-        this.images.push({ path: r(key), name: key.replace('./','').replace('.svg', '') })
+        this.icons.push({ path: r(key), name: key.replace('./','').replace('.svg', '') })
       ));
     },
   },
