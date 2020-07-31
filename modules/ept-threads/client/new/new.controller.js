@@ -1,3 +1,5 @@
+var slugify = require('slugify');
+
 var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Threads', 'Posts', 'Alert', 'board', function($anchorScroll, $stateParams, $location, Session, Threads, Posts, Alert, board) {
     $anchorScroll();
     var ctrl = this;
@@ -71,6 +73,9 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
 
       // append poll to thread
       if (ctrl.addPoll && ctrl.pollValid) { ctrl.thread.poll = ctrl.poll; }
+
+      // slugify title
+      ctrl.thread.slug = slugify(ctrl.thread.title);
 
       // create a new thread and post
       Threads.save(ctrl.thread).$promise

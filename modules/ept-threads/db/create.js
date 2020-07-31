@@ -15,8 +15,8 @@ module.exports = function(thread) {
   thread = helper.deslugify(thread);
   var q, params;
   return using(db.createTransaction(), function(client) {
-    q = 'INSERT INTO threads(board_id, locked, sticky, moderated, created_at) VALUES ($1, $2, $3, $4, now()) RETURNING id';
-    params = [thread.board_id, thread.locked, thread.sticky, thread.moderated];
+    q = 'INSERT INTO threads(board_id, locked, sticky, moderated, slug, created_at) VALUES ($1, $2, $3, $4, $5, now()) RETURNING id';
+    params = [thread.board_id, thread.locked, thread.sticky, thread.moderated, thread.slug];
     return client.query(q, params)
     .then(function(results) { thread.id = results.rows[0].id; })
     // insert thread metadata
