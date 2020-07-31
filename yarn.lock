@@ -10387,6 +10387,11 @@ slugid@^2.0.0:
     uuid "^3.2.1"
     uuid-parse "^1.0.0"
 
+slugify@^1.4.5:
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.4.5.tgz#a7517acf5f4c02a4df41e735354b660a4ed1efcf"
+  integrity sha512-WpECLAgYaxHoEAJ8Q1Lo8HOs1ngn7LN7QjXgOLbmmfkcWvosyk4ZTXkTzKyhngK640USTZUlgoQJfED1kz5fnQ==
+
 smoothscroll-polyfill@^0.4.3:
   version "0.4.4"
   resolved "https://registry.yarnpkg.com/smoothscroll-polyfill/-/smoothscroll-polyfill-0.4.4.tgz#3a259131dc6930e6ca80003e1cb03b603b69abf8"
