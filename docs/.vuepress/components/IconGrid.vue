@@ -1,6 +1,6 @@
 <template>
-  <div class="grid icons">
-    <div class="gridCell" v-for="icon in icons">
+  <div class="gridAuto icons">
+    <div class="gridCellImage" v-for="icon in icons">
       <img :src="`${icon['path']}`" />
       {{icon['name']}}
     </div>

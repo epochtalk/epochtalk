@@ -84,7 +84,7 @@ Icons can be used in larger sizes when an action or state requires more emphasis
 Epochtalk's icons are transitioning from a custom icon font to SVG. The SVG icons are more flexible, maintainable and faster  than the icon font (learn more about SVG icons).
 
 
-Icons:
+### Icons:
 <IconGrid/>
 
 ## Images
