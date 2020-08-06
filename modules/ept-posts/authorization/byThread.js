@@ -1,7 +1,7 @@
 var Boom = require('boom');
 var Promise = require('bluebird');
 
-module.exports = function postsByThread(server, auth, threadId, slug) {
+module.exports = function postsByThread(server, auth, slug) {
   // try mode on
   var userId = '';
   var authenticated = auth.isAuthenticated;
@@ -21,7 +21,7 @@ module.exports = function postsByThread(server, auth, threadId, slug) {
     error: Boom.notFound('Board Not Found'),
     type: 'dbValue',
     method: server.db.threads.getThreadsBoardInBoardMapping,
-    args: [threadId, server.plugins.acls.getUserPriority(auth), slug]
+    args: [null, server.plugins.acls.getUserPriority(auth), slug]
   });
 
   // view deleted posts
@@ -35,7 +35,7 @@ module.exports = function postsByThread(server, auth, threadId, slug) {
     if (viewAll || viewPriority) { result = true; }
     else if (viewSome && boards.length > 0) { result = boards; }
     else if (viewSelfMod && !boards.length) {
-      result = server.db.moderators.isModeratorSelfModeratedThread(auth.credentials.id, threadId, slug);
+      result = server.db.moderators.isModeratorSelfModeratedThread(auth.credentials.id, null, slug);
     }
     return result;
   });

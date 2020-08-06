@@ -105,15 +105,14 @@ module.exports = {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       query: Joi.object({
-        thread_id: Joi.string().required(),
         start: Joi.number().integer().min(1),
         page: Joi.number().integer().min(1),
         limit: Joi.number().integer().min(1).max(100).default(25),
-        slug: Joi.string()
+        slug: Joi.string().required()
       }).without('start', 'page')
     },
     pre: [
-      { method: (request) => request.server.methods.auth.posts.byThread(request.server, request.auth, request.query.thread_id, request.query.slug), assign: 'viewables' },
+      { method: (request) => request.server.methods.auth.posts.byThread(request.server, request.auth, request.query.slug), assign: 'viewables' },
       { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
@@ -135,7 +134,6 @@ function processing(request) {
   var page = request.query.page;
   var start = request.query.start;
   var limit = request.query.limit;
-  var threadId = request.query.thread_id;
   var slug = request.query.slug;
   if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
   var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
@@ -148,9 +146,9 @@ function processing(request) {
   opts.start = ((opts.page * limit) - limit);
 
   // retrieve posts for this thread
-  var getWriteAccess = request.db.threads.getBoardWriteAccess(threadId, userPriority, slug);
-  var getPosts = request.db.posts.byThread(threadId, opts, slug);
-  var getThreadAndBoard = request.db.threads.find(threadId, slug)
+  var getWriteAccess = request.db.threads.getBoardWriteAccess(null, userPriority, slug);
+  var getPosts = request.db.posts.byThread(null, opts, slug);
+  var getThreadAndBoard = request.db.threads.find(null, slug)
   .then(function(thread) {
     return request.db.boards.find(thread.board_id, userPriority)
     .then(function(board) {
@@ -161,9 +159,9 @@ function processing(request) {
       }
     });
   });
-  var getPoll = request.db.polls.byThread(threadId, slug);
-  var hasVoted = request.db.polls.hasVoted(threadId, userId, slug);
-  var getUserBoardBan = request.db.bans.isNotBannedFromBoard(userId, { slug: slug, threadId: threadId })
+  var getPoll = request.db.polls.byThread(null, slug);
+  var hasVoted = request.db.polls.hasVoted(null, userId, slug);
+  var getUserBoardBan = request.db.bans.isNotBannedFromBoard(userId, { slug: slug })
   .then((notBanned) => { return !notBanned || undefined; });
 
   var promise = Promise.join(getWriteAccess, getPosts, getThreadAndBoard, getPoll, hasVoted, getUserBoardBan, function(writeAccess, posts, threadAndBoard, poll, voted, bannedFromBoard) {

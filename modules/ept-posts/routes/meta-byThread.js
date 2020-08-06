@@ -4,20 +4,16 @@ var cheerio = require('cheerio');
 
 module.exports = {
   method: 'GET',
-  path: '/threads/{thread_id}/posts',
+  path: '/threads/{slug}/posts',
   options: {
     app: { hook: 'posts.byThread' },
     auth: { mode: 'try', strategy: 'jwt' },
-    validate: {
-      params: Joi.object({ thread_id: Joi.string().required() }),
-      query: Joi.object({ slug: Joi.string() })
-    },
+    validate: { params: Joi.object({ slug: Joi.string().required() }) },
     pre: [
       { method: (request) => request.server.methods.auth.posts.metaByThread(request.server, request.auth, request.params.thread_id, request.query.slug), assign: 'viewable' },
     ]
   },
   handler: function(request, h) {
-    var threadId = request.params.thread_id;
     var slug = request.params.slug;
     var viewable = request.pre.viewable;
     var config = request.server.app.config;
@@ -38,8 +34,8 @@ module.exports = {
     };
 
     // retrieve posts for this thread
-    var getFirstPost = request.db.posts.byThread(threadId, { start: 0, limit: 1 }, slug);
-    var getThread = request.db.threads.find(threadId, slug);
+    var getFirstPost = request.db.posts.byThread(null, { start: 0, limit: 1 }, slug);
+    var getThread = request.db.threads.find(null, slug);
 
     return Promise.join(getThread, getFirstPost, function(thread, post) {
 
