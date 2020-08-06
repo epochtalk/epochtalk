@@ -5,15 +5,23 @@ var helper = dbc.helper;
 var errors = dbc.errors;
 var NotFoundError = errors.NotFoundError;
 
-module.exports = function(threadId, userPriority) {
-  threadId = helper.deslugify(threadId);
-
-  var q =
-  `SELECT b.postable_by
+module.exports = function(threadId, userPriority, slug) {
+  var q = `SELECT b.postable_by
   FROM boards b
   LEFT JOIN threads t ON t.board_id = b.id
-  WHERE t.id = $1`;
-  return db.sqlQuery(q, [threadId])
+  WHERE `;
+  var params;
+  if (slug) {
+    q += 't.slug = $1';
+    params = [slug];
+  }
+  else {
+    threadId = helper.deslugify(threadId);
+    q += 't.id = $1';
+    params = [threadId];
+  }
+
+  return db.sqlQuery(q, params)
   .then(function(rows) {
     if (rows.length > 0 ) { return rows[0].postable_by; }
     else { throw new NotFoundError(); }
