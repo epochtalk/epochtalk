@@ -108,11 +108,12 @@ module.exports = {
         thread_id: Joi.string().required(),
         start: Joi.number().integer().min(1),
         page: Joi.number().integer().min(1),
-        limit: Joi.number().integer().min(1).max(100).default(25)
+        limit: Joi.number().integer().min(1).max(100).default(25),
+        slug: Joi.string()
       }).without('start', 'page')
     },
     pre: [
-      { method: (request) => request.server.methods.auth.posts.byThread(request.server, request.auth, request.query.thread_id), assign: 'viewables' },
+      { method: (request) => request.server.methods.auth.posts.byThread(request.server, request.auth, request.query.thread_id, request.query.slug), assign: 'viewables' },
       { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
