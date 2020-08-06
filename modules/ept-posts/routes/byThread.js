@@ -163,7 +163,7 @@ function processing(request) {
   });
   var getPoll = request.db.polls.byThread(threadId, slug);
   var hasVoted = request.db.polls.hasVoted(threadId, userId, slug);
-  var getUserBoardBan = request.db.bans.isNotBannedFromBoard(userId, { threadId: threadId })
+  var getUserBoardBan = request.db.bans.isNotBannedFromBoard(userId, { slug: slug, threadId: threadId })
   .then((notBanned) => { return !notBanned || undefined; });
 
   var promise = Promise.join(getWriteAccess, getPosts, getThreadAndBoard, getPoll, hasVoted, getUserBoardBan, function(writeAccess, posts, threadAndBoard, poll, voted, bannedFromBoard) {

@@ -11,6 +11,10 @@ module.exports = function(userId, opts) {
     q += '$2';
     params.push(helper.deslugify(opts.boardId));
   }
+  else if (opts.slug) {
+    q += '(SELECT t.board_id FROM threads t WHERE t.slug = $2)';
+    params.push(opts.slug);
+  }
   else if (opts.threadId) {
     q += '(SELECT t.board_id FROM threads t WHERE id = $2)';
     params.push(helper.deslugify(opts.threadId));
