@@ -4,8 +4,7 @@ var common = require(path.normalize(__dirname + '/../common'));
 var db = dbc.db;
 var helper = dbc.helper;
 
-module.exports = function(threadId, opts) {
-  threadId = helper.deslugify(threadId);
+module.exports = function(threadId, opts, slug) {
   var columns = 'plist.id, plist.position, post.thread_id, post.board_id, post.user_id, post.title, post.body, post.deleted, post.locked, post.right_to_left, post.metadata, post.created_at, post.updated_at, post.imported_at, post.username, post.reported, post.reported_author, post.original_poster, post.user_deleted, post.signature, post.avatar, post.post_count, post.name, p2.priority, p2.highlight_color, p2.role_name, (SELECT priority FROM roles WHERE lookup =\'user\') AS default_priority';
   var q2 = 'SELECT p.thread_id, t.board_id, b.right_to_left, p.user_id, p.content ->> \'title\' as title, p.content ->> \'body\' as body, p.metadata, p.deleted, p.locked, p.created_at, p.updated_at, p.imported_at, CASE WHEN EXISTS (SELECT rp.id FROM administration.reports_posts rp WHERE rp.offender_post_id = p.id AND rp.reporter_user_id = $4) THEN \'TRUE\'::boolean ELSE \'FALSE\'::boolean END AS reported, CASE WHEN EXISTS (SELECT ru.id FROM administration.reports_users ru WHERE ru.offender_user_id = p.user_id AND ru.reporter_user_id = $4 AND ru.status = \'Pending\') THEN \'TRUE\'::boolean ELSE \'FALSE\'::boolean END AS reported_author, CASE WHEN p.user_id = (SELECT user_id FROM posts WHERE thread_id = t.id ORDER BY created_at limit 1) THEN \'TRUE\'::boolean ELSE \'FALSE\'::boolean END AS original_poster, u.username, u.deleted as user_deleted, up.signature, up.post_count, up.avatar, up.fields->\'name\' as name FROM posts p ' +
     'LEFT JOIN users u ON p.user_id = u.id ' +
@@ -23,12 +22,20 @@ module.exports = function(threadId, opts) {
   var limit = opts.limit || 25;
   var userId = opts.userId ? helper.deslugify(opts.userId) : null;
   // get total post count for this thread
-  var q = 'SELECT id, position FROM posts WHERE thread_id = $1 AND position > $2 ORDER BY position LIMIT $3';
+  var q, params;
+  if (slug) {
+    q = 'SELECT p2.id, p2.position FROM threads t2 LEFT JOIN posts p2 ON p2.thread_id = t2.id AND p2.position > $2 WHERE t2.slug = $1 ORDER BY p2.position LIMIT $3';
+    params = [slug, start, limit, userId];
+  }
+  else {
+    q = 'SELECT id, position FROM posts WHERE thread_id = $1 AND position > $2 ORDER BY position LIMIT $3';
+    threadId = helper.deslugify(threadId);
+    params = [threadId, start, limit, userId];
+  }
   var query = 'SELECT ' + columns + ' FROM ( ' +
     q + ' ) plist LEFT JOIN LATERAL ( ' +
     q2 + ' ) post ON true LEFT JOIN LATERAL ( ' +
     q3 + ' ) p2 ON true ORDER BY plist.position';
-  var params = [threadId, start, limit, userId];
   return db.sqlQuery(query, params)
   .map(common.formatPost)
   .then(helper.slugify);

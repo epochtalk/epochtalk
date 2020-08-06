@@ -11,7 +11,7 @@ var route = ['$stateProvider', function($stateProvider) {
     }
   })
   .state('posts.data', {
-    url: '/threads/{threadId}/posts?limit&page&start&purged',
+    url: '/threads/{threadId}/posts?limit&page&start&purged&slug',
     reloadOnSearch: false,
     views: {
       'data@posts': {
@@ -54,6 +54,7 @@ var route = ['$stateProvider', function($stateProvider) {
 
         var query = {
           thread_id: $stateParams.threadId,
+          slug: $stateParams.slug,
           page: $stateParams.page,
           limit: $stateParams.limit || pref.posts_per_page || 25,
           start: $stateParams.start

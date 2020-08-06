@@ -149,7 +149,7 @@ function processing(request) {
 
   // retrieve posts for this thread
   var getWriteAccess = request.db.threads.getBoardWriteAccess(threadId, userPriority, slug);
-  var getPosts = request.db.posts.byThread(threadId, opts);
+  var getPosts = request.db.posts.byThread(threadId, opts, slug);
   var getThreadAndBoard = request.db.threads.find(threadId)
   .then(function(thread) {
     return request.db.boards.find(thread.board_id, userPriority)
