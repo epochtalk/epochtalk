@@ -35,7 +35,7 @@ module.exports = function postsByThread(server, auth, threadId, slug) {
     if (viewAll || viewPriority) { result = true; }
     else if (viewSome && boards.length > 0) { result = boards; }
     else if (viewSelfMod && !boards.length) {
-      result = server.db.moderators.isModeratorSelfModeratedThread(auth.credentials.id, threadId);
+      result = server.db.moderators.isModeratorSelfModeratedThread(auth.credentials.id, threadId, slug);
     }
     return result;
   });
