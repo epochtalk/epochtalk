@@ -18,6 +18,7 @@ module.exports = {
   },
   handler: function(request, h) {
     var threadId = request.params.thread_id;
+    var slug = request.params.slug;
     var viewable = request.pre.viewable;
     var config = request.server.app.config;
     var data = {
@@ -37,8 +38,8 @@ module.exports = {
     };
 
     // retrieve posts for this thread
-    var getFirstPost = request.db.posts.byThread(threadId, { start: 0, limit: 1 });
-    var getThread = request.db.threads.find(threadId);
+    var getFirstPost = request.db.posts.byThread(threadId, { start: 0, limit: 1 }, slug);
+    var getThread = request.db.threads.find(threadId, slug);
 
     return Promise.join(getThread, getFirstPost, function(thread, post) {
 
