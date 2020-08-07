@@ -39,7 +39,7 @@ module.exports = function(threadId, slug) {
 
   return db.sqlQuery(q, params)
   .then(function(rows) {
-    if (rows.length > 0) { return rows[0]; }
+    if (rows.length > 0 && rows[0].id) { return rows[0]; }
     else { return; }
   })
   .then(helper.slugify);
