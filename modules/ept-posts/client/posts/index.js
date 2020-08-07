@@ -11,7 +11,7 @@ var route = ['$stateProvider', function($stateProvider) {
     }
   })
   .state('posts.data', {
-    url: '/threads/{threadId}/posts?limit&page&start&purged&slug',
+    url: '/threads/{slug}/posts?limit&page&start&purged',
     reloadOnSearch: false,
     views: {
       'data@posts': {
@@ -53,7 +53,6 @@ var route = ['$stateProvider', function($stateProvider) {
         var pref = PreferencesSvc.preferences;
 
         var query = {
-          thread_id: $stateParams.threadId,
           slug: $stateParams.slug,
           page: $stateParams.page,
           limit: $stateParams.limit || pref.posts_per_page || 25,
@@ -62,7 +61,7 @@ var route = ['$stateProvider', function($stateProvider) {
 
         if (query.page && query.start) { delete query.page; }
 
-        Threads.viewed({ id: $stateParams.threadId });
+        // Threads.viewed({ id: $stateParams.threadId });
         return Posts.byThread(query).$promise;
       }]
     }
