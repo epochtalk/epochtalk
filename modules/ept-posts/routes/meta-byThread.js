@@ -4,13 +4,13 @@ var cheerio = require('cheerio');
 
 module.exports = {
   method: 'GET',
-  path: '/threads/{thread_id}/posts',
+  path: '/threads/{slug}/posts',
   options: {
     app: { hook: 'posts.byThread' },
     auth: { mode: 'try', strategy: 'jwt' },
-    validate: { params: Joi.object({ thread_id: Joi.string().required() }) },
+    validate: { params: Joi.object({ slug: Joi.string().required() }) },
     pre: [
-      { method: (request) => request.server.methods.auth.posts.metaByThread(request.server, request.auth, request.params.thread_id), assign: 'viewable' },
+      { method: (request) => request.server.methods.auth.posts.metaByThread(request.server, request.auth, request.params.slug), assign: 'viewable' },
     ]
   },
   handler: function(request, h) {
