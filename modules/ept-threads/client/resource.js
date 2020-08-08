@@ -13,6 +13,11 @@ var resource = ['$resource',
         method: 'GET',
         url: '/api/threads/posted'
       },
+      slugToThreadId: {
+        method: 'GET',
+        params: { slug: '@slug' },
+        url: '/api/threads/:slug/id'
+      },
       title: {
         method: 'POST',
         params: { id: '@id' },
@@ -33,6 +38,7 @@ var resource = ['$resource',
         params: { id: '@id' },
         url: '/api/threads/:id/sticky'
       },
+
       move: {
         method: 'POST',
         params: { id: '@id' },
