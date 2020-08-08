@@ -1,8 +1,7 @@
 var Boom = require('boom');
 var Promise = require('bluebird');
 
-module.exports = function postsByThread(server, auth, queryParams) {
-  var slug = queryParams.slug;
+module.exports = function postsByThread(server, auth, threadId) {
   // try mode on
   var userId = '';
   var authenticated = auth.isAuthenticated;
@@ -22,7 +21,7 @@ module.exports = function postsByThread(server, auth, queryParams) {
     error: Boom.notFound('Board Not Found'),
     type: 'dbValue',
     method: server.db.threads.getThreadsBoardInBoardMapping,
-    args: [null, server.plugins.acls.getUserPriority(auth), slug]
+    args: [threadId, server.plugins.acls.getUserPriority(auth)]
   });
 
   // view deleted posts
@@ -36,19 +35,13 @@ module.exports = function postsByThread(server, auth, queryParams) {
     if (viewAll || viewPriority) { result = true; }
     else if (viewSome && boards.length > 0) { result = boards; }
     else if (viewSelfMod && !boards.length) {
-      result = server.db.moderators.isModeratorSelfModeratedThread(auth.credentials.id, slug);
+      result = server.db.moderators.isModeratorSelfModeratedThread(auth.credentials.id, threadId);
     }
     return result;
   });
 
-  var slugToThreadId = server.db.threads.slugToThreadId(slug)
-  .then(function(threadId) {
-    console.log(queryParams, threadId);
-    queryParams.thread_id = threadId;
-    console.log('\n\n');
-    console.log(queryParams);
-  });
 
-  return Promise.all([allowed, read, viewDeleted, slugToThreadId])
+
+  return Promise.all([allowed, read, viewDeleted])
   .then((data) => { return data[2]; });
 };

@@ -105,15 +105,14 @@ module.exports = {
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       query: Joi.object({
-        thread_id: Joi.string(),
-        slug: Joi.string().required(),
+        thread_id: Joi.string().required(),
         start: Joi.number().integer().min(1),
         page: Joi.number().integer().min(1),
         limit: Joi.number().integer().min(1).max(100).default(25)
       }).without('start', 'page')
     },
     pre: [
-      { method: (request) => request.server.methods.auth.posts.byThread(request.server, request.auth, request.query), assign: 'viewables' },
+      { method: (request) => request.server.methods.auth.posts.byThread(request.server, request.auth, request.query.thread_id), assign: 'viewables' },
       { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },

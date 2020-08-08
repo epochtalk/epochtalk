@@ -14,7 +14,7 @@ module.exports = {
     ]
   },
   handler: function(request, h) {
-    var threadId = request.params.thread_id;
+    var slug = request.params.slug;
     var viewable = request.pre.viewable;
     var config = request.server.app.config;
     var data = {
@@ -34,8 +34,8 @@ module.exports = {
     };
 
     // retrieve posts for this thread
-    var getFirstPost = request.db.posts.byThread(threadId, { start: 0, limit: 1 });
-    var getThread = request.db.threads.find(threadId);
+    var getFirstPost = request.db.threads.getThreadFirstPost(null, slug);
+    var getThread = request.db.threads.find(null, slug);
 
     return Promise.join(getThread, getFirstPost, function(thread, post) {
 
@@ -45,7 +45,7 @@ module.exports = {
       }
 
       // Description
-      var $ = cheerio.load('<div>' + post[0].body + '</div>');
+      var $ = cheerio.load('<div>' + post.body + '</div>');
       var postBody = $('div').text();
       if (postBody && viewable) {
         data.ogDescription = data.twDescription = postBody;
@@ -57,7 +57,7 @@ module.exports = {
         data.twData1 = thread.post_count + ' Post(s)';
 
         data.twLabel2 = 'Created By:';
-        data.twData2 = post[0].user.username;
+        data.twData2 = post.username;
       }
 
       // Images

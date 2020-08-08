@@ -11,13 +11,7 @@ var route = ['$stateProvider', function($stateProvider) {
     }
   })
   .state('posts.data', {
-<<<<<<< HEAD
-    url: '/threads/{threadId}/posts?limit&page&start&purged',
-||||||| parent of fbccfeb7... refactor: modify ui router and controller for posts to use slugs
-    url: '/threads/{threadId}/posts?limit&page&start&purged&slug',
-=======
     url: '/threads/{slug}/posts?limit&page&start&purged',
->>>>>>> fbccfeb7... refactor: modify ui router and controller for posts to use slugs
     reloadOnSearch: false,
     views: {
       'data@posts': {
@@ -56,19 +50,24 @@ var route = ['$stateProvider', function($stateProvider) {
         return deferred.promise;
       }],
       pageData: ['Posts', 'Threads', 'PreferencesSvc', '$stateParams', function(Posts, Threads, PreferencesSvc, $stateParams) {
-        var pref = PreferencesSvc.preferences;
+        return Threads.slugToThreadId({ slug: $stateParams.slug }).$promise
+        .then(function(thread) {
+          console.log('\n\n');
+          console.log(thread);
+          var pref = PreferencesSvc.preferences;
+          var query = {
+            thread_id: thread.id,
+            slug: $stateParams.slug,
+            page: $stateParams.page,
+            limit: $stateParams.limit || pref.posts_per_page || 25,
+            start: $stateParams.start
+          };
 
-        var query = {
-          slug: $stateParams.slug,
-          page: $stateParams.page,
-          limit: $stateParams.limit || pref.posts_per_page || 25,
-          start: $stateParams.start
-        };
+          if (query.page && query.start) { delete query.page; }
 
-        if (query.page && query.start) { delete query.page; }
-
-        // Threads.viewed({ id: $stateParams.threadId });
-        return Posts.byThread(query).$promise;
+          // Threads.viewed({ id: $stateParams.threadId });
+          return Posts.byThread(query).$promise;
+        });
       }]
     }
   });
