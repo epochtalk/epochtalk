@@ -55,7 +55,6 @@ var route = ['$stateProvider', function($stateProvider) {
           var pref = PreferencesSvc.preferences;
           var query = {
             thread_id: thread.id,
-            slug: $stateParams.slug,
             page: $stateParams.page,
             limit: $stateParams.limit || pref.posts_per_page || 25,
             start: $stateParams.start
