@@ -52,8 +52,6 @@ var route = ['$stateProvider', function($stateProvider) {
       pageData: ['Posts', 'Threads', 'PreferencesSvc', '$stateParams', function(Posts, Threads, PreferencesSvc, $stateParams) {
         return Threads.slugToThreadId({ slug: $stateParams.slug }).$promise
         .then(function(thread) {
-          console.log('\n\n');
-          console.log(thread);
           var pref = PreferencesSvc.preferences;
           var query = {
             thread_id: thread.id,
