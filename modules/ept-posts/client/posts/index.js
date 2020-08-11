@@ -62,7 +62,7 @@ var route = ['$stateProvider', function($stateProvider) {
 
           if (query.page && query.start) { delete query.page; }
 
-          // Threads.viewed({ id: $stateParams.threadId });
+          Threads.viewed({ id: $stateParams.threadId });
           return Posts.byThread(query).$promise;
         });
       }]
