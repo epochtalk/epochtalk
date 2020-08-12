@@ -1,7 +1,6 @@
 var path = require('path');
 var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
-var helper = dbc.helper;
 
 module.exports = function(objId, objType, request) {
   // method type enum
