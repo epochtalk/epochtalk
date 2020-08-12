@@ -89,7 +89,7 @@
             <a ui-sref="profile.posts({ username: postReport.offender_author_username })" ng-bind="postReport.offender_author_username"></a>
           </td>
           <td class="hide-mobile"><div ng-bind="postReport.reporter_reason"></div></td>
-          <td class="inline">
+          <td class="mod-actions">
             <!-- Modify Report -->
             <button class="icon" data-balloon="Modify Report Status" ng-click="ModerationCtrl.showSetStatus(postReport)" ng-disabled="!ModerationCtrl.canUpdateUserReport()"><i class="fa fa-cog"></i></button>
 

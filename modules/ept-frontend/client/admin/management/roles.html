@@ -31,8 +31,10 @@
       </tr>
     </tbody>
   </table>
-  <div ng-if="AdminManagementCtrl.controlAccess.reprioritize.allow" class="right"><button ng-click="AdminManagementCtrl.resetPriority()">Reset Priority</button></div>
-  <div ng-if="AdminManagementCtrl.controlAccess.reprioritize.allow" class="right"><button ng-click="AdminManagementCtrl.savePriority()">Save Priority</button>&nbsp;&nbsp;&nbsp;</div>
+  <div class="actions">
+    <div ng-if="AdminManagementCtrl.controlAccess.reprioritize.allow" class="right"><button ng-click="AdminManagementCtrl.resetPriority()">Reset Priority</button></div>
+    <div ng-if="AdminManagementCtrl.controlAccess.reprioritize.allow" class="right"><button ng-click="AdminManagementCtrl.savePriority()">Save Priority</button>&nbsp;&nbsp;&nbsp;</div>
+  </div>
 </div>
 
 <div class="half-column" ng-if="AdminManagementCtrl.selectedRole !== null && !AdminManagementCtrl.selectedRole.message">

@@ -24,7 +24,7 @@
       <th class="pointer" ng-click="AdminManagementCtrl.setSortField('updates')"><span ng-class="AdminManagementCtrl.getSortClass('updates')"></span>&nbsp;Last Updated</th>
       <th class="pointer" ng-click="AdminManagementCtrl.setSortField('update_count')"><span ng-class="AdminManagementCtrl.getSortClass('update_count')"></span>&nbsp;Update Count</th>
       <th class="pointer" ng-click="AdminManagementCtrl.setSortField('imported_at')"><span ng-class="AdminManagementCtrl.getSortClass('imported_at')"></span>&nbsp;Date Imported</th>
-      <th>Actions</th>
+      <th class="user-actions">Actions</th>
     </thead>
     <tbody>
       <tr ng-repeat="address in AdminManagementCtrl.addresses">
@@ -35,14 +35,14 @@
         <td ng-bind="(address.updated_at | humanDate) || 'N/A'"></td>
         <td ng-bind="address.update_count || 0"></td>
         <td ng-bind="(address.imported_at | humanDate) || 'N/A'"></td>
-        <th>
+        <td class="user-actions">
           <button ng-click="AdminManagementCtrl.showEditAddressModal(address)" class="icon" data-balloon="Edit Address">
             <i class="fa fa-pencil"></i>
           </button>
           <button ng-click="AdminManagementCtrl.showConfirmDeleteAddressModal(address)" class="icon" data-balloon="Delete Address">
             <i class="fa fa-trash"></i>
           </button>
-        </th>
+        </td>
       </tr>
     </tbody>
   </table>

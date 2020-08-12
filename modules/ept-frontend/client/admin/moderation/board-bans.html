@@ -36,7 +36,7 @@
         <th>User</th>
         <th>Email</th>
         <th>Banned Boards</th>
-        <th class="centered-text" width="50">Action</th>
+        <th class="mod-actions">Action</th>
       </thead>
       <tbody>
         <tr ng-repeat="row in ModerationCtrl.bannedBoards">
@@ -52,7 +52,7 @@
               <a ng-bind-html="boardName" ui-sref="threads.data({ boardId: row.board_ids[$index] })"></a>{{ !$last ? ', ' : '' }}
             </span>
           </td>
-          <td class="centered-text">
+          <td class="mod-actions">
             <!-- Ban User -->
             <button class="icon" data-balloon="Manage Bans" ng-click="ModerationCtrl.showManageBans({ id: row.user_id, username: row.username, email: row.email, created_at: row.created_at })"><i class="fa fa-ban"></i></button>
           </td>

@@ -76,7 +76,7 @@
           </td>
           <td class="hide-mobile" ng-bind="userReport.offender_created_at | date:'MM/dd/yy @ h:mma'"></td>
           <td class="hide-mobile"><div ng-bind="userReport.reporter_reason"></div></td>
-          <td class="inline">
+          <td class="mod-actions">
             <!-- Modify Report -->
             <button class="icon" data-balloon="Modify Report Status" ng-click="ModerationCtrl.showSetStatus(userReport)" ng-disabled="!ModerationCtrl.canUpdateUserReport()"><i class="fa fa-cog"></i></button>
 
