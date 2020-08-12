@@ -1,4 +1,4 @@
-<div id="admin-subnav" class="fill-row">
+<div id="admin-subnav" class="">
   <h2>Settings</h2>
   <dl class="tabs">
     <dd ng-if="AdminSettingsCtrl.hasPermission('adminAccess.settings.general')" class="no-select" ng-class="{'active': AdminSettingsCtrl.tab === 'general'}">
@@ -16,7 +16,7 @@
     </dd>
   </dl>
 
-  <div class="right mobile-buttons">
+  <div class="actions right-- mobile-buttons">
     <button ng-if="AdminSettingsCtrl.tab === 'theme'" ng-click="child.preview()" ng-disabled="child.invalidForm || child.pristineForm">
       <i class="fa fa-eye"></i>&nbsp;&nbsp;Preview
     </button>

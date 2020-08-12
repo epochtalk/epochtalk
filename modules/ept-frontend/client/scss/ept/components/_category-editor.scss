@@ -245,6 +245,21 @@
   content: "\f0c8";
 }
 
+.actions {
+  display: flex;
+  margin-top: 1rem;
+
+  button {
+    margin-right: 0.5rem;
+  }
+
+  @include break-mobile-sm {
+    button {
+      margin-right: 0;
+    }
+  }
+}
+
 @include media($mobile) {
   .dd-desc span { display: none; }
   .dd-desc { width: 70% };

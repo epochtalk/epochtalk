@@ -43,8 +43,34 @@
 }
 
 #admin-subnav {
-  margin-bottom: 1rem;
-  h2 { display: inline-block; float: left; }
+  // margin-bottom: 1rem;
+  // h2 { display: inline-block; float: left; }
+  display: flex;
+
+  .tabs {
+    flex: 1 0 50%;
+  }
+
+  .actions {
+    flex: 0 0 25%;
+    display: flex;
+
+    button {
+      margin-right: 0.5rem;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  @include break-mobile-sm {
+    flex-direction: column;
+
+    button {
+      margin-bottom: 1rem;
+    }
+  }
 }
 
 .admin-table-header {
