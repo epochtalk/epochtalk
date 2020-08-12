@@ -41,7 +41,7 @@ module.exports = function(objId, objType, request) {
         crumbs.push({ label: obj.name, state: 'threads.data', opts: { boardId: id } });
       }
       else if (curType === type.thread) { // Thread
-        crumbs.push({ label: obj.title, state: 'posts.data', opts: { threadId: id } });
+        crumbs.push({ label: obj.title, state: 'posts.data', opts: { slug: obj.slug } });
         nextType = type.board;
         nextId = obj.board_id;
       }

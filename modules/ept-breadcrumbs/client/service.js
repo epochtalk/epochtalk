@@ -50,7 +50,7 @@ function ($state, $stateParams, $location, Breadcrumbs) {
       // Maps routeParams key to breadcrumb type
       var keyToType = {
         boardId:  'board',
-        threadId: 'thread',
+        slug: 'thread',
       };
       // remove anchor hash from params
       var routeParamKeys = without(Object.keys(routeParams), '#');
