@@ -80,7 +80,7 @@
           <td ng-bind="postReport.status"></td>
           <td class="hide-mobile" ng-bind="postReport.offender_created_at | date:'MM/dd/yy @ h:mma'"></td>
           <td class="hide-mobile">
-            <a ui-sref="posts.data({ threadId: postReport.offender_thread_id, '#': postReport.offender_post_id })" ng-bind="postReport.offender_title"></a>
+            <a ui-sref="posts.data({ slug: postReport.offender_thread_slug, '#': postReport.offender_post_id })" ng-bind="postReport.offender_title"></a>
           </td>
           <td>
             <i ng-show="postReport.offender_ban_expiration || postReport.offender_board_banned" class="fa fa-user-times"></i>
@@ -177,7 +177,7 @@
         </tr>
         <tr>
           <td class="field">Reported Post</td>
-          <td class="desc"><a ui-sref="posts.data({ threadId: ModerationCtrl.previewReport.offender_thread_id, '#': ModerationCtrl.previewReport.offender_post_id })" ui-sref-opts="{ reload: true }" ng-bind="ModerationCtrl.previewReport.offender_title"></a></td>
+          <td class="desc"><a ui-sref="posts.data({ slug: ModerationCtrl.previewReport.offender_thread_slug, '#': ModerationCtrl.previewReport.offender_post_id })" ui-sref-opts="{ reload: true }" ng-bind="ModerationCtrl.previewReport.offender_title"></a></td>
         </tr>
         <tr>
           <td class="field">Reported Post Author</td>
@@ -248,7 +248,7 @@
         <div class="buttons">
 
           <div class="left toolbar-title" title="Click to go to this post" ng-if="ModerationCtrl.posting.post.id">
-              Editing Post:&nbsp;&nbsp;<a ui-sref="posts.data({ threadId: ModerationCtrl.previewReport.offender_thread_id, '#': ModerationCtrl.previewReport.offender_post_id })">{{ ModerationCtrl.posting.post.id }}</a>
+              Editing Post:&nbsp;&nbsp;<a ui-sref="posts.data({ slug: ModerationCtrl.previewReport.offender_thread_slug, '#': ModerationCtrl.previewReport.offender_post_id })">{{ ModerationCtrl.posting.post.id }}</a>
             </a>
           </div>
 
