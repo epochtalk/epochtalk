@@ -26,13 +26,10 @@ module.exports = function(thread) {
 // the fly when there is a conflict.
 function handleSlugConflict(thread) {
   return using(db.createTransaction(), function(client) {
-    var q = 'SELECT COUNT(*) FROM threads WHERE slug LIKE $1 OR slug LIKE $2 OR slug LIKE $3 OR slug LIKE $4';
-    return client.query(q, [thread.slug + '-_', thread.slug + '-__', thread.slug + '-___', thread.slug + '-____'])
-    .then(function(results) {
-      thread.slug = thread.slug + '-' + (Number(results.rows[0].count) + 1);
-      helper.slugify(thread);
-      return createThread(thread, client);
-    });
+    var hash = Math.random().toString(36).substring(9);
+    thread.slug = thread.slug + '-' + hash;
+    helper.slugify(thread);
+    return createThread(thread, client);
   })
   .then(function() { return helper.slugify(thread); });
 }
