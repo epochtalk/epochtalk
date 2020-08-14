@@ -45,6 +45,7 @@ function page(mentioneeId, opts) {
   var q = `SELECT
       m.id,
       m.thread_id,
+      (SELECT t.slug FROM threads t WHERE m.thread_id = t.id) as thread_slug,
       (SELECT p2.content ->> 'title' as title FROM posts p2 WHERE p2.thread_id = m.thread_id ORDER BY p2.created_at ASC LIMIT 1),
       m.post_id,
       p.position as post_start,
