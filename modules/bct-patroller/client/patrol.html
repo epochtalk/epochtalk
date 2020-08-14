@@ -52,7 +52,7 @@
           <button ng-click="PatrolParentCtrl.fullscreen()"><i class="fa" ng-class="{ 'fa-expand': PatrolParentCtrl.isMinimized, 'fa-compress': !PatrolParentCtrl.isMinimized }"></i>&nbsp;&nbsp;{{ PatrolParentCtrl.isMinimized ? 'Fullscreen' : 'Minimize' }}</button>
 
           <div class="left hide-mobile toolbar-title" title="Click to go to this post" ng-if="PatrolParentCtrl.posting.post.id">
-            <a ui-sref="posts.data({ threadId: PatrolParentCtrl.posting.post.thread_id, page: PatrolParentCtrl.posting.post.page, '#': PatrolParentCtrl.posting.post.id })">
+            <a ui-sref="posts.data({ slug: PatrolParentCtrl.posting.post.slug, page: PatrolParentCtrl.posting.post.page, '#': PatrolParentCtrl.posting.post.id })">
               Editing: <span class="underline">{{ PatrolParentCtrl.posting.post.id }}</span>
             </a>
           </div>

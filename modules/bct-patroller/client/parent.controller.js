@@ -37,6 +37,7 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
 
     function closeEditor() {
       ctrl.posting.post.id = '';
+      ctrl.posting.post.slug = '';
       ctrl.posting.post.title = '';
       ctrl.posting.post.body_html = '';
       ctrl.posting.post.body = '';
@@ -50,6 +51,7 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
       if (discardAlert()) {
         var editorPost = ctrl.posting.post;
         editorPost.id = post.id || '';
+        editorPost.slug = post.slug || '';
         editorPost.title = post.thread_title || '';
         editorPost.body_html = post.body_html || '';
         editorPost.thread_id = post.thread_id || '';
