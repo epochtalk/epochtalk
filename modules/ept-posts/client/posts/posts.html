@@ -157,7 +157,7 @@
         <div class="buttons">
 
           <div class="left toolbar-title" title="Click to go to this post" ng-if="PostsParentCtrl.posting.post.id">
-              Editing Post:&nbsp;&nbsp;<a ui-sref="posts.data({ threadId: PostsParentCtrl.thread.id, page: PostsParentCtrl.posting.post.page, '#': PostsParentCtrl.posting.post.id })">{{ PostsParentCtrl.posting.post.id }}</a>
+              Editing Post:&nbsp;&nbsp;<a ui-sref="posts.data({ slug: PostsParentCtrl.thread.slug, page: PostsParentCtrl.posting.post.page, '#': PostsParentCtrl.posting.post.id })">{{ PostsParentCtrl.posting.post.id }}</a>
             </a>
           </div>
 
