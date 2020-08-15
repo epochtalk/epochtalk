@@ -141,7 +141,7 @@
 
     <div class="subject">
       <div class="title">
-        <a ui-sref="posts.data({ threadId: thread.id })" ng-bind-html="thread.title"></a>
+        <a ui-sref="posts.data({ slug: thread.slug })" ng-bind-html="thread.title"></a>
       </div>
       <small>In Board: </small><strong><small ng-bind-html="thread.board_name"></small></strong>
 

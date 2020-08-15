@@ -12,7 +12,7 @@ module.exports = function(userId, opts) {
   opts.offset = (opts.page * opts.limit) - opts.limit;
   opts.limit += 1; // hasMore check
 
-  var q = 'SELECT t.id, t.post_count, mt.views as view_count, b.name as board_name, ';
+  var q = 'SELECT t.id, t.slug, t.post_count, mt.views as view_count, b.name as board_name, ';
   q += '( SELECT content->\'title\' FROM posts WHERE thread_id = wt.thread_id ORDER BY created_at LIMIT 1 ) as title ';
   q += 'FROM users.watch_threads wt ';
   q += 'LEFT JOIN threads t ON wt.thread_id = t.id ';
