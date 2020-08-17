@@ -36,10 +36,13 @@ function handleSlugConflict(thread) {
 
 function createThread(thread, client) {
   thread = helper.deslugify(thread);
-  var q = 'INSERT INTO threads(board_id, locked, sticky, moderated, slug, created_at) VALUES ($1, $2, $3, $4, $5, now()) RETURNING id';
+  var q = 'INSERT INTO threads(board_id, locked, sticky, moderated, slug, created_at) VALUES ($1, $2, $3, $4, $5, now()) RETURNING id, slug';
   var params = [thread.board_id, thread.locked, thread.sticky, thread.moderated, thread.slug];
   return client.query(q, params)
-  .then(function(results) { thread.id = results.rows[0].id; })
+  .then(function(results) {
+    thread.id = results.rows[0].id;
+    thread.slug = results.rows[0].slug;
+  })
   // insert thread metadata
   .then(function() {
     q = 'INSERT INTO metadata.threads (thread_id, views) VALUES($1, 0);';

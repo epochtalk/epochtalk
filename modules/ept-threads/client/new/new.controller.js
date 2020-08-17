@@ -80,7 +80,7 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
       // create a new thread and post
       Threads.save(ctrl.thread).$promise
       .then(function(thread) {
-        $location.path('/threads/' + thread.thread_id + '/posts');
+        $location.path('/threads/' + thread.slug + '/posts');
         return Posts.updatePostDraft({ draft: null });
       })
       .catch(function(err) {

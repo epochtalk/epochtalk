@@ -95,10 +95,15 @@ function processing(request) {
     user_id: user.id
   };
 
+  var dbSlug;
+
   // create the thread
   var promise = request.db.threads.create(newThread)
   // save thread id to newPost
-  .tap(function(thread) { newPost.thread_id = thread.id; })
+  .tap(function(thread) {
+    newPost.thread_id = thread.id;
+    dbSlug = thread.slug;
+  })
   // create any associated polls
   .then(function(thread) {
     if (request.payload.poll) {
@@ -107,6 +112,10 @@ function processing(request) {
   })
   // create the first post in this thread
   .then(function() { return request.db.posts.create(newPost); })
+  .then(function(result) {
+    result.slug = dbSlug;
+    return result;
+  })
   .error(request.errorMap.toHttpError);
 
   return promise;
