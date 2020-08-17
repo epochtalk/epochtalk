@@ -18,7 +18,7 @@ module.exports = {
   path: '/api/threads/{slug}/id',
   options: {
     app: { hook: 'threads.slugToThreadId' },
-    validate: { params: Joi.object({ slug: Joi.string().required() }) }
+    validate: { params: Joi.object({ slug: Joi.string().regex(/^[a-zA-Z0-9-~!@)(_+:'"\.](-?[a-zA-Z0-9-~!@)(_+:'"\.])*$/).min(1).max(100).required() }) }
   },
   handler: function(request) {
     var slug = request.params.slug;

@@ -8,7 +8,7 @@ module.exports = {
   options: {
     app: { hook: 'posts.byThread' },
     auth: { mode: 'try', strategy: 'jwt' },
-    validate: { params: Joi.object({ slug: Joi.string().required() }) },
+    validate: { params: Joi.object({ slug: Joi.string().regex(/^[a-zA-Z0-9-~!@)(_+:'"\.](-?[a-zA-Z0-9-~!@)(_+:'"\.])*$/).min(1).max(100).required() }) },
     pre: [
       { method: (request) => request.server.methods.auth.posts.metaByThread(request.server, request.auth, request.params.slug), assign: 'viewable' },
     ]
