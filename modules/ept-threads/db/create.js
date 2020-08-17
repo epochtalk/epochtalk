@@ -22,8 +22,6 @@ module.exports = function(thread) {
   });
 };
 
-// TODO: counting conflicts should be done in a trigger possibly so we dont have to count on
-// the fly when there is a conflict.
 function handleSlugConflict(thread) {
   return using(db.createTransaction(), function(client) {
     var hash = Math.random().toString(36).substring(9);
