@@ -23,6 +23,7 @@ module.exports = function(opts, priority) {
       b.right_to_left,
       u.username,
       p.thread_id,
+      (SELECT t.slug FROM threads t WHERE p.thread_id = t.id) as thread_slug,
       p.position,
       ts_headline('simple', p.content ->> 'body', q, 'StartSel=<mark>, StopSel=</mark>, MaxWords=150, HighlightAll=FALSE, MaxFragments=0, FragmentDelimiter=" ... "') as body_match,
       p.content->>'body' as body,

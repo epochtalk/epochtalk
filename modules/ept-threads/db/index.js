@@ -10,6 +10,7 @@ module.exports = {
   incViewCount: require(path.normalize(__dirname + '/incViewCount')),
   lock: require(path.normalize(__dirname + '/lock')),
   sticky: require(path.normalize(__dirname + '/sticky')),
+  slugToThreadId: require(path.normalize(__dirname + '/slugToThreadId')),
   move: require(path.normalize(__dirname + '/move')),
   getThreadFirstPost: require(path.normalize(__dirname + '/getThreadFirstPost')),
   getThreadsBoardInBoardMapping: require(path.normalize(__dirname + '/getThreadsBoardInBoardMapping')),

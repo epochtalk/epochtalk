@@ -26,7 +26,7 @@
           <td data-balloon="{{post.thread_title}}" data-balloon-pos="left">
             <div class="truncate-title">
               <span ng-if="post.hidden && !post._deleted"><i class="fa fa-eye-slash"></i></span>
-              <a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })" ng-bind-html="post.thread_title" ng-if="!post._deleted"></a>
+              <a ui-sref="posts.data({ slug: post.thread_slug, start: post.position, '#': post.id })" ng-bind-html="post.thread_title" ng-if="!post._deleted"></a>
               <span ng-if="post._deleted">Deleted</span>
             </div>
           </td>
@@ -44,7 +44,7 @@
     <div class="mobile-post" ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
       <div>
         <div>
-          <a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })" ng-bind-html="post.thread_title" ng-if="!post._deleted"></a>
+          <a ui-sref="posts.data({ slug: post.thread_slug, start: post.position, '#': post.id })" ng-bind-html="post.thread_title" ng-if="!post._deleted"></a>
         </div>
         <div class="mobile-post-time"><small ng-bind="post.created_at | date:'MM/dd/yy @ h:mma'"></small></div>
         <div class="post-body" post-processing="post.body_html" style-fix="true"></div>
@@ -97,7 +97,7 @@
           <td data-balloon="{{post.thread_title}}" data-balloon-pos="left">
             <div class="truncate-title">
               <span ng-if="post.hidden && !post._deleted"><i class="fa fa-eye-slash"></i></span>
-              <a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })" ng-bind-html="post.thread_title" ng-if="!post._deleted"></a>
+              <a ui-sref="posts.data({ slug: post.thread_slug, start: post.position, '#': post.id })" ng-bind-html="post.thread_title" ng-if="!post._deleted"></a>
               <span ng-if="post._deleted">Deleted</span>
             </div>
           </td>
@@ -115,7 +115,7 @@
     <div class="mobile-post" ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
       <div>
         <div>
-          <a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })" ng-bind-html="post.thread_title" ng-if="!post._deleted"></a>
+          <a ui-sref="posts.data({ slug: post.thread_slug, start: post.position, '#': post.id })" ng-bind-html="post.thread_title" ng-if="!post._deleted"></a>
         </div>
         <div class="mobile-post-time"><small ng-bind="post.created_at | date:'MM/dd/yy @ h:mma'"></small></div>
         <div class="post-body" post-processing="post.body_html" style-fix="true"></div>

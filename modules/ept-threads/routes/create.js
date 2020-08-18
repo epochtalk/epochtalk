@@ -26,6 +26,7 @@ var Joi = require('@hapi/joi');
   * @apiSuccess {string} thread_id The unqiue id of the thread
   * @apiSuccess {string} user_id The unique id of the user who created the thread
   * @apiSuccess {string} title The title of the thread
+  * @apiSuccess {string} slug The slug of the thread
   * @apiSuccess {boolean} deleted Boolean indicating if the thread has been deleted
   * @apiSuccess {boolean} locked Boolean indicating if the thread has been locked
   * @apiSuccess {string} body_html The thread's body with any markup tags converted and parsed into html elements
@@ -46,6 +47,7 @@ module.exports = {
         sticky: Joi.boolean().default(false),
         moderated: Joi.boolean().default(false),
         title: Joi.string().min(1).max(255).required(),
+        slug: Joi.string().regex(/^[a-zA-Z0-9-~!@)(_+:'"\.](-?[a-zA-Z0-9-~!@)(_+:'"\.])*$/).min(1).max(100).required(),
         body: Joi.string().min(1).max(64000).required(),
         board_id: Joi.string().required(),
         poll: Joi.object({
@@ -84,7 +86,8 @@ function processing(request) {
     board_id: request.payload.board_id,
     locked: request.payload.locked,
     sticky: request.payload.sticky,
-    moderated: request.payload.moderated
+    moderated: request.payload.moderated,
+    slug: request.payload.slug.toLowerCase()
   };
   var newPost = {
     title: request.payload.title,
@@ -92,10 +95,15 @@ function processing(request) {
     user_id: user.id
   };
 
+  var dbSlug;
+
   // create the thread
   var promise = request.db.threads.create(newThread)
   // save thread id to newPost
-  .tap(function(thread) { newPost.thread_id = thread.id; })
+  .tap(function(thread) {
+    newPost.thread_id = thread.id;
+    dbSlug = thread.slug;
+  })
   // create any associated polls
   .then(function(thread) {
     if (request.payload.poll) {
@@ -104,6 +112,10 @@ function processing(request) {
   })
   // create the first post in this thread
   .then(function() { return request.db.posts.create(newPost); })
+  .then(function(result) {
+    result.slug = dbSlug;
+    return result;
+  })
   .error(request.errorMap.toHttpError);
 
   return promise;

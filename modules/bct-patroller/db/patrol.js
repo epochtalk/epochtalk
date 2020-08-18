@@ -27,6 +27,7 @@ module.exports = function(request, opts) {
   SELECT
     plist.id,
     post.thread_id,
+    post.slug,
     post.board_id,
     post.board_name,
     post.user_id,
@@ -62,6 +63,7 @@ module.exports = function(request, opts) {
     SELECT
       p.thread_id,
       t.board_id,
+      t.slug,
       p.user_id,
       p.content ->> \'body\' as body,
       p.metadata,
@@ -112,7 +114,7 @@ module.exports = function(request, opts) {
   return db.sqlQuery(query, params)
   .map(function(post) {
     // Build the breadcrumbs and reply
-    return request.db.breadcrumbs.getBreadcrumbs(helper.slugify(post.thread_id), 'thread', request)
+    return request.db.breadcrumbs.getBreadcrumbs(post.slug, 'thread', request)
     .then(function(breadcrumbs) {
       post.breadcrumbs = breadcrumbs;
       return request.server.methods.common.posts.formatPost(post);

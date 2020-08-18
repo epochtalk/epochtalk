@@ -11,7 +11,7 @@ var route = ['$stateProvider', function($stateProvider) {
     }
   })
   .state('posts.data', {
-    url: '/threads/{threadId}/posts?limit&page&start&purged',
+    url: '/threads/{slug}/posts?limit&page&start&purged',
     reloadOnSearch: false,
     views: {
       'data@posts': {
@@ -50,19 +50,21 @@ var route = ['$stateProvider', function($stateProvider) {
         return deferred.promise;
       }],
       pageData: ['Posts', 'Threads', 'PreferencesSvc', '$stateParams', function(Posts, Threads, PreferencesSvc, $stateParams) {
-        var pref = PreferencesSvc.preferences;
+        return Threads.slugToThreadId({ slug: $stateParams.slug }).$promise
+        .then(function(thread) {
+          var pref = PreferencesSvc.preferences;
+          var query = {
+            thread_id: thread.id,
+            page: $stateParams.page,
+            limit: $stateParams.limit || pref.posts_per_page || 25,
+            start: $stateParams.start
+          };
 
-        var query = {
-          thread_id: $stateParams.threadId,
-          page: $stateParams.page,
-          limit: $stateParams.limit || pref.posts_per_page || 25,
-          start: $stateParams.start
-        };
+          if (query.page && query.start) { delete query.page; }
 
-        if (query.page && query.start) { delete query.page; }
-
-        Threads.viewed({ id: $stateParams.threadId });
-        return Posts.byThread(query).$promise;
+          Threads.viewed({ id: thread.id });
+          return Posts.byThread(query).$promise;
+        });
       }]
     }
   });

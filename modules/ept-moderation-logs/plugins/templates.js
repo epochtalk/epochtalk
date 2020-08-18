@@ -319,7 +319,7 @@ module.exports = {
    // =========== Threads Routes ===========
   'threads.title': {
     genDisplayText: function(data) { return `updated the title of a thread created by user "${data.author.username}" to "${data.title}"`; },
-    genDisplayUrl: function(data) { return `posts.data({ threadId: '${data.id}' })`; },
+    genDisplayUrl: function(data) { return `posts.data({ slug: '${data.slug}' })`; },
     dataQuery: retrieveThread
   },
   'threads.lock': {
@@ -327,7 +327,7 @@ module.exports = {
       var prefix = data.locked ? 'locked' : 'unlocked';
       return prefix + ` the thread "${data.title}" created by user "${data.author.username}"`;
     },
-    genDisplayUrl: function(data) { return `posts.data({ threadId: '${data.id}' })`; },
+    genDisplayUrl: function(data) { return `posts.data({ slug: '${data.slug}' })`; },
     dataQuery: function(data, request) {
       return retrieveThread(data, request)
       .then(function(thread) { data.title = thread.title; });
@@ -338,7 +338,7 @@ module.exports = {
       var prefix = data.stickied ? 'stickied' : 'unstickied';
       return prefix + ` the thread "${data.title}" created by user "${data.author.username}"`;
     },
-    genDisplayUrl: function(data) { return `posts.data({ threadId: '${data.id}' })`; },
+    genDisplayUrl: function(data) { return `posts.data({ slug: '${data.slug}' })`; },
     dataQuery: function(data, request) {
       return retrieveThread(data, request)
       .then(function(thread) { data.title = thread.title; });
@@ -348,7 +348,7 @@ module.exports = {
     genDisplayText: function(data) {
       return `moved the thread named "${data.title}" created by user "${data.author.username}" from board "${data.old_board_name}" to "${data.new_board_name}"`;
     },
-    genDisplayUrl: function(data) { return `posts.data({ threadId: '${data.id}' })`; },
+    genDisplayUrl: function(data) { return `posts.data({ slug: '${data.slug}' })`; },
     dataQuery: function(data, request) {
       return retrieveThread(data, request)
       .then(function(thread) {
@@ -379,7 +379,7 @@ module.exports = {
     genDisplayText: function(data) {
       return `edited a poll in thread named "${data.thread_title}" created by user "${data.author.username}"`;
     },
-    genDisplayUrl: function(data) { return `posts.data({ threadId: '${data.thread_id}' })`; },
+    genDisplayUrl: function(data) { return `posts.data({ slug: '${data.slug}' })`; },
     dataQuery: function(data, request) {
       return retrieveThread(data, request)
       .then(function(thread) { data.thread_title = thread.title; });
@@ -389,7 +389,7 @@ module.exports = {
     genDisplayText: function(data) {
       return `created a poll in thread named "${data.thread_title}" created by user "${data.author.username}"`;
     },
-    genDisplayUrl: function(data) { return `posts.data({ threadId: '${data.thread_id}' })`; },
+    genDisplayUrl: function(data) { return `posts.data({ slug: '${data.slug}' })`; },
     dataQuery: function(data, request) {
       return retrieveThread(data, request)
       .then(function(thread) { data.thread_title = thread.title; });
@@ -400,7 +400,7 @@ module.exports = {
       var prefix = data.locked ? 'locked' : 'unlocked';
       return prefix + ` poll in thread named "${data.thread_title}" created by user "${data.author.username}"`;
     },
-    genDisplayUrl: function(data) { return `posts.data({ threadId: '${data.thread_id}' })`; },
+    genDisplayUrl: function(data) { return `posts.data({ slug: '${data.slug}' })`; },
     dataQuery: function(data, request) {
       return retrieveThread(data, request)
       .then(function(thread) { data.thread_title = thread.title; });
@@ -411,21 +411,21 @@ module.exports = {
   'posts.update': {
     genDisplayText: function(data) { return `updated post created by user "${data.author.username}" in thread named "${data.thread_title}"`; },
     genDisplayUrl: function(data) {
-      return `posts.data({ threadId: '${data.thread_id}', start: ${data.position}, '#': '${data.id}' })`;
+      return `posts.data({ slug: '${data.slug}', start: ${data.position}, '#': '${data.id}' })`;
     },
     dataQuery: retrievePost
   },
   'posts.delete': {
     genDisplayText: function(data) { return `hid post created by user "${data.author.username}" in thread "${data.thread_title}"`; },
     genDisplayUrl: function(data) {
-      return `posts.data({ threadId: '${data.thread_id}', start: ${data.position}, '#': '${data.id}' })`;
+      return `posts.data({ slug: '${data.slug}', start: ${data.position}, '#': '${data.id}' })`;
     },
     dataQuery: retrievePost
   },
   'posts.undelete': {
     genDisplayText: function(data) { return `unhid post created by user "${data.author.username}" in thread "${data.thread_title}"`; },
     genDisplayUrl: function(data) {
-      return `posts.data({ threadId: '${data.thread_id}', start: ${data.position}, '#': '${data.id}' })`;
+      return `posts.data({ slug: '${data.slug}', start: ${data.position}, '#': '${data.id}' })`;
     },
     dataQuery: retrievePost
   },
@@ -433,7 +433,7 @@ module.exports = {
     genDisplayText: function(data) {
       return `purged post created by user "${data.author.username}" in thread "${data.thread_title}"`;
     },
-    genDisplayUrl: function(data) { return `posts.data({ threadId: '${data.thread_id}' })`; },
+    genDisplayUrl: function(data) { return `posts.data({ slug: '${data.slug}' })`; },
     dataQuery: function(data, request) {
       return request.db.users.find(data.user_id)
       .then(function(user) {
@@ -444,7 +444,10 @@ module.exports = {
         };
         return request.db.threads.find(data.thread_id);
       })
-      .then(function(thread) { data.thread_title = thread.title; });
+      .then(function(thread) {
+        data.slug = thread.slug;
+        data.thread_title = thread.title;
+      });
     }
   },
 
@@ -511,6 +514,7 @@ function retrieveThread(data, request) {
       error.code = "DONOTLOG";
       return Promise.reject(error);
     }
+    data.slug = thread.slug;
     data.author = {
       id: thread.user.id,
       username: thread.user.username
@@ -540,7 +544,9 @@ function retrievePost(data, request) {
     data.thread_id = post.thread_id;
     return request.db.threads.find(data.thread_id);
   })
-  .then(function(thread) { data.thread_title = thread.title; });
+  .then(function(thread) {
+    data.slug = thread.slug
+    data.thread_title = thread.title; });
 }
 
 // Conversations and Messages helper function

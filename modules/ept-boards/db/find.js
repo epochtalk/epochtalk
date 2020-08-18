@@ -40,6 +40,7 @@ module.exports = function(id, userPriority) {
         b.updated_at,
         b.imported_at,
         mb.last_thread_id,
+        (SELECT t.slug FROM threads t WHERE t.id = mb.last_thread_id) as last_thread_slug,
         bm.parent_id,
         bm.category_id,
         bm.view_order

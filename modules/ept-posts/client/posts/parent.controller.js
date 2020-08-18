@@ -401,7 +401,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
             params.page = lastPage;
             delete params['#'];
             delete params['start'];
-            delete params['threadId'];
+            delete params['slug'];
             $location.search(params).hash(data.id);
             if (ctrl.page === lastPage) { ctrl.pullPage(); }
             return Posts.updatePostDraft({ draft: null });
@@ -560,7 +560,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           params.page = (page || 2) - 1;
           delete params['#'];
           delete params['purged'];
-          delete params['threadId'];
+          delete params['slug'];
           delete params['start'];
           $location.hash('last');
           $location.search(params);

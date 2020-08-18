@@ -28,7 +28,8 @@ const config = {
       ngLoadingBar: 'angular-loading-bar',
       nestable: 'nestable/jquery.nestable',
       angularSortable: 'angular-sortable-view/src/angular-sortable-view.min',
-      ngTagsInput: 'ng-tags-input/build/ng-tags-input.min'
+      ngTagsInput: 'ng-tags-input/build/ng-tags-input.min',
+      slugify: 'slugify/slugify'
     }
   },
   plugins: [],
@@ -44,6 +45,7 @@ const config = {
       nodeModulesPath + '/nestable/jquery.nestable',
       nodeModulesPath + '/angular-sortable-view/src/angular-sortable-view.min',
       nodeModulesPath + '/ng-tags-input/build/ng-tags-input.min',
+      nodeModulesPath + '/slugify/slugify'
     ],
     rules: [
       {

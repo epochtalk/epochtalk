@@ -92,6 +92,7 @@
     "rolling-rate-limiter": "^0.1.10",
     "sanitize-html": "^1.4.3",
     "slugid": "^2.0.0",
+    "slugify": "^1.4.5",
     "socketcluster": "^14.3.3",
     "socketcluster-client": "^14.2.2",
     "stream-meter": "^1.0.3",

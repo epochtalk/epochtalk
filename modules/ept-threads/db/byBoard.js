@@ -16,8 +16,8 @@ module.exports = function(boardId, userId, opts) {
   opts.sortField = opts.sortField || 'updated_at';
   opts.reversed = opts.desc ? 'DESC' : '';
   opts.sortOrder = opts.reversed;
-  opts.columns = 'tlist.id, t.locked, t.sticky, t.moderated, t.poll, t.created_at, t.updated_at, tlist.views AS view_count, t.post_count, p.title, p.user_id, p.username, p.user_deleted, t.time AS last_viewed, tv.id AS post_id, tv.position AS post_position, pl.last_post_id, pl.position AS last_post_position, pl.created_at AS last_post_created_at, pl.deleted AS last_post_deleted, pl.id AS last_post_user_id, pl.username AS last_post_username, pl.user_deleted AS last_post_user_deleted, pl.avatar AS last_post_avatar';
-  opts.q2 = 'SELECT t1.locked, t1.sticky, t1.moderated, t1.post_count, t1.created_at, t1.updated_at, mt.views, ' +
+  opts.columns = 'tlist.id, t.locked, t.sticky, t.slug, t.moderated, t.poll, t.created_at, t.updated_at, tlist.views AS view_count, t.post_count, p.title, p.user_id, p.username, p.user_deleted, t.time AS last_viewed, tv.id AS post_id, tv.position AS post_position, pl.last_post_id, pl.position AS last_post_position, pl.created_at AS last_post_created_at, pl.deleted AS last_post_deleted, pl.id AS last_post_user_id, pl.username AS last_post_username, pl.user_deleted AS last_post_user_deleted, pl.avatar AS last_post_avatar';
+  opts.q2 = 'SELECT t1.locked, t1.sticky, t1.slug, t1.moderated, t1.post_count, t1.created_at, t1.updated_at, mt.views, ' +
     '(SELECT EXISTS ( SELECT 1 FROM polls WHERE thread_id = tlist.id )) as poll, ' +
     '(SELECT time FROM users.thread_views WHERE thread_id = tlist.id AND user_id = $2) ' +
     'FROM threads t1 ' +

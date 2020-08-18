@@ -57,7 +57,7 @@
           </div>
           <div ng-if="board.last_thread_title">
             in
-            <a ui-sref="posts.data({ threadId: board.last_thread_id, start: board.last_post_position })" ng-bind-html="::board.last_thread_title | decode | truncate:25" title="{{board.last_thread_title | decode}}"></a>
+            <a ui-sref="posts.data({ slug: board.last_thread_slug, start: board.last_post_position })" ng-bind-html="::board.last_thread_title | decode | truncate:25" title="{{board.last_thread_title | decode}}"></a>
           </div>
           <div ng-if="board.last_post_created_at">
             <i ng-bind="::board.last_post_created_at | humanDate"></i>
@@ -92,13 +92,13 @@
     <div class="threads-data compact" ng-repeat="thread in BoardsCtrl.recentThreads track by thread.id">
       <div class="subject">
         <div class="title">
-          <a ng-class="{bold: thread.latest}" class="thread-title" ui-sref="posts.data({ threadId: thread.id, start: thread.post.position })" ng-bind-html="thread.title"></a>
+          <a ng-class="{bold: thread.latest}" class="thread-title" ui-sref="posts.data({ slug: thread.slug, start: thread.post.position })" ng-bind-html="thread.title"></a>
           <small>
             by
             <span ng-if="thread.deleted">deleted</span>
             <a ng-if="!thread.deleted" ui-sref="profile.posts({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
             (<a ui-sref="threads.data({ boardId: thread.board.id })" ng-bind-html="thread.board.name"></a>)
-            <a ng-if="thread.latest" ui-sref="posts.data({ threadId: thread.id, start: thread.latest.position, '#': thread.latest.id })"><strong>new</strong></a>
+            <a ng-if="thread.latest" ui-sref="posts.data({ slug: thread.slug, start: thread.latest.position, '#': thread.latest.id })"><strong>new</strong></a>
           </small>
 
           <i class="icon-epoch-lock right hide-mobile" ng-if="thread.locked"></i>
