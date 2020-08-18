@@ -135,7 +135,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       var page = Number(params.page) || 1;
       var limit = Number(params.limit);
       var field = params.field;
-      var descending = params.desc === 'true';
+      var descending = params.desc === 'true' || params.desc === undefined;
       var pageChanged = false;
       var limitChanged = false;
       var fieldChanged = false;
