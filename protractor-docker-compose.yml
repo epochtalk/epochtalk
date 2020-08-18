@@ -78,7 +78,7 @@ services:
       RATE_LIMITING_DELETE_INTERVAL: -1
     command: sh -c "until node cli create-user admin admin@epochtalk.com --password password --admin; do sleep 5; done"
   epoch:
-    image: quay.io/epochtalk/epoch:thread-slugs
+    image: quay.io/epochtalk/epoch:v1.10.0
     depends_on:
       - postgres
     links:
