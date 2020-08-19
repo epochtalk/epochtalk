@@ -91,7 +91,7 @@ function ($state, $stateParams, $location, Breadcrumbs) {
     crumbs: function() {
       if (breadcrumbsStore) {
         for (var i = 0; i < breadcrumbsStore.length; i++) {
-          breadcrumbsStore[i].label = decodeURIComponent(breadcrumbsStore[i].label);
+          breadcrumbsStore[i].label = decodeURIComponent(breadcrumbsStore[i].label.replace(/%/g, '%25'));
         }
       }
       return breadcrumbsStore;
