@@ -55,7 +55,7 @@
     "angular-sanitize": "1.7.5",
     "angular-sortable-view": "0.0.13",
     "aws-sdk": "^2.339.0",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "bluebird": "^3.5.1",
     "change-case": "^2.3.1",
     "cheerio": "^0.20.0",
