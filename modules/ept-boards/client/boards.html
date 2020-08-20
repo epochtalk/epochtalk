@@ -37,14 +37,13 @@
             </div>
           </div>
           <div class="title">
-            <a ng-class="{bold: thread.latest}" class="thread-title" ui-sref="posts.data({ slug: thread.slug, start: thread.post.position })" ng-bind-html="thread.title"></a>
+            <a ng-class="{bold: thread.latest}" class="thread-title" ui-sref="posts.data({ slug: thread.slug, start: thread.post.position })" onclick="event.stopPropagation()" ng-bind-html="thread.title"></a>
           </div>
           <div class="user">
-            in <a ui-sref="threads.data({ boardId: thread.board.id })" ng-bind-html="thread.board.name" class="thread-board"></a>
+            in <a ui-sref="threads.data({ boardId: thread.board.id })" onclick="event.stopPropagation()" ng-bind-html="thread.board.name" class="thread-board"></a>
             by
             <span ng-if="thread.deleted">deleted</span>
-            <a ng-if="!thread.deleted" ui-sref="profile.posts({ username: thread.user.username })"
-              ng-bind-html="thread.user.username"></a>
+            <a ng-if="!thread.deleted" ui-sref="profile.posts({ username: thread.user.username })" onclick="event.stopPropagation()" ng-bind-html="thread.user.username"></a>
           </div>
           <div class="last-reply">
             <div ng-bind="thread.post.created_at | humanDate"></div>
