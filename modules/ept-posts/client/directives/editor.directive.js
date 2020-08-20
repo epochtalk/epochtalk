@@ -142,9 +142,9 @@ var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$
         editor.focus();
 
         var quote = '[quote author=' + newQuote.username;
-        if (newQuote.threadId) {
+        if (newQuote.threadSlug) {
           quote += ' link=';
-          quote += '/threads/' + newQuote.threadId + '/posts?page=' + newQuote.page + '#' + newQuote.postId;
+          quote += '/threads/' + newQuote.threadSlug + '/posts?page=' + newQuote.page + '#' + newQuote.postId;
         }
         quote += ' date=' + newQuote.createdAt + ']';
         quote += newQuote.body;

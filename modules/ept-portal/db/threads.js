@@ -16,6 +16,7 @@ module.exports = function(boardId, userId, opts) {
   opts.reversed = 'DESC';
   opts.columns = `
     tlist.id,
+    t.slug,
     t.locked,
     t.sticky,
     t.moderated,
@@ -49,6 +50,7 @@ module.exports = function(boardId, userId, opts) {
     SELECT
       t1.locked,
       t1.sticky,
+      t1.slug,
       t1.moderated,
       t1.post_count,
       t1.created_at,

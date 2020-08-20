@@ -57,7 +57,7 @@
         <!--  Post Editor Mode -->
         <div class="buttons" ng-if="postEditorMode">
           <div class="left toolbar-title" title="Click to go to this post" ng-if="posting.post.id">
-              Editing Post:&nbsp;&nbsp;<a ui-sref="posts.data({ threadId: thread.id, page: posting.post.page, '#': posting.post.id })">{{ posting.post.id }}</a>
+              Editing Post:&nbsp;&nbsp;<a ui-sref="posts.data({ slug: thread.slug, page: posting.post.page, '#': posting.post.id })">{{ posting.post.id }}</a>
             </a>
           </div>
 

@@ -10,7 +10,7 @@
 
       <div class="threads-container" ng-if="BoardsCtrl.recentThreads">
         <!-- Thread listing -->
-        <div class="threads-data threads-recent" ng-repeat="thread in BoardsCtrl.recentThreads track by thread.id" ui-sref="posts.data({ threadId: thread.id, start: thread.post.position })">
+        <div class="threads-data threads-recent" ng-repeat="thread in BoardsCtrl.recentThreads track by thread.id" ui-sref="posts.data({ slug: thread.slug, start: thread.post.position })">
           <div class="states">
             <div class="thread-state" ng-if="thread.sticky || thread.latest">
               <svg ng-if="thread.latest" class="is-unread" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
@@ -37,7 +37,7 @@
             </div>
           </div>
           <div class="title">
-            <a ng-class="{bold: thread.latest}" class="thread-title" ui-sref="posts.data({ threadId: thread.id, start: thread.post.position })" ng-bind-html="thread.title"></a>
+            <a ng-class="{bold: thread.latest}" class="thread-title" ui-sref="posts.data({ slug: thread.slug, start: thread.post.position })" ng-bind-html="thread.title"></a>
           </div>
           <div class="user">
             in <a ui-sref="threads.data({ boardId: thread.board.id })" ng-bind-html="thread.board.name" class="thread-board"></a>
@@ -127,7 +127,7 @@
                 <img ng-if="!board.user_deleted && !board.post_deleted" class="avatar-small {{$webConfigs.default_avatar_shape}}" ng-src="{{::board.last_post_avatar || $webConfigs.default_avatar}}" />
                 <a ng-if="!board.user_deleted && !board.post_deleted" ui-sref="profile.posts({ username: board.last_post_username })" ng-bind="::board.last_post_username"></a> posted in
                 <span ng-if="board.last_thread_title">
-                  <a ui-sref="posts.data({ threadId: board.last_thread_id, start: board.last_post_position })"
+                  <a ui-sref="posts.data({ slug: board.last_thread_slug, start: board.last_post_position })"
                     ng-bind-html="::board.last_thread_title | decode | truncate:25" title="{{board.last_thread_title | decode}}"></a> on
                 </span>
                 <span ng-if="board.last_post_created_at">

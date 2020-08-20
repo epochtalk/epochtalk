@@ -15,6 +15,7 @@ module.exports = function(userId, priority, opts) {
   var query = `
   SELECT
     tlist.id,
+    tlist.slug,
     t.locked,
     t.sticky,
     t.moderated,
@@ -34,7 +35,7 @@ module.exports = function(userId, priority, opts) {
     pl.username AS last_post_username,
     pl.user_deleted AS last_post_user_deleted
     FROM (
-      SELECT t.id
+      SELECT t.id, t.slug
       FROM threads t
       WHERE EXISTS (
         SELECT 1

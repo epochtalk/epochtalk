@@ -16,7 +16,7 @@ var html = `<div id="mentions-icon" class="tray-icon" ng-class="{'open': vmMenti
               You currently have no mentions.
             </li>
             <li ng-repeat="mention in vmMentions.mentions()" ng-class="{ 'dismissed': mention.viewed }">
-              <a ui-sref="posts.data({ threadId: mention.thread_id, start: mention.post_start, '#': mention.post_id })" ui-sref-opts="{reload: true}" ng-click="vmMentions.dismiss({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })">
+              <a ui-sref="posts.data({ slug: mention.thread_slug, start: mention.post_start, '#': mention.post_id })" ui-sref-opts="{reload: true}" ng-click="vmMentions.dismiss({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })">
                 <div class="mention-unread"></div>
                 <div class="mention-avatar {{$webConfigs.default_avatar_shape}}">
                   <img ng-src="{{mention.mentioner_avatar || $webConfigs.default_avatar}}" />

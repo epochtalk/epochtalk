@@ -31,7 +31,7 @@
             ng-bind="childBoard.last_post_username"></a>
           <span ng-if="childBoard.last_thread_id">
             posted in
-            <a ui-sref="posts.data({ threadId: childBoard.last_thread_id, start: childBoard.last_post_position })"
+            <a ui-sref="posts.data({ slug: childBoard.last_thread_slug, start: childBoard.last_post_position })"
               ng-bind-html="childBoard.last_thread_title | decode | truncate:25"
               title="{{childBoard.last_thread_title | decode}}"></a> on
           </span>
@@ -95,7 +95,7 @@
             </svg>
 
           </div>
-          <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ threadId: thread.id })"
+          <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ slug: thread.slug })"
             ng-bind-html="thread.title"></a>
           <div class="thread-state-secondary">
             <span class="thread-state-locked" ng-if="thread.locked">
@@ -132,10 +132,10 @@
           ng-src="{{thread.last_post_avatar || $webConfigs.default_avatar}}" />
         <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })"
           ng-bind="thread.last_post_username"></a> posted on
-        <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })"><span ng-bind="thread.last_post_created_at | humanDate"></span>.</a>
+        <a ui-sref="posts.data({ slug: thread.slug, start: thread.last_post_position, '#': thread.last_post_id })"><span ng-bind="thread.last_post_created_at | humanDate"></span>.</a>
         <span ng-if="thread.has_new_post">
           <a
-            ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">(Last unread post)</a>
+            ui-sref="posts.data({ slug: thread.slug, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">(Last unread post)</a>
         </span>
       </td>
     </tr>
@@ -152,7 +152,7 @@
               </g>
             </svg>
           </div>
-          <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ threadId: thread.id })"
+          <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ slug: thread.slug })"
             ng-bind-html="thread.title"></a>
             <div class="thread-state-secondary">
             <span class="thread-state-locked" ng-if="thread.locked">
@@ -191,10 +191,10 @@
           ng-src="{{thread.last_post_avatar || $webConfigs.default_avatar}}" />
         <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })"
           ng-bind="thread.last_post_username"></a> posted on
-        <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })"><span ng-bind="thread.last_post_created_at | humanDate"></span>.</a>
+        <a ui-sref="posts.data({ slug: thread.slug, start: thread.last_post_position, '#': thread.last_post_id })"><span ng-bind="thread.last_post_created_at | humanDate"></span>.</a>
         <span ng-if="thread.has_new_post">
           <a
-            ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">(Last unread post)</a>
+            ui-sref="posts.data({ slug: thread.slug, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">(Last unread post)</a>
         </span>
       </td>
     </tr>

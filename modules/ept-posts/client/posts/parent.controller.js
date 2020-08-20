@@ -288,9 +288,9 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
 
     this.copyQuote = function(post) {
       var quote = '[quote author=' + post.user.username;
-      if (ctrl.thread.id) {
+      if (ctrl.thread.slug) {
         quote += ' link=';
-        quote += '/threads/' + ctrl.thread.id + '/posts?page=' + ctrl.page + '#' + post.id;
+        quote += '/threads/' + ctrl.thread.slug + '/posts?page=' + ctrl.page + '#' + post.id;
       }
       quote += ' date=' + new Date(post.created_at).getTime() + ']';
       quote += post.body || post.body_html;
@@ -329,6 +329,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           ctrl.quote = {
             username: post.user.username,
             threadId: ctrl.thread.id,
+            threadSlug: ctrl.thread.slug,
             page: ctrl.page,
             postId: post.id,
             createdAt: new Date(post.created_at).getTime(),
@@ -383,7 +384,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           params.page = lastPage;
           delete params['#'];
           delete params['start'];
-          delete params['threadId'];
+          delete params['slug'];
           // hack, url will only update with a timeout wrapping location search
           $timeout(function() {
             $location.search(params).hash(data.id);
@@ -546,7 +547,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
           params.page = (page || 2) - 1;
           delete params['#'];
           delete params['purged'];
-          delete params['threadId'];
+          delete params['slug'];
           delete params['start'];
           $location.hash('last');
           $location.search(params);

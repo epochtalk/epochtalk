@@ -42,14 +42,13 @@ module.exports = function(objId, objType, request) {
         crumbs.push({ label: obj.name, state: 'threads.data', opts: { boardId: id } });
       }
       else if (curType === type.thread) { // Thread
-        crumbs.push({ label: obj.title, state: 'posts.data', opts: { threadId: id } });
+        crumbs.push({ label: obj.title, state: 'posts.data', opts: { slug: obj.slug } });
         nextType = type.board;
         nextId = obj.board_id;
       }
       if (curType === type.thread) {
-        var q = 'SELECT locked FROM threads WHERE id = $1';
-        var threadId = helper.deslugify(id);
-        return db.scalar(q, [threadId])
+        var q = 'SELECT locked FROM threads WHERE slug = $1';
+        return db.scalar(q, [id])
         .then(function(post) {
           crumbs[0].opts.locked = post.locked;
           return buildCrumbs(nextId, nextType, crumbs);

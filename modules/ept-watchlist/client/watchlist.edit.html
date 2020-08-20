@@ -68,9 +68,9 @@
     </div>
 
   </div>
-  
-  
-  
+
+
+
   <!-- Watched Threads -->
   <div class="watchlist-watched-threads watchlist-panel" ng-if="WatchlistEditCtrl.threads">
     <div class="watchlist-panel-header">
@@ -97,7 +97,7 @@
         <tbody>
           <tr ng-repeat="thread in WatchlistEditCtrl.threads track by thread.id">
             <td class="title">
-              <a ui-sref="posts.data({ threadId: thread.id })" ng-bind-html="thread.title"></a>
+              <a ui-sref="posts.data({ slug: thread.slug })" ng-bind-html="thread.title"></a>
               <span class="parent-board">In Board: <strong><span ng-bind-html="thread.board_name"></</strong></span>
             </td>
             <td class="threads-views-mobile">

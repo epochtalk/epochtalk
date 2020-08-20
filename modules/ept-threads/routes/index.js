@@ -13,6 +13,7 @@ module.exports = [
   require(path.normalize(__dirname + '/purge')),
   require(path.normalize(__dirname + '/removeVote')),
   require(path.normalize(__dirname + '/sticky')),
+  require(path.normalize(__dirname + '/slugToThreadId')),
   require(path.normalize(__dirname + '/title')),
   require(path.normalize(__dirname + '/viewed')),
   require(path.normalize(__dirname + '/vote'))

@@ -16,6 +16,7 @@ module.exports = function(username, priority, opts) {
       SELECT
         p.id,
         p.thread_id,
+        (SELECT t.slug FROM threads t WHERE t.id = p.thread_id) as thread_slug,
         p.user_id,
         p.content ->> 'body' as body,
         p.position,

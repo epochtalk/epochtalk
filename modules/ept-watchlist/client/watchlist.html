@@ -28,7 +28,7 @@
     </thead>
     <tbody>
 
-      <tr class="threads-data" ng-repeat="thread in WatchlistCtrl.threads track by thread.id"">
+      <tr class="threads-data" ng-repeat="thread in WatchlistCtrl.threads track by thread.id">
         <td class="subject">
           <div class="title">
             <div class="thread-state">
@@ -39,7 +39,7 @@
                 </g>
               </svg>
             </div>
-            <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ threadId: thread.id })"
+            <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ slug: thread.slug })"
               ng-bind-html="thread.title"></a>
               <div class="thread-state-secondary">
               <span class="thread-state-locked" ng-if="thread.locked">
@@ -55,7 +55,7 @@
               </span>
             </div>
           </div>
-          
+
           <div class="started-by">
             Started by
             <span ng-if="thread.user.deleted">deleted</span>
@@ -76,16 +76,14 @@
             ng-src="{{thread.last_post_avatar || $webConfigs.default_avatar}}" />
           <a ng-if="!thread.last_deleted" ui-sref="profile.posts({ username: thread.last_post_username })"
             ng-bind="thread.last_post_username"></a> posted on
-          <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })"><span ng-bind="thread.last_post_created_at | humanDate"></span>.</a>
+          <a ui-sref="posts.data({ slug: thread.slug, start: thread.last_post_position, '#': thread.last_post_id })"><span ng-bind="thread.last_post_created_at | humanDate"></span>.</a>
           <span ng-if="thread.has_new_post">
-            <a
-              ui-sref="posts.data({ threadId: thread.id, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">(Last unread post)</a>
+            <a ui-sref="posts.data({ slug: thread.slug, start: thread.latest_unread_position, '#': thread.latest_unread_post_id })">(Last unread post)</a>
           </span>
         </td>
       </tr>
     </tbody>
-  </table>
-
+  </table>Z
 
   <!-- No Threads Listed -->
   <div class-"threads-data" ng-if="WatchlistCtrl.threads.length < 1" class="centered-text">

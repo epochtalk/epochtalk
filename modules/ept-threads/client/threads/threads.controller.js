@@ -99,7 +99,7 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       // create a new thread and post
       return Threads.save(ctrl.parent.thread).$promise
       .then(function(thread) {
-        $location.path('/threads/' + thread.thread_id + '/posts');
+        $location.path('/threads/' + thread.slug + '/posts');
         return Posts.updatePostDraft({ draft: null });
       })
       .catch(function(err) {
@@ -180,19 +180,19 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       var pageKeys = [];
       if (thread.page_count < 7) {
         var i = 1;
-        while(pageKeys.push({ val: i++, threadId: thread.id}) < thread.page_count) {}
+        while(pageKeys.push({ val: i++, slug: thread.slug}) < thread.page_count) {}
       }
       else {
         var thirdToLastPage = (thread.page_count - 2);
         var secondToLastPage = (thread.page_count - 1);
         var lastPage = thread.page_count;
-        pageKeys.push({ val: 1, threadId: thread.id });
-        pageKeys.push({ val: 2, threadId: thread.id });
-        pageKeys.push({ val: 3, threadId: thread.id });
-        pageKeys.push({ val: '&hellip;', threadId: null });
-        pageKeys.push({ val: thirdToLastPage, threadId: thread.id });
-        pageKeys.push({ val: secondToLastPage, threadId: thread.id });
-        pageKeys.push({ val: lastPage, threadId: thread.id });
+        pageKeys.push({ val: 1, slug: thread.slug });
+        pageKeys.push({ val: 2, slug: thread.slug });
+        pageKeys.push({ val: 3, slug: thread.slug });
+        pageKeys.push({ val: '&hellip;', slug: null });
+        pageKeys.push({ val: thirdToLastPage, slug: thread.slug });
+        pageKeys.push({ val: secondToLastPage, slug: thread.slug });
+        pageKeys.push({ val: lastPage, slug: thread.slug });
       }
       thread.page_keys = pageKeys;
     };

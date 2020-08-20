@@ -114,7 +114,7 @@
         <span ng-repeat="breadcrumb in post.breadcrumbs" ng-if="breadcrumb.label" ng-class="{ active: $last }">
           <a ng-if="!$last && breadcrumb.state" title="{{breadcrumb.label}}" ui-sref="{{breadcrumb.state}}({{breadcrumb.opts}})" ui-sref-opts="{ reload: true }" ng-bind-html="breadcrumb.label | truncate:30"></a>
           <strong ng-if="!$last">&nbsp;/&nbsp;</strong>
-          <strong ng-if="$last"><a ui-sref="posts.data({ threadId: post.thread_id, start: post.position, '#': post.id })" ng-bind-html="::post.thread_title"></a></strong>
+          <strong ng-if="$last"><a ui-sref="posts.data({ slug: post.slug, start: post.position, '#': post.id })" ng-bind-html="::post.thread_title"></a></strong>
         </span>
       </div>
       <!-- Post Body -->

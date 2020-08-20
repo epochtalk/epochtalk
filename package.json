@@ -55,7 +55,7 @@
     "angular-sanitize": "1.7.5",
     "angular-sortable-view": "0.0.13",
     "aws-sdk": "^2.339.0",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "bluebird": "^3.5.1",
     "change-case": "^2.3.1",
     "cheerio": "^0.20.0",
@@ -92,6 +92,7 @@
     "rolling-rate-limiter": "^0.1.10",
     "sanitize-html": "^1.4.3",
     "slugid": "^2.0.0",
+    "slugify": "^1.4.5",
     "socketcluster": "^14.3.3",
     "socketcluster-client": "^14.2.2",
     "stream-meter": "^1.0.3",
@@ -128,7 +129,9 @@
     "good-http/wreck": "^12.5.1",
     "acorn": "^6.4.1",
     "kind-of": "^6.0.3",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "serialize-javascript": "^3.1.0",
+    "dot-prop": "^4.2.1"
   },
   "bin": {
     "epoch": "cli/index.js"

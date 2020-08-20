@@ -5,7 +5,7 @@
 </div>
 <div class="recent-mentions">
   <div class="mention" ng-repeat="mention in MentionsCtrl.mentions" ng-class="{ 'dismissed': mention.viewed }">
-    <a class="mention-content" ui-sref="posts.data({ threadId: mention.thread_id, start: mention.post_start, '#': mention.post_id })" ui-sref-opts="{reload: true}" ng-click="MentionsCtrl.dismiss({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })">
+    <a class="mention-content" ui-sref="posts.data({ slug: mention.thread_slug, start: mention.post_start, '#': mention.post_id })" ui-sref-opts="{reload: true}" ng-click="MentionsCtrl.dismiss({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })">
       <div class="mention-status">
         <svg class="unread" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
           <title>icon__unread</title>
@@ -20,14 +20,14 @@
 
         <div class="mention-body">
           <span class="timestamp">{{mention.created_at | humanDate}}</span>
-          <span class="user">{{mention.mentioner}}</span> 
-          mentioned you in 
+          <span class="user">{{mention.mentioner}}</span>
+          mentioned you in
           <span class="hidden-mobile">
-            <span ng-bind-html="mention.board_name" class="boardName"></span> 
+            <span ng-bind-html="mention.board_name" class="boardName"></span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="caret-right">
               <title>caret-down</title>
               <path d="M24,38.83,4.59,19.41a2,2,0,0,1,2.82-2.82L24,33.17,40.59,16.59a2,2,0,0,1,2.82,2.82Z"/>
-            </svg> 
+            </svg>
           </span>
           <span class="title">{{mention.title}}</span>
         </div>

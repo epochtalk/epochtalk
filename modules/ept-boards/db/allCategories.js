@@ -30,12 +30,14 @@ module.exports = function(userPriority, opts) {
         b.updated_at,
         b.imported_at,
         mb.last_thread_id,
+        t.slug as last_thread_slug,
         bm.parent_id,
         bm.category_id,
         bm.view_order
       FROM board_mapping bm
       LEFT JOIN boards b ON bm.board_id = b.id
       LEFT JOIN metadata.boards mb ON b.id = mb.board_id
+      LEFT JOIN threads t ON t.id = mb.last_thread_id
     ) blist
     LEFT JOIN LATERAL (
       SELECT pf.content ->> 'title' as last_thread_title
@@ -87,6 +89,7 @@ module.exports = function(userPriority, opts) {
         board.last_post_avatar = undefined;
         board.last_post_created_at = undefined;
         board.last_thread_id = undefined;
+        board.last_thread_slug = undefined;
         board.last_thread_title = undefined;
         board.last_post_position = undefined;
       }

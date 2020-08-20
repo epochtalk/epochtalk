@@ -5,10 +5,18 @@ var helper = dbc.helper;
 var errors = dbc.errors;
 var NotFoundError = errors.NotFoundError;
 
-module.exports = function(threadId, userPriority) {
-  threadId = helper.deslugify(threadId);
-  var q = 'SELECT board_id FROM threads WHERE id = $1';
-  return db.sqlQuery(q, [threadId])
+module.exports = function(threadId, userPriority, slug) {
+  var q, params;
+  if (threadId) {
+    threadId = helper.deslugify(threadId);
+    q = 'SELECT board_id FROM threads WHERE id = $1';
+    params = [threadId];
+  }
+  else {
+    q = 'SELECT board_id FROM threads WHERE slug = $1';
+    params = [slug];
+  }
+  return db.sqlQuery(q, params)
   .then(function(rows) {
     if (rows.length > 0 ) { return rows[0].board_id; }
     else { throw new NotFoundError(); }

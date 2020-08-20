@@ -28,7 +28,7 @@
 
     <div ng-if="!thread.last_deleted && !thread.user_deleted">
       <!-- Page Title -->
-      <a ui-sref="posts.data({ threadId: thread.id, start: thread.last_post_position, '#': thread.last_post_id })">
+      <a ui-sref="posts.data({ slug: thread.slug, start: thread.last_post_position, '#': thread.last_post_id })">
         <h5 class="thread-title" ng-bind-html="::thread.title"></h5>
         <i class="icon-epoch-lock" ng-if="thread.locked"></i>
         <i class="icon-epoch-verified" ng-if="thread.sticky"></i>
@@ -97,13 +97,13 @@
     <div class="threads-data compact" ng-repeat="thread in PortalCtrl.recent track by thread.id">
       <div class="subject">
         <div class="title">
-          <a ng-class="{bold: thread.latest}" class="thread-title" ui-sref="posts.data({ threadId: thread.id, start: thread.post.position })" ng-bind-html="thread.title"></a>
+          <a ng-class="{bold: thread.latest}" class="thread-title" ui-sref="posts.data({ slug: thread.slug, start: thread.post.position })" ng-bind-html="thread.title"></a>
           <small>
             by
             <span ng-if="thread.deleted">deleted</span>
             <a ng-if="!thread.deleted" ui-sref="profile.posts({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
             (<a ui-sref="threads.data({ boardId: thread.board.id })" ng-bind-html="thread.board.name"></a>)
-            <a ng-if="thread.latest" ui-sref="posts.data({ threadId: thread.id, start: thread.latest.position, '#': thread.latest.id })"><strong>new</strong></a>
+            <a ng-if="thread.latest" ui-sref="posts.data({ slug: thread.slug, start: thread.latest.position, '#': thread.latest.id })"><strong>new</strong></a>
           </small>
 
           <i class="icon-epoch-lock right hide-mobile" ng-if="thread.locked"></i>

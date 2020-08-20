@@ -35,11 +35,22 @@ var ctrl = ['$timeout', '$state', 'Session', 'Posts', 'Reports', 'Alert',
       else { return true; }
     };
 
+    function closeEditor() {
+      ctrl.posting.post.id = '';
+      ctrl.posting.post.title = '';
+      ctrl.posting.post.body_html = '';
+      ctrl.posting.post.body = '';
+      ctrl.posting.page = '';
+      ctrl.resetEditor = true;
+      ctrl.showEditor = false;
+    }
+
     this.loadEditor = function(post) {
       post = post || {};
       if (discardAlert()) {
         var editorPost = ctrl.posting.post;
         editorPost.id = post.id || '';
+        editorPost.slug = post.slug || '';
         editorPost.title = post.thread_title || '';
         editorPost.body_html = post.body_html || '';
         editorPost.thread_id = post.thread_id || '';
