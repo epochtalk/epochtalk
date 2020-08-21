@@ -1,3 +1,5 @@
+var slugify = require('slugify');
+
 var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'Alert', 'BanSvc', 'Session', 'Threads', 'Posts', 'Watchlist', 'PreferencesSvc', 'pageData',
   function($rootScope, $scope, $anchorScroll, $location, $timeout, Alert, BanSvc, Session, Threads, Posts, Watchlist, PreferencesSvc, pageData) {
     var ctrl = this;
@@ -95,6 +97,8 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
 
       // remove poll from thread if invalid
       if (!ctrl.parent.thread.addPoll || !ctrl.parent.thread.pollValid) { delete ctrl.parent.thread.poll; }
+
+      ctrl.parent.thread.slug = slugify(ctrl.parent.thread.title);
 
       // create a new thread and post
       return Threads.save(ctrl.parent.thread).$promise
