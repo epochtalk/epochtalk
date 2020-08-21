@@ -1,6 +1,7 @@
 var remove = require('lodash/remove');
 var find = require('lodash/find');
 var difference = require('lodash/difference');
+var slugify = require('slugify');
 
 var directive = ['$state', function($state) {
   return {
@@ -30,9 +31,27 @@ var directive = ['$state', function($state) {
       $scope.showEditCategory = false;
       $scope.showDeleteCategory = false;
 
+      $scope.slugify = function() {
+        var nameInput, slugInput;
+        if ($scope.showAddBoard) {
+          nameInput = $('#newBoardName');
+          slugInput = $('#newBoardSlug');
+        }
+        else if ($scope.showEditBoard) {
+          nameInput = $('#editBoardName');
+          slugInput = $('#editBoardSlug');
+        }
+        var sluggedName = slugify(nameInput.val());
+        if (sluggedName === '') {
+          sluggedName = Math.random().toString(36).substring(8);
+        }
+        slugInput.val(sluggedName);
+      };
+
       /* Add Boards */
       $scope.clearAddBoardFields = function() {
         $('#newBoardName').val('');
+        $('#newBoardSlug').val('');
         $('#newBoardDesc').val('');
         $('#newBoardViewable').val('');
         $('#newBoardPostable').val('');
@@ -79,6 +98,7 @@ var directive = ['$state', function($state) {
           editBoardDataId = nestedBoardDataId;
           editBoardId = editBoard.id;
           $('#editBoardName').val(editBoard.name);
+          $('#editBoardSlug').val(editBoard.slug);
           $('#editBoardDesc').val(editBoard.description);
           $('#editBoardViewable').val($('#editCatViewable').val());
           $('#editBoardPostable').val(editBoard.postable_by);
@@ -102,6 +122,7 @@ var directive = ['$state', function($state) {
         editBoardDataId = dataId;
         editBoardId = editBoard.id;
         $('#editBoardName').val(editBoard.name);
+        $('#editBoardSlug').val(editBoard.slug);
         $('#editBoardDesc').val(editBoard.description);
         $('#editBoardViewable').val(editBoard.viewable_by);
         $('#editBoardPostable').val(editBoard.postable_by);
@@ -140,6 +161,7 @@ var directive = ['$state', function($state) {
           $scope.newBoards.forEach(function(newBoard) {
             if (newBoard.dataId === editBoardDataId) {
               newBoard.name = $('#editBoardName').val();
+              newBoard.slug = $('#editBoardSlug').val();
               newBoard.description = $('#editBoardDesc').val();
               newBoard.viewable_by = $('#editBoardViewable').val();
               newBoard.postable_by = $('#editBoardPostable').val();
@@ -156,6 +178,7 @@ var directive = ['$state', function($state) {
           var editedBoard = {
             id: editBoardId,
             name: $('#editBoardName').val(),
+            slug: $('#editBoardSlug').val(),
             description: $('#editBoardDesc').val(),
             viewable_by: $('#editBoardViewable').val() || null,
             postable_by: $('#editBoardPostable').val() || null,
@@ -171,6 +194,7 @@ var directive = ['$state', function($state) {
           });
           if (foundBoard) {
             foundBoard.name = editedBoard.name;
+            foundBoard.slug = editedBoard.slug;
             foundBoard.description = editedBoard.description;
             foundBoard.viewable_by = editedBoard.viewable_by;
             foundBoard.postable_by = editedBoard.postable_by;
@@ -193,6 +217,7 @@ var directive = ['$state', function($state) {
         // Update data stored in nestableMap to reflect edit
         var board = $scope.nestableMap[editBoardDataId];
         board.name = $('#editBoardName').val();
+        board.slug = $('#editBoardSlug').val();
         board.description = $('#editBoardDesc').val();
         board.viewable_by = $('#editBoardViewable').val();
         board.postable_by = $('#editBoardPostable').val();
@@ -205,6 +230,7 @@ var directive = ['$state', function($state) {
         editBoardDataId = '';
         editBoardId = '';
         $('#editBoardName').val('');
+        $('#editBoardSlug').val('');
         $('#editBoardDesc').val('');
         $('#editBoardViewable').val('');
         $('#editBoardPostable').val('');

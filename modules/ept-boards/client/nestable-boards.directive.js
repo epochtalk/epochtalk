@@ -24,6 +24,7 @@ var directive = ['$compile', function($compile) {
           scope.nestableMap[dataId] = {
             id: board.id,
             name: board.name,
+            slug: board.slug,
             description: board.description,
             viewable_by: board.viewable_by,
             postable_by: board.postable_by,
@@ -57,6 +58,7 @@ var directive = ['$compile', function($compile) {
       scope.insertNewBoard = function() {
         var board = {
           name: $('#newBoardName').val() || '',
+          slug: $('#newBoardSlug').val(),
           description: $('#newBoardDesc').val() || '',
           viewable_by: $('#newBoardViewable').val() || undefined,
           postable_by: $('#newBoardPostable').val() || undefined,
@@ -72,6 +74,7 @@ var directive = ['$compile', function($compile) {
           scope.nestableMap[dataId] = {
             id: -1,
             name: board.name,
+            slug: board.slug,
             description: board.description,
             viewable_by: board.viewable_by,
             postable_by: board.postable_by,
@@ -106,6 +109,7 @@ var directive = ['$compile', function($compile) {
 
         scope.showAddBoard = false;
         $('#newBoardName').val('');
+        $('#newBoardSlug').val('');
         $('#newBoardDesc').val('');
         $('#newBoardViewable').val('');
         $('#newBoardPostable').val('');

@@ -35,7 +35,10 @@
 <modal show="showAddBoard" on-close="clearAddBoardFields()">
   <h3 class="thin-underline">Add New Board</h3>
   <label>Board Name
-    <input modal-focus="{{showAddBoard}}" type="text" class="input-text" id="newBoardName" placeholder="Board Name" maxlength="255"/>
+    <input modal-focus="{{showAddBoard}}" type="text" class="input-text" id="newBoardName" placeholder="Board Name" maxlength="255" ng-model="newBoardName" ng-change="slugify()"/>
+  </label>
+  <label>Board URL Slug
+    <input type="text" class="input-text" id="newBoardSlug" placeholder="Board URL Slug" maxlength="80"/>
   </label>
   <label>Board Description
     <textarea rows="5" id="newBoardDesc" placeholder="Board Description" maxlength="255"></textarea>
@@ -98,7 +101,10 @@
 <modal show="showEditBoard">
   <h3 class="thin-underline">Edit Board</h3>
   <label>Board Name
-    <input modal-focus="{{showEditBoard}}" type="text" class="input-text" id="editBoardName" ng-model="editBoardName" placeholder="Board Name" maxlength="255"/>
+    <input modal-focus="{{showEditBoard}}" type="text" class="input-text" id="editBoardName" ng-model="editBoardName" placeholder="Board Name" maxlength="255" ng-change="slugify()" />
+  </label>
+  <label>Board URL Slug
+    <input type="text" class="input-text" id="editBoardSlug" ng-model="editBoardSlug" placeholder="Board URL Slug" maxlength="80"/>
   </label>
   <label>Board Description
     <textarea rows="5" id="editBoardDesc" ng-model="editBoardDesc" placeholder="Board Description" maxlength="255"></textarea>
