@@ -42,6 +42,7 @@ module.exports = {
     validate: {
       payload: Joi.array().items(Joi.object({
         name: Joi.string().min(1).max(255).required(),
+        slug: Joi.string().regex(/^[a-zA-Z0-9-~!@)(_+:'"\.](-?[a-zA-Z0-9-~!@)(_+:'"\.])*$/).min(1).max(100).required(),
         description: Joi.string().max(255).allow(''),
         viewable_by: Joi.number(),
         postable_by: Joi.number(),
