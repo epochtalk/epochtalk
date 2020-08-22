@@ -66,6 +66,7 @@ module.exports = {
 
     // update each board
     var promise = Promise.map(boards, function(board) {
+      board.slug = board.slug.toLowerCase();
       return request.db.boards.update(board);
     })
     .error(request.errorMap.toHttpError);

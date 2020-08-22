@@ -71,6 +71,7 @@ module.exports = {
       return board;
     });
     var promise = Promise.map(boards, function(board) {
+      board.slug = board.slug.toLowerCase();
       return request.db.boards.create(board);
     })
     .error(request.errorMap.toHttpError);
