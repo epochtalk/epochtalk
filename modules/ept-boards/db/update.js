@@ -19,6 +19,7 @@ module.exports = function(board) {
     })
     .then(function(oldBoard) {
       board.name = board.name || oldBoard.name;
+      board.slug = board.slug || oldBoard.slug;
       helper.updateAssign(board, oldBoard, board, 'description');
       helper.updateAssign(board, oldBoard, board, 'viewable_by');
       helper.updateAssign(board, oldBoard, board, 'postable_by');
@@ -26,8 +27,8 @@ module.exports = function(board) {
       helper.updateAssign(board, oldBoard, board, 'meta');
     })
     .then(function() {
-      q = 'UPDATE boards SET name = $1, description = $2, viewable_by = $3, postable_by = $4, right_to_left = $5, meta = $6, updated_at = now() WHERE id = $7';
-      params = [board.name, board.description || '', board.viewable_by, board.postable_by, board.right_to_left, board.meta, board.id];
+      q = 'UPDATE boards SET name = $1, description = $2, viewable_by = $3, postable_by = $4, right_to_left = $5, meta = $6, slug = $7 updated_at = now() WHERE id = $8';
+      params = [board.name, board.description || '', board.viewable_by, board.postable_by, board.right_to_left, board.meta, board.slug, board.id];
       return client.query(q, params);
     });
   })
