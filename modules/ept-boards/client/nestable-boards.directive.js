@@ -65,7 +65,7 @@ var directive = ['$compile', function($compile) {
           right_to_left: $('input[name="newBoardRTL"]:checked').val() === "true",
           disable_signature: $('input[name="newBoardSignatures"]:checked').val() === "true",
           disable_selfmod: $('input[name="newBoardSelfMod"]:checked').val() === "true",
-          disable_post_edit: $('#newBoardPostEdit').val()
+          disable_post_edit: $('#newBoardPostEdit').val() === '' ? null : $('#newBoardPostEdit').val()
         };
 
         if (board.name !== '') {
