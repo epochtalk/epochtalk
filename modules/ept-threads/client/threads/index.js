@@ -11,7 +11,7 @@ var route = ['$stateProvider', function($stateProvider) {
     }
   })
   .state('threads.data', {
-    url: '/boards/{boardId}?limit&page&field&desc',
+    url: '/boards/{boardSlug}?limit&page&field&desc',
     reloadOnSearch: false,
     views: {
       'data@threads': {
@@ -36,9 +36,8 @@ var route = ['$stateProvider', function($stateProvider) {
         return deferred.promise;
       }],
       pageData: ['Boards', 'Threads', 'PreferencesSvc', '$stateParams', function(Boards, Threads, PreferencesSvc, $stateParams) {
-        return Boards.slugToBoardId({ slug: $stateParams.boardId }).$promise
+        return Boards.slugToBoardId({ slug: $stateParams.boardSlug }).$promise
         .then(function(board) {
-          console.log(board);
           var prefs = PreferencesSvc.preferences;
           var query = {
             board_id: board.id,

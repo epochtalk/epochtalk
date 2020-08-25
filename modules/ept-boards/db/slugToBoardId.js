@@ -6,7 +6,6 @@ var errors = dbc.errors;
 var NotFoundError = errors.NotFoundError;
 
 module.exports = function(slug) {
-  console.log(slug);
   var query = 'SELECT id FROM boards WHERE slug = $1';
   return db.scalar(query, [slug])
   .then(function(row) {

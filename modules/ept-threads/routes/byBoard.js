@@ -114,7 +114,6 @@ module.exports = {
 };
 
 function processing(request) {
-  console.log('\n\n', request.query);
   var userId;
   if (request.auth.isAuthenticated) { userId = request.auth.credentials.id; }
   var userPriority = request.server.plugins.acls.getUserPriority(request.auth);

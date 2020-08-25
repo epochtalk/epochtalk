@@ -22,7 +22,6 @@ module.exports = {
   },
   handler: function(request) {
     var slug = request.params.slug;
-    console.log(slug);
 
     // create the thread
     var promise = request.db.boards.slugToBoardId(slug)
