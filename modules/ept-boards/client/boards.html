@@ -18,7 +18,7 @@
         <div class="info">
           <!-- Board Name -->
           <h5>
-            <a ui-sref="threads.data({ boardId: board.id })" class="board-name" ng-bind-html="board.name"></a>
+            <a ui-sref="threads.data({ boardSlug: board.slug })" class="board-name" ng-bind-html="board.name"></a>
           </h5>
           <!-- Moderators -->
           <div ng-if="board.moderators.length > 0">
@@ -32,7 +32,7 @@
           <div class="childboards" ng-if="board.children.length > 0">
             <strong>Child Boards:</strong>
             <span ng-repeat="child in board.children">
-              <a ui-sref="threads.data({ boardId: child.id })" class="board-name" ng-bind-html="::child.name"></a>{{$last ? '' : ', '}}
+              <a ui-sref="threads.data({ boardSlug: child.slug })" class="board-name" ng-bind-html="::child.name"></a>{{$last ? '' : ', '}}
             </span>
           </div>
         </div>
@@ -97,7 +97,7 @@
             by
             <span ng-if="thread.deleted">deleted</span>
             <a ng-if="!thread.deleted" ui-sref="profile.posts({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
-            (<a ui-sref="threads.data({ boardId: thread.board.id })" ng-bind-html="thread.board.name"></a>)
+            (<a ui-sref="threads.data({ boardSlug: thread.board.slug })" ng-bind-html="thread.board.name"></a>)
             <a ng-if="thread.latest" ui-sref="posts.data({ slug: thread.slug, start: thread.latest.position, '#': thread.latest.id })"><strong>new</strong></a>
           </small>
 
