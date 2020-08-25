@@ -7,15 +7,23 @@ var helper = dbc.helper;
 var errors = dbc.errors;
 var NotFoundError = errors.NotFoundError;
 
-module.exports = function(id, userPriority) {
-  id = helper.deslugify(id);
-
+module.exports = function(id, userPriority, slug) {
   if (userPriority === 0) { /** NOOP **/ }
   else if (!userPriority) { userPriority = Number.MAX_VALUE; }
 
+  var whereClause, params;
+  if (slug) {
+    whereClause = 'b.slug = $1';
+    params = [slug];
+  }
+  else {
+    id = helper.deslugify(id);
+    whereClause = 'b.id = $1';
+    params = [id];
+  }
   // get board with given id
-  var q = 'SELECT b.id, b.name, b.slug, b.description, b.viewable_by, b.postable_by, b.right_to_left, (b.meta ->> \'disable_post_edit\') as disable_post_edit, (b.meta ->> \'disable_signature\')::boolean as disable_signature, (b.meta ->> \'disable_selfmod\')::boolean as disable_selfmod, b.created_at, b.thread_count, b.post_count, b.updated_at, b.imported_at, (SELECT bm.parent_id FROM board_mapping bm WHERE bm.board_id = b.id) as parent_id, (SELECT json_agg(row_to_json((SELECT x FROM ( SELECT bm.user_id as id, u.username as username) x ))) as moderators from board_moderators bm LEFT JOIN users u ON bm.user_id = u.id WHERE bm.board_id = b.id) as moderators FROM boards b WHERE b.id = $1 OR b.slug = $1::text;';
-  return db.sqlQuery(q, [id])
+  var q = 'SELECT b.id, b.name, b.slug, b.description, b.viewable_by, b.postable_by, b.right_to_left, (b.meta ->> \'disable_post_edit\') as disable_post_edit, (b.meta ->> \'disable_signature\')::boolean as disable_signature, (b.meta ->> \'disable_selfmod\')::boolean as disable_selfmod, b.created_at, b.thread_count, b.post_count, b.updated_at, b.imported_at, (SELECT bm.parent_id FROM board_mapping bm WHERE bm.board_id = b.id) as parent_id, (SELECT json_agg(row_to_json((SELECT x FROM ( SELECT bm.user_id as id, u.username as username) x ))) as moderators from board_moderators bm LEFT JOIN users u ON bm.user_id = u.id WHERE bm.board_id = b.id) as moderators FROM boards b WHERE ' + whereClause;
+  return db.sqlQuery(q, params)
   .then(function(rows) {
     if (rows.length > 0) { return rows[0]; }
     else { throw new NotFoundError('Board Not Found'); }
@@ -123,7 +131,7 @@ module.exports = function(id, userPriority) {
   .then((board) => {
     // query for sticky thread count
     var stickyThreadCountQuery = 'SELECT COUNT(id) FROM threads WHERE board_id = $1 AND sticky = True';
-    return db.scalar(stickyThreadCountQuery, [id]).then((result) => {
+    return db.scalar(stickyThreadCountQuery, [board.id]).then((result) => {
       board.sticky_thread_count = result.count;
       return board;
     });

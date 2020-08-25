@@ -3,13 +3,22 @@ var dbc = require(path.normalize(__dirname + '/db'));
 var db = dbc.db;
 var helper = dbc.helper;
 
-module.exports = function(boardId, userPriority) {
-  boardId = helper.deslugify(boardId);
+module.exports = function(boardId, userPriority, slug) {
+  var boardIdQuery, params;
+  if (slug) {
+    boardIdQuery = '(SELECT b.id FROM boards b WHERE b.slug = $1)';
+    params = [slug];
+  }
+  else {
+    boardId = helper.deslugify(boardId);
+    boardIdQuery = '$1';
+    params = [boardId];
+  }
 
   var q =
   `WITH RECURSIVE find_parent(board_id, parent_id, category_id) AS (
     SELECT bm.board_id, bm.parent_id, bm.category_id
-    FROM board_mapping bm where board_id = $1
+    FROM board_mapping bm where board_id = ${boardIdQuery}
     UNION
     SELECT bm.board_id, bm.parent_id, bm.category_id
     FROM board_mapping bm, find_parent fp
