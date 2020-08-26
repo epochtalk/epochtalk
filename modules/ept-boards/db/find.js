@@ -35,6 +35,7 @@ module.exports = function(id, userPriority, slug) {
       SELECT
         b.id,
         b.name,
+        b.slug,
         b.description,
         b.viewable_by,
         b.postable_by,

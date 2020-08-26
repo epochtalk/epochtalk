@@ -38,7 +38,7 @@
           <span ng-if="!post.user.online" class="online green"><i class="fa fa-circle-o"></i></span>
           <a class="username" data-balloon="{{post.user.role_name || 'User'}}" ui-sref="profile.posts({ username: post.user.username})" ng-style="PostSearchCtrl.usernameHighlight(post.user.highlight_color)" ng-bind="::post.user.username"></a>
           <div class="posted-in">posted in</div>
-          <a class="board-name" ui-sref="threads.data({ boardId: post.board_id })" ng-bind-html="::post.board_name"></a>
+          <a class="board-name" ui-sref="threads.data({ boardSlug: post.board_slug })" ng-bind-html="::post.board_name"></a>
           <div class="timestamp">
             <span ng-bind="::post.created_at | humanDate"></span>
           </div>
