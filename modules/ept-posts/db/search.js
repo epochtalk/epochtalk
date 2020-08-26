@@ -28,7 +28,8 @@ module.exports = function(opts, priority) {
       ts_headline('simple', p.content ->> 'body', q, 'StartSel=<mark>, StopSel=</mark>, MaxWords=150, HighlightAll=FALSE, MaxFragments=0, FragmentDelimiter=" ... "') as body_match,
       p.content->>'body' as body,
       t.board_id,
-      b.name AS board_name
+      b.name AS board_name,
+      b.slug AS board_slug
       FROM posts p, users u, threads t, boards b, plainto_tsquery('simple', $1) AS q
       WHERE
         EXISTS (

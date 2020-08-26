@@ -8,6 +8,11 @@ var resource = ['$resource',
       update: { method: 'PUT', isArray: true },
       save: { method: 'POST', isArray: true },
       delete: { method: 'POST', url: '/api/boards/delete', isArray: true },
+      slugToBoardId: {
+        method: 'GET',
+        params: { slug: '@slug' },
+        url: '/api/boards/:slug/id'
+      },
       unfiltered: {
         method: 'GET',
         url: '/api/boards/unfiltered',

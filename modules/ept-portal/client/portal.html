@@ -3,7 +3,7 @@
   <div class="page-header-split">
     <div>
       <h3>
-        Feed: <a ui-sref="threads.data({boardId: PortalCtrl.board.id})" ng-bind-html="PortalCtrl.board.name"></a>
+        Feed: <a ui-sref="threads.data({boardSlug: PortalCtrl.board.slug})" ng-bind-html="PortalCtrl.board.name"></a>
       </h3>
       <div class="moderators" ng-if="PortalCtrl.board.moderators.length > 0">
         <span class="label">Moderators: </span>
@@ -102,7 +102,7 @@
             by
             <span ng-if="thread.deleted">deleted</span>
             <a ng-if="!thread.deleted" ui-sref="profile.posts({ username: thread.user.username })" ng-bind-html="thread.user.username"></a>
-            (<a ui-sref="threads.data({ boardId: thread.board.id })" ng-bind-html="thread.board.name"></a>)
+            (<a ui-sref="threads.data({ boardSlug: thread.board.slug })" ng-bind-html="thread.board.name"></a>)
             <a ng-if="thread.latest" ui-sref="posts.data({ slug: thread.slug, start: thread.latest.position, '#': thread.latest.id })"><strong>new</strong></a>
           </small>
 

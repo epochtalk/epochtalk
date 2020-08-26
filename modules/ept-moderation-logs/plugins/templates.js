@@ -12,10 +12,11 @@ module.exports = {
     genDisplayText: function(data) {
       return `added user(s) "${data.usernames.toString().replace(/,/g, ', ')}" to list of moderators for board "${data.board_name}"`;
     },
-    genDisplayUrl: function(data) { return `threads.data({ boardId: '${data.board_id}' })`; },
+    genDisplayUrl: function(data) { return `threads.data({ boardSlug: '${data.board_slug}' })`; },
     dataQuery: function(data, request) {
       return request.db.boards.find(data.board_id)
       .then(function(board) {
+        data.board_slug = board.slug;
         data.board_name = board.name;
         data.board_moderators = board.moderators;
       });
@@ -25,10 +26,11 @@ module.exports = {
     genDisplayText: function(data) {
       return `removed user(s) "${data.usernames.toString().replace(/,/g, ', ')}" from list of moderators for board "${data.board_name}"`;
     },
-    genDisplayUrl: function(data) { return `threads.data({ boardId: '${data.board_id}' })`; },
+    genDisplayUrl: function(data) { return `threads.data({ boardSlug: '${data.board_slug}' })`; },
     dataQuery: function(data, request) {
       return request.db.boards.find(data.board_id)
       .then(function(board) {
+        data.board_slug = board.slug;
         data.board_name = board.name;
         data.board_moderators = board.moderators;
       });

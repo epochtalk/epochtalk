@@ -17,6 +17,7 @@ module.exports = function(userPriority, opts) {
       SELECT
         b.id,
         b.name,
+        b.slug,
         b.description,
         b.viewable_by,
         b.postable_by,
@@ -73,7 +74,7 @@ module.exports = function(userPriority, opts) {
       WHERE bm.board_id = blist.id
     ) mods on true;`;
     if (opts.stripped) {
-      q = 'SELECT b.id, b.name, b.viewable_by, bm.parent_id, bm.category_id, bm.view_order FROM board_mapping bm LEFT JOIN boards b ON bm.board_id = b.id';
+      q = 'SELECT b.id, b.slug, b.name, b.viewable_by, bm.parent_id, bm.category_id, bm.view_order FROM board_mapping bm LEFT JOIN boards b ON bm.board_id = b.id';
     }
     return db.sqlQuery(q);
   })

@@ -30,6 +30,7 @@ var Joi = require('@hapi/joi');
   * @apiSuccess {string} data.email The email of the board banned user
   * @apiSuccess {string} data.created_at The created_at date of the board banned user's account
   * @apiSuccess {string[]} data.board_ids An array of the board ids this user is banned from
+  * @apiSuccess {string[]} data.board_slugs An array of the board slugs this user is banned from
   * @apiSuccess {string[]} data.board_names An array of the board names this user is banned from
   *
   * @apiError (Error 500) InternalServerError There was an error paging board banned users

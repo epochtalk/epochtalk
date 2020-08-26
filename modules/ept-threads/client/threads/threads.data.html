@@ -7,7 +7,7 @@
     <!-- Child Board's Name, Description, Child Boards -->
     <div class="info">
       <h5>
-        <a ui-sref="threads.data({ boardId: childBoard.id })" class="board-name" ng-bind-html="childBoard.name"></a>
+        <a ui-sref="threads.data({ boardSlug: childBoard.slug })" class="board-name" ng-bind-html="childBoard.name"></a>
       </h5>
 
       <div class="description" ng-bind-html="childBoard.description"></div>
@@ -15,7 +15,7 @@
       <div ng-if="childBoard.children.length > 0">
         <strong>Child Boards:</strong>
         <span ng-repeat="child in childBoard.children">
-          <a ui-sref="threads.data({ boardId: child.id })" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
+          <a ui-sref="threads.data({ boardSlug: child.slug })" ng-bind-html="child.name"></a>{{$last ? '' : ', '}}
         </span>
       </div>
     </div>

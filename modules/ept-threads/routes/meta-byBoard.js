@@ -2,19 +2,19 @@ var Joi = require('@hapi/joi');
 
 module.exports = {
   method: 'GET',
-  path: '/boards/{board_id}',
+  path: '/boards/{slug}',
   options: {
     app: { hook: 'threads.byBoard' },
     auth: { mode: 'try', strategy: 'jwt' },
-    validate: { params: Joi.object({ board_id: Joi.string().required() }) },
+    validate: { params: Joi.object({ slug: Joi.string().required() }) },
     pre: [
-      { method: (request) => request.server.methods.auth.threads.metaByBoard(request.server, request.auth, request.params.board_id), assign: 'viewable' }
+      { method: (request) => request.server.methods.auth.threads.metaByBoard(request.server, request.auth, request.params.slug), assign: 'viewable' }
     ],
   },
   handler: function(request, h) {
     var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
     var viewable = request.pre.viewable;
-    var boardId = request.params.board_id;
+    var slug = request.params.slug;
     var config = request.server.app.config;
     var data = {
       title: config.website.title,
@@ -32,7 +32,7 @@ module.exports = {
       currentYear: new Date().getFullYear()
     };
 
-    return request.db.boards.find(boardId, userPriority)
+    return request.db.boards.find(null, userPriority, slug)
     .then(function(board) {
       // Title
       if (board.name && viewable) {

@@ -7,6 +7,7 @@ module.exports = function() {
   var q = `SELECT
     id,
     name,
+    slug,
     description,
     viewable_by,
     postable_by,

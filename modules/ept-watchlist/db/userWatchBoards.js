@@ -12,7 +12,7 @@ module.exports = function(userId, opts) {
   opts.offset = (opts.page * opts.limit) - opts.limit;
   opts.limit += 1; // hasMore check
 
-  var q = 'SELECT b.id, b.name, b.post_count, b.thread_count  ';
+  var q = 'SELECT b.id, b.slug, b.name, b.post_count, b.thread_count  ';
   q += 'FROM users.watch_boards wb ';
   q += 'LEFT JOIN boards b ON wb.board_id = b.id ';
   q += 'WHERE user_id = $1 ';

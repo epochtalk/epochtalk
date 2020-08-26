@@ -1,7 +1,7 @@
 var Boom = require('boom');
 var Promise = require('bluebird');
 
-module.exports = function (server, auth, boardId) {
+module.exports = function (server, auth, slug) {
   // check base permission
   var allowed = server.authorization.build({
     error: Boom.forbidden(),
@@ -16,7 +16,7 @@ module.exports = function (server, auth, boardId) {
     error: Boom.notFound('Board Not Found'),
     type: 'dbValue',
     method: server.db.boards.getBoardInBoardMapping,
-    args: [boardId, server.plugins.acls.getUserPriority(auth)]
+    args: [null, server.plugins.acls.getUserPriority(auth), slug]
   });
 
   return Promise.all([allowed, read])

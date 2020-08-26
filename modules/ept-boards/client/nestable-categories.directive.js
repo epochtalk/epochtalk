@@ -55,6 +55,7 @@ var directive = ['$compile', function($compile) {
           scope.nestableMap[dataId] = {
             id: board.id,
             name: board.name,
+            slug: board.slug,
             description: board.description,
             viewable_by: board.viewable_by,
             postable_by: board.postable_by,

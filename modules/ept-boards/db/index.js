@@ -8,6 +8,7 @@ module.exports = {
   breadcrumb: require(path.normalize(__dirname + '/breadcrumb')),
   find: require(path.normalize(__dirname + '/find')),
   updateAll: require(path.normalize(__dirname + '/updateAll')),
+  slugToBoardId: require(path.normalize(__dirname + '/slugToBoardId')),
   allCategories: require(path.normalize(__dirname + '/allCategories')),
   getBoardInBoardMapping: require(path.normalize(__dirname + '/getBoardInBoardMapping')),
   getBoardWriteAccess: require(path.normalize(__dirname + '/getBoardWriteAccess')),
