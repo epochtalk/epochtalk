@@ -30,20 +30,20 @@ module.exports = function(objId, objType, request) {
         crumbs.push({ label: catName, state: '^.boards', opts: { '#': anchor }});
       }
       else if (curType === type.board) { // Board
-        if (!obj.parent_id && obj.category_id) { // Has no Parent
+        if (!obj.parent_slug && obj.category_id) { // Has no Parent
           nextType = type.category;
           nextId = obj.category_id;
         }
         else { // Has Parent
           nextType = type.board;
-          nextId = obj.parent_id;
+          nextId = obj.parent_slug;
         }
         crumbs.push({ label: obj.name, state: 'threads.data', opts: { boardSlug: id } });
       }
       else if (curType === type.thread) { // Thread
-        crumbs.push({ label: obj.title, state: 'posts.data', opts: { slug: obj.slug } });
+        crumbs.push({ label: obj.title, state: 'posts.data', opts: { slug: id } });
         nextType = type.board;
-        nextId = obj.board_id;
+        nextId = obj.board_slug;
       }
       return buildCrumbs(nextId, nextType, crumbs);
     });
