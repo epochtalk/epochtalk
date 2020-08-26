@@ -39,7 +39,7 @@
         <tbody>
           <tr ng-repeat="board in WatchlistEditCtrl.boards track by board.id">
             <td class="title">
-              <a ui-sref="threads.data({ boardId: board.id })" ng-bind-html="board.name"></a>
+              <a ui-sref="threads.data({ boardSlug: board.slug })" ng-bind-html="board.name"></a>
             </td>
             <td class="threads-views-mobile">
               <span class="value" ng-bind="board.thread_count | number:0"></span>&nbsp;threads, &nbsp;
@@ -97,7 +97,7 @@
         <tbody>
           <tr ng-repeat="thread in WatchlistEditCtrl.threads track by thread.id">
             <td class="title">
-              <a ui-sref="posts.data({ slug: thread.slug })" ng-bind-html="thread.title"></a>
+              <a ui-sref="posts.data({ threadId: thread.id })" ng-bind-html="thread.title"></a>
               <span class="parent-board">In Board: <strong><span ng-bind-html="thread.board_name"></</strong></span>
             </td>
             <td class="threads-views-mobile">

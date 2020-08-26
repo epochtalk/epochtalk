@@ -23,6 +23,7 @@ module.exports = function(userId, priority, opts) {
     t.updated_at,
     t.views AS view_count,
     t.board_name,
+    t.board_slug,
     t.board_id,
     pf.title,
     tv.id AS new_post_id,
@@ -58,6 +59,7 @@ module.exports = function(userId, priority, opts) {
         ( SELECT EXISTS ( SELECT 1 FROM polls WHERE thread_id = tlist.id )) AS poll,
         ( SELECT time FROM users.thread_views WHERE thread_id = tlist.id AND user_id = $1 ) AS time,
         ( SELECT b.name FROM boards b WHERE b.id = t1.board_id ) AS board_name,
+        ( SELECT b.slug FROM boards b WHERE b.id = t1.board_id ) AS board_slug,
         ( SELECT b.id FROM boards b WHERE b.id = t1.board_id ) AS board_id
       FROM threads t1
       LEFT JOIN metadata.threads mt ON tlist.id = mt.thread_id
@@ -105,9 +107,10 @@ module.exports = function(userId, priority, opts) {
 
 var formatThread = function(thread) {
   // handle board
-  thread.board = { id: thread.board_id, name: thread.board_name };
+  thread.board = { id: thread.board_id, name: thread.board_name, slug: thread.board_slug };
   delete thread.board_name;
   delete thread.board_id;
+  delete thread.board_slug;
 
   // handle Posts
   thread.post = {

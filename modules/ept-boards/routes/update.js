@@ -35,6 +35,7 @@ module.exports = {
       payload: Joi.array().items(Joi.object({
         id: Joi.string().required(),
         name: Joi.string().min(1).max(255),
+        slug: Joi.string().regex(/^[a-zA-Z0-9-~!@)(_+:'"\.](-?[a-zA-Z0-9-~!@)(_+:'"\.])*$/).min(1).max(100).required(),
         description: Joi.string().max(255).allow(''),
         viewable_by: Joi.number().allow(null),
         postable_by: Joi.number().allow(null),
@@ -65,6 +66,7 @@ module.exports = {
 
     // update each board
     var promise = Promise.map(boards, function(board) {
+      board.slug = board.slug.toLowerCase();
       return request.db.boards.update(board);
     })
     .error(request.errorMap.toHttpError);

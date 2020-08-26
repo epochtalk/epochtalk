@@ -49,14 +49,13 @@ function ($state, $stateParams, $location, Breadcrumbs) {
 
       // Maps routeParams key to breadcrumb type
       var keyToType = {
-        boardId:  'board',
+        boardSlug:  'board',
         slug: 'thread',
       };
       // remove anchor hash from params
       var routeParamKeys = without(Object.keys(routeParams), '#');
       var keys = Object.keys(keyToType);
       var matches = intersection(routeParamKeys, keys);
-
       // matches, route is dynamic
       if (!isEmpty(matches)) {
         var idKey = routeParamKeys.reverse()[0];

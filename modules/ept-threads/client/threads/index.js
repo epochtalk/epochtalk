@@ -11,7 +11,7 @@ var route = ['$stateProvider', function($stateProvider) {
     }
   })
   .state('threads.data', {
-    url: '/boards/{boardId}?limit&page&field&desc',
+    url: '/boards/{boardSlug}?limit&page&field&desc',
     reloadOnSearch: false,
     views: {
       'data@threads': {
@@ -38,16 +38,19 @@ var route = ['$stateProvider', function($stateProvider) {
         });
         return deferred.promise;
       }],
-      pageData: ['Threads', 'PreferencesSvc', '$stateParams', function(Threads, PreferencesSvc, $stateParams) {
-        var prefs = PreferencesSvc.preferences;
-        var query = {
-          board_id: $stateParams.boardId,
-          limit: Number($stateParams.limit) || prefs.threads_per_page || 25,
-          page: Number($stateParams.page) || 1,
-          field: $stateParams.field,
-          desc: $stateParams.desc
-        };
-        return Threads.byBoard(query).$promise;
+      pageData: ['Boards', 'Threads', 'PreferencesSvc', '$stateParams', function(Boards, Threads, PreferencesSvc, $stateParams) {
+        return Boards.slugToBoardId({ slug: $stateParams.boardSlug }).$promise
+        .then(function(board) {
+          var prefs = PreferencesSvc.preferences;
+          var query = {
+            board_id: board.id,
+            limit: Number($stateParams.limit) || prefs.threads_per_page || 25,
+            page: Number($stateParams.page) || 1,
+            field: $stateParams.field,
+            desc: $stateParams.desc
+          };
+          return Threads.byBoard(query).$promise;
+        });
       }]
     }
   });

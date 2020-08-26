@@ -28,7 +28,7 @@ module.exports = function(opts) {
   }
 
   // Dynamically build query and params
-  var baseQuery = 'SELECT u.username, u.id as user_id, u.created_at, u.email, array_agg(b.id) as board_ids, array_agg(b.name) as board_names FROM users.board_bans ubb JOIN users u ON u.id = ubb.user_id JOIN boards b ON b.id = ubb.board_id';
+  var baseQuery = 'SELECT u.username, u.id as user_id, u.created_at, u.email, array_agg(b.id) as board_ids, array_agg(b.name) as board_names, array_agg(b.slug) as board_slugs FROM users.board_bans ubb JOIN users u ON u.id = ubb.user_id JOIN boards b ON b.id = ubb.board_id';
   var groupByClause = 'GROUP BY u.username, u.id';
   var query = [ baseQuery, groupByClause ]; // Array used to build query
   var params = []; // holds parameters

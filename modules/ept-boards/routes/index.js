@@ -8,6 +8,7 @@ module.exports = [
   require(path.normalize(__dirname + '/delete')),
   require(path.normalize(__dirname + '/find')),
   require(path.normalize(__dirname + '/moveList')),
+  require(path.normalize(__dirname + '/slugToBoardId')),
   require(path.normalize(__dirname + '/update')),
   require(path.normalize(__dirname + '/updateAll'))
 ];
