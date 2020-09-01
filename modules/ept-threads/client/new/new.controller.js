@@ -75,7 +75,11 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
       if (ctrl.addPoll && ctrl.pollValid) { ctrl.thread.poll = ctrl.poll; }
 
       // slugify title
-      ctrl.thread.slug = slugify(ctrl.thread.title);
+      var slug = slugify(ctrl.thread.title);
+      // Handles slugs of foreign languages, these will get a random hash for their slug
+      if (slug === '') { slug = Math.random().toString(36).substring(6);  }
+      else { slug = slugify(ctrl.thread.title, { remove: /\*/g, lower: true }); }
+      ctrl.thread.slug = slug;
 
       // create a new thread and post
       Threads.save(ctrl.thread).$promise

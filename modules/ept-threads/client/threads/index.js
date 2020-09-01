@@ -11,7 +11,7 @@ var route = ['$stateProvider', function($stateProvider) {
     }
   })
   .state('threads.data', {
-    url: '/boards/{boardSlug}?limit&page&field&desc',
+    url: '/boards/{boardSlug:any}?limit&page&field&desc',
     reloadOnSearch: false,
     views: {
       'data@threads': {
