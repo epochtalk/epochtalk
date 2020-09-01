@@ -75,7 +75,7 @@ var controller = ['$anchorScroll', '$stateParams', '$location', 'Session', 'Thre
       if (ctrl.addPoll && ctrl.pollValid) { ctrl.thread.poll = ctrl.poll; }
 
       // slugify title
-      ctrl.thread.slug = slugify(ctrl.thread.title);
+      ctrl.thread.slug = slugify(ctrl.thread.title, { remove: /\*/g });
 
       // create a new thread and post
       Threads.save(ctrl.thread).$promise

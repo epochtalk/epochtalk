@@ -41,7 +41,7 @@ var directive = ['$state', function($state) {
           nameInput = $('#editBoardName');
           slugInput = $('#editBoardSlug');
         }
-        var sluggedName = slugify(nameInput.val()).toLowerCase();
+        var sluggedName = slugify(nameInput.val(), { remove: /\*/g }).toLowerCase();
         if (sluggedName === '') {
           sluggedName = Math.random().toString(36).substring(8);
         }
