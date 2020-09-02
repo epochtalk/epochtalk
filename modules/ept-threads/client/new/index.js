@@ -1,6 +1,6 @@
 var route = ['$stateProvider', function($stateProvider) {
   $stateProvider.state('newThread', {
-    url: '/boards/{boardId}/threads/new',
+    url: '/threads/new/{boardId}',
     parent: 'public-layout',
     views: {
       'content': {
