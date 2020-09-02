@@ -268,7 +268,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
     this.openPurgeThreadModal = function() { ctrl.showPurgeThreadModal = true; };
     this.purgeThread = function() {
       Threads.delete({id: ctrl.thread.id}).$promise
-      .then(function() { $state.go('threads.data', {boardId: ctrl.board_id}); })
+      .then(function() { $state.go('threads.data', { boardSlug: ctrl.board_slug }); })
       .catch(function() { Alert.error('Error Purging Thread'); })
       .finally(function() { ctrl.showPurgeThreadModal = false; });
     };

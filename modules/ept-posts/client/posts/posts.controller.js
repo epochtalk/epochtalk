@@ -10,6 +10,7 @@ var ctrl = [
     parent.posts = pageData.posts;
     parent.thread = pageData.thread;
     parent.board_id = pageData.thread.board_id;
+    parent.board_slug = pageData.board.slug;
     parent.writeAccess = pageData.write_access;
     parent.bannedFromBoard = BanSvc.banStatus();
     parent.disablePostEdit = pageData.board.disable_post_edit;

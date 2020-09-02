@@ -98,7 +98,11 @@ var ctrl = ['$rootScope', '$scope', '$anchorScroll', '$location', '$timeout', 'A
       // remove poll from thread if invalid
       if (!ctrl.parent.thread.addPoll || !ctrl.parent.thread.pollValid) { delete ctrl.parent.thread.poll; }
 
-      ctrl.parent.thread.slug = slugify(ctrl.parent.thread.title);
+      // slugify title
+      var slug = slugify(slugify(ctrl.parent.thread.title, { remove: /\*/g, lower: true }));
+      // Handles slugs of foreign languages, these will get a random hash for their slug
+      if (slug === '') { slug = Math.random().toString(36).substring(6);  }
+      ctrl.parent.thread.slug = slug;
 
       // create a new thread and post
       return Threads.save(ctrl.parent.thread).$promise

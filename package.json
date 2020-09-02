@@ -47,7 +47,7 @@
     "@hapi/inert": "^5.2.1",
     "@hapi/joi": "^16.1.4",
     "@hapi/vision": "^5.5.2",
-    "@uirouter/angularjs": "^1.0.20",
+    "@uirouter/angularjs": "^1.0.28",
     "angular": "1.8.0",
     "angular-animate": "1.7.5",
     "angular-loading-bar": "0.7.1",
