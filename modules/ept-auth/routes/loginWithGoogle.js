@@ -62,7 +62,34 @@ module.exports = {
     .then(function(user) {
       // Log user in
       if (user) {
-        return user;
+        return request.db.users.userByUsername(user.username)
+        .then(function(user) {
+          if (user.ban_expiration && user.ban_expiration < new Date()) {
+            return request.db.bans.unban(user.id)
+            .then(function(unbannedUser) {
+              user.roles = unbannedUser.roles; // update user roles
+              return user;
+            });
+          }
+          else { return user; }
+        })
+        // Get Moderated Boards
+        .then(function(user) {
+          return request.db.moderators.getUsersBoards(user.id)
+          .then(function(boards) {
+            boards = boards.map(function(board) { return board.board_id; });
+            user.moderating = boards;
+            return user;
+          });
+        })
+        .then(function(user) {
+          if (rememberMe) { user.expiration = undefined; } // forever
+          else { user.expiration = 1209600; } // 14 days
+          return user;
+        })
+        // builds token, saves session, returns request output
+        .then(request.session.save)
+        .error(request.errorMap.toHttpError);
       }
       // Create account
       else {
