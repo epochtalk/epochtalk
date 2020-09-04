@@ -2,6 +2,7 @@ var path = require('path');
 
 module.exports = [
   require(path.normalize(__dirname + '/login')),
+  require(path.normalize(__dirname + '/loginWithGoogle')),
   require(path.normalize(__dirname + '/logout')),
   require(path.normalize(__dirname + '/register')),
   require(path.normalize(__dirname + '/confirm')),
