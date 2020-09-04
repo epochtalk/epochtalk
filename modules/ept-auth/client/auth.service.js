@@ -1,5 +1,5 @@
-var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope', 'Alert',
-  function(User, Session, PreferencesSvc, BanSvc, $rootScope, Alert) {
+var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope', 'Alert', 'GoogleLogin',
+  function(User, Session, PreferencesSvc, BanSvc, $rootScope, Alert, GoogleLogin) {
     // Service API
     var serviceAPI = {
       register: function(user) {
@@ -16,6 +16,11 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope', 'Ale
       },
 
       login: function(user) {
+        GoogleLogin.login().then(function (data) {
+            console.log(data.email);
+        }, function (reason) {
+            console.log('Failed: ' + reason);
+        });
         return User.login(user).$promise
         .then(function(resource) { Session.setUser(resource); })
         .then(function() { PreferencesSvc.pullPreferences(); })

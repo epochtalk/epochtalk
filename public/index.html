@@ -146,6 +146,9 @@
         enabled: {{portal.enabled}}
       }
     };
+    var init = function() {
+      window.initGapi();
+    }
   </script>
   <script src="/static/js/bundle.js" type="text/javascript"></script>
   <!-- Google Analytics -->
@@ -154,6 +157,8 @@
       ga('create','{{GAKey}}','auto');ga('send','pageview')
   </script>
   <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+  <script src="https://apis.google.com/js/client.js?onload=init"></script>
+  </script>
 </body>
 
 </html>
