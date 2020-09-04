@@ -17,9 +17,9 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope', 'Ale
 
       login: function(user) {
         GoogleLogin.login().then(function (data) {
-            console.log(data.email);
+          console.log('Login Success!', data)
         }, function (reason) {
-            console.log('Failed: ' + reason);
+            console.log('Failed:', reason);
         });
         return User.login(user).$promise
         .then(function(resource) { Session.setUser(resource); })

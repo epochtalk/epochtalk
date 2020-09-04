@@ -1,22 +1,16 @@
 module.exports = ['$window', '$http', '$rootScope', '$q', function ($window, $http, $rootScope, $q) {
     var clientId = '241699585766-4hh76kcbdhq1bvrbo80a184pabrk03kr.apps.googleusercontent.com',
         apiKey = 'AIzaSyCnpiK9upqkeTndKeCOPaeTYJ7vfZu-kBs',
-        scopes = 'https://www.googleapis.com/auth/userinfo.email https://www.google.com/m8/feeds',
+        scopes = 'https://www.googleapis.com/auth/userinfo.email',
         domain = 'dev.epochtalk.com:8080',
-        userEmail,
         deferred = $q.defer();
 
     this.login = function () {
-        console.log('Login!!!');
-        if (gapi.auth) {
-            gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false, hd: domain }, this.handleAuthResult);
-        }
-
+        gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false, hd: domain }, this.handleAuthResult);
         return deferred.promise;
     }
 
     $window.initGapi = function () {
-        console.log('\n\nINIT!');
         gapi.client.setApiKey(apiKey);
         gapi.auth.init(function () { });
         window.setTimeout(this.checkAuth, 1);
@@ -33,8 +27,11 @@ module.exports = ['$window', '$http', '$rootScope', '$q', function ($window, $ht
                 var request = gapi.client.oauth2.userinfo.get();
                 request.execute(function (resp) {
                     $rootScope.$apply(function () {
-                        data.email = resp.email;
                         console.log(resp);
+                        data.name = resp.name;
+                        data.email = resp.email;
+                        data.avatar = resp.picture;
+                        data.google_id = resp.id;
                     });
                 });
             });
