@@ -1,5 +1,5 @@
-var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'Session', 'BreadcrumbSvc', 'Alert', 'ThemeSVC', 'NotificationSvc', 'BanSvc', 'PreferencesSvc',
-  function($scope, $location, $timeout, $state, $stateParams, Auth, Session, BreadcrumbSvc, Alert, ThemeSVC, NotificationSvc, BanSvc, PreferencesSvc) {
+var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'GoogleAuth', 'Session', 'BreadcrumbSvc', 'Alert', 'ThemeSVC', 'NotificationSvc', 'BanSvc', 'PreferencesSvc',
+  function($scope, $location, $timeout, $state, $stateParams, Auth, GoogleAuth, Session, BreadcrumbSvc, Alert, ThemeSVC, NotificationSvc, BanSvc, PreferencesSvc) {
     var ctrl = this;
     this.currentUser = Session.user;
     this.hasPermission = Session.hasPermission;
@@ -117,6 +117,25 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
       Auth.logout()
       .then(function() {
         $state.go($state.current, $stateParams, { reload: true });
+      });
+    };
+
+    this.authWithGoogle = function() {
+      GoogleAuth.attemptAuth()
+      .then(function() {
+        ctrl.collapseMobileKeyboard();
+        ctrl.showLogin = false;
+        ctrl.clearLoginFields();
+        if ($state.next) {
+          $state.go($state.next, $state.nextParams, { reload: true });
+          $state.next = undefined;
+          $state.nextParams = undefined; //clear out next state info after redirect
+        }
+        else { $state.go($state.current, $stateParams, { reload: true }); }
+      })
+      .catch(function(err) {
+        if (err.data && err.data.message) { Alert.error(err.data.message); }
+        else { Alert.error('Login Failed'); }
       });
     };
 

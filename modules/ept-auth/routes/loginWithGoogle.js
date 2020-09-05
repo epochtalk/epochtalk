@@ -31,18 +31,14 @@ module.exports = {
     validate: {
       payload: Joi.object({
         access_token: Joi.string().required(),
-        username: Joi.string()
+        username: Joi.string(),
+        remember_me: Joi.boolean().default(false)
       })
     }
   },
   handler: function(request) {
-    // // check if already logged in with jwt
-    // if (request.auth.isAuthenticated) {
-    //   var loggedInUser = request.auth.credentials;
-    //   return request.session.formatUserReply(loggedInUser.token, loggedInUser);
-    // }
-
     var userInfoApi = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json';
+    var rememberMe = request.payload.remember_me;
     var userData;
     // Step 1. Exchange authorization access_token for access token.
     var promise = new Promise(function(resolve, reject) {
@@ -132,34 +128,6 @@ module.exports = {
         .error(request.errorMap.toHttpError);
       }
     });
-    // // Step 2. Retrieve profile information about the current user.
-    // .then(function(user) {
-    //   if (user.ban_expiration && user.ban_expiration < new Date()) {
-    //     return request.db.bans.unban(user.id)
-    //     .then(function(unbannedUser) {
-    //       user.roles = unbannedUser.roles; // update user roles
-    //       return user;
-    //     });
-    //   }
-    //   else { return user; }
-    // })
-    // // Get Moderated Boards
-    // .then(function(user) {
-    //   return request.db.moderators.getUsersBoards(user.id)
-    //   .then(function(boards) {
-    //     boards = boards.map(function(board) { return board.board_id; });
-    //     user.moderating = boards;
-    //     return user;
-    //   });
-    // })
-    // .then(function(user) {
-    //   if (rememberMe) { user.expiration = undefined; } // forever
-    //   else { user.expiration = 1209600; } // 14 days
-    //   return user;
-    // })
-    // // builds token, saves session, returns request output
-    // .then(request.session.save)
-    // .error(request.errorMap.toHttpError);
 
     return promise;
   }

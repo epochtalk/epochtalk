@@ -12,9 +12,13 @@
       Remember Me
     </label>
     <div class="clear">
-      <button id="login-btn" class=" fill-row" ng-click="HeaderCtrl.login()" type="submit" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.user.password.length < 8">
+      <button id="login-btn" class="fill-row" ng-click="HeaderCtrl.login()" type="submit" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.user.password.length < 8">
         Login
       </button>
+    </div>
+    <div class="clear centered-text">
+      <br />
+      <button ng-click="HeaderCtrl.authWithGoogle()">Login With Google</button>
     </div>
     <hr />
     <div class="centered-text">
