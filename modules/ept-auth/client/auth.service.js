@@ -1,5 +1,5 @@
-var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope', 'Alert', 'GoogleLogin',
-  function(User, Session, PreferencesSvc, BanSvc, $rootScope, Alert, GoogleLogin) {
+var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope', 'Alert',
+  function(User, Session, PreferencesSvc, BanSvc, $rootScope, Alert) {
     // Service API
     var serviceAPI = {
       register: function(user) {
