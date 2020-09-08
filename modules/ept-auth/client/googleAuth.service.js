@@ -21,7 +21,7 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
       }
       else {
         console.log('User is NOT authenticated');
-        return deferred.reject('Error: There was an issue logging in with Google');
+        return deferred.resolve(false);
       }
     }
 
@@ -51,15 +51,19 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
       checkAuth: function() {
         console.log('Attempt Check Auth');
         try {
-          gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: true, hd: domain }, handleCheckAuthResult);
+          return gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: true, hd: domain }, handleCheckAuthResult);
         }
-        catch(e) { return false;  }
+        catch(e) { return deferred.resolve(false);  }
       },
       signOut: function() {
-        var auth2 = gapi.auth2.getAuthInstance();
-        return auth2.signOut().then(function() {
-          console.log('Google user signed out.');
-        });
+        try {
+          var auth2 = gapi.auth2.getAuthInstance();
+          auth2.signOut().then(function() {
+            console.log('Google user signed out');
+            auth2.disconnect();
+          });
+        }
+        catch(e) {}
       }
     };
 

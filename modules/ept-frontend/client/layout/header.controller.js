@@ -116,6 +116,7 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
     this.logout = function() {
       Auth.logout()
       .then(function() {
+        GoogleAuth.signOut();
         $state.go($state.current, $stateParams, { reload: true });
       });
     };
