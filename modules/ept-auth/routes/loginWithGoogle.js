@@ -40,19 +40,16 @@ module.exports = {
     var userInfoApi = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json';
     var rememberMe = request.payload.remember_me;
     var userData;
-    // Step 1. Exchange authorization access_token for access token.
     var promise = new Promise(function(resolve, reject) {
       var headers = { Authorization: 'Bearer ' + request.payload.access_token };
       return Request.get({ url: userInfoApi, headers: headers, json: true }, function(err, response, userInfo) {
-        // console.log(response);
-        console.log('\n\n', userInfo);
+        console.log(userInfo);
         userData = userInfo;
         if (err || response.statusCode !== 200) { return reject(Boom.badRequest(error)); }
         else { return resolve(userInfo); }
       });
     })
     .then(function(userInfo) {
-      console.log(userData);
       return request.db.users.userByEmail(userInfo.email);
     })
     .then(function(user) {
@@ -105,7 +102,7 @@ module.exports = {
         // remove invitation if exists in db
         .tap(function(user) { return request.db.invitations.remove(user.email); })
         .then(function(createdUser) {
-          createdUser.avatar = '/static/img/avatar.png';
+          createdUser.avatar = userData.picture;
           var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
           var opts = { ip: ip, userId: createdUser.id };
           return request.db.bans.getMaliciousScore(opts)
@@ -122,6 +119,10 @@ module.exports = {
                 return createdUser;
               });
             }
+          })
+          .then(function(createdUser) {
+            return request.db.users.update({ id: createdUser.id, avatar: userData.picture, name: userData.name })
+            .then(function() { return createdUser; })
           })
           .then(request.session.save);
         })

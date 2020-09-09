@@ -8,27 +8,16 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
 
 
     function handleAuthResult(authResult) {
-      console.log('Attempt Handle Auth');
       if (authResult && !authResult.error) { return deferred.resolve(authResult); }
-      else {
-        return deferred.resolve('Error: There was an issue logging in with Google');
-      }
+      else { return deferred.resolve('Error: There was an issue logging in with Google'); }
     }
 
     function handleCheckAuthResult(authResult) {
-      console.log('Attempt handleCheckAuthResult');
-      if (authResult && !authResult.error) {
-        console.log('User is authenticated', authResult);
-        return deferred.resolve(authResult);
-      }
-      else {
-        console.log('User is NOT authenticated');
-        return deferred.resolve(false);
-      }
+      if (authResult && !authResult.error) { return deferred.resolve(authResult); }
+      else { return deferred.resolve(false); }
     }
 
     function initClient() {
-      console.log('Attempt Init');
       gapi.client.init({
         apiKey: apiKey,
         clientId: clientId,
@@ -42,7 +31,6 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
 
     var serviceAPI = {
       attemptAuth: function() {
-        console.log('Attempt Auth');
         return gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false, hd: domain }, handleAuthResult)
         .then(function(authResult) {
           return User.authWithGoogle({ access_token: authResult.access_token }).$promise
@@ -52,7 +40,6 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
         .then(function() { $rootScope.$emit('loginEvent'); });
       },
       checkAuth: function() {
-        console.log('Attempt Check Auth');
         try {
           return gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: true, hd: domain }, handleCheckAuthResult);
         }
@@ -61,10 +48,7 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
       signOut: function() {
         try {
           var auth2 = gapi.auth2.getAuthInstance();
-          auth2.signOut().then(function() {
-            console.log('Google user signed out');
-            auth2.disconnect();
-          });
+          auth2.signOut().then(auth2.disconnect());
         }
         catch(e) {}
       }
