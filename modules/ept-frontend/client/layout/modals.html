@@ -16,8 +16,8 @@
         Login
       </button>
     </div>
+    <br />
     <div class="clear centered-text">
-      <br />
       <button ng-click="HeaderCtrl.authWithGoogle()">Login With Google</button>
     </div>
     <hr />
@@ -114,6 +114,10 @@
       <button class="fill-row" ng-click="HeaderCtrl.register()" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.registerUser.password.length < 8 || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation">
         Register
       </button>
+    </div>
+    <br />
+    <div class="clear centered-text">
+      <button ng-click="HeaderCtrl.authWithGoogle(true)">Register With Google</button>
     </div>
   </form>
 </modal>
