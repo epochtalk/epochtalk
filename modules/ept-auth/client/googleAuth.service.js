@@ -1,5 +1,5 @@
-var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeout', '$http', '$rootScope', '$q',
-  function (User, Session, PreferencesSvc, BanSvc, $window, $timeout, $http, $rootScope, $q) {
+var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeout', '$http', '$rootScope', '$q', 'Alert',
+  function (User, Session, PreferencesSvc, BanSvc, $window, $timeout, $http, $rootScope, $q, Alert) {
     var clientId = $window.forumData.google_client_id;
     var apiKey = $window.forumData.google_api_key;
     var scopes = 'https://www.googleapis.com/auth/userinfo.email';
@@ -10,7 +10,9 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
     function handleAuthResult(authResult) {
       console.log('Attempt Handle Auth');
       if (authResult && !authResult.error) { return deferred.resolve(authResult); }
-      else { return deferred.reject('Error: There was an issue logging in with Google'); }
+      else {
+        return deferred.resolve('Error: There was an issue logging in with Google');
+      }
     }
 
     function handleCheckAuthResult(authResult) {
@@ -32,7 +34,8 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
         clientId: clientId,
         scope: scopes
       })
-      .then(serviceAPI.checkAuth);
+      .then(serviceAPI.checkAuth)
+      .catch(console.log);
     }
 
     $window.initGapi = function () { gapi.load('client:auth2', initClient); };

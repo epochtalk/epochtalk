@@ -135,8 +135,12 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
         else { $state.go($state.current, $stateParams, { reload: true }); }
       })
       .catch(function(err) {
-        if (err.data && err.data.message) { Alert.error(err.data.message); }
+        if (err.error === 'idpiframe_initialization_failed') {
+          Alert.error(err.details + ' You must allow cookies from accounts.google.com to login with google in incognito mode.');
+        }
         else { Alert.error('Login Failed'); }
+        ctrl.showLogin = false;
+        ctrl.clearLoginFields();
       });
     };
 
