@@ -3,14 +3,15 @@ var Boom = require('boom');
 var Request = require('request');
 
 /**
-  * @api {POST} /login Login
-  * @apiName Login
+  * @api {POST} /auth/google Login/Auth with Google
+  * @apiName AuthWithGoogle
   * @apiGroup Auth
   * @apiVersion 0.4.0
-  * @apiDescription Used to log a user into their account.
+  * @apiDescription Used to log a user into their account with Google oAuth2.
   *
-  * @apiParam (Payload) {string} username User's unique username
-  * @apiParam (Payload) {string} password User's password
+  * @apiParam (Payload) {string} access_token Oauth2 access token
+  * @apiParam (Payload) {string} username User's account name
+  * @apiParam (Payload) {boolean} remember_me Keep user logged in
   *
   * @apiSuccess {string} token User's authentication token
   * @apiSuccess {string} id User's unique id
@@ -43,7 +44,6 @@ module.exports = {
     var promise = new Promise(function(resolve, reject) {
       var headers = { Authorization: 'Bearer ' + request.payload.access_token };
       return Request.get({ url: userInfoApi, headers: headers, json: true }, function(err, response, userInfo) {
-        console.log(userInfo);
         userData = userInfo;
         if (err || response.statusCode !== 200) { return reject(Boom.badRequest(error)); }
         else { return resolve(userInfo); }
