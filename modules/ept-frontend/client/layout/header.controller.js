@@ -121,8 +121,8 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
       });
     };
 
-    this.authWithGoogle = function() {
-      GoogleAuth.attemptAuth()
+    this.loginWithGoogle = function() {
+      GoogleAuth.login()
       .then(function() {
         ctrl.collapseMobileKeyboard();
         ctrl.showLogin = false;
@@ -141,6 +141,47 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
         else { Alert.error('Login Failed'); }
         ctrl.showLogin = false;
         ctrl.clearLoginFields();
+      });
+    };
+
+    this.registerWithGoogle = function() {
+      GoogleAuth.getAuthToken()
+      .then(function() {
+        ctrl.showRegister = false;
+        ctrl.clearRegisterFields();
+        ctrl.collapseMobileKeyboard();
+        ctrl.showGoogleUsername = true;
+      })
+      .catch(function(err) {
+        if (err.error === 'idpiframe_initialization_failed') {
+          Alert.error(err.details + ' You must allow cookies from accounts.google.com to register with google in incognito mode.');
+        }
+        else { Alert.error('Register Failed'); }
+        ctrl.showRegister = false;
+        ctrl.clearRegisterFields();
+      });
+    };
+
+    this.completeGoogleRegistration = function() {
+      var username = ctrl.registerUser.username;
+      GoogleAuth.completeRegistration(username)
+      .then(function() {
+        ctrl.showGoogleUsername = false;
+        ctrl.collapseMobileKeyboard();
+        if ($state.next) {
+          $state.go($state.next, $state.nextParams, { reload: true });
+          $state.next = undefined;
+          $state.nextParams = undefined; //clear out next state info after redirect
+        }
+        else { $state.go($state.current, $stateParams, { reload: true }); }
+      })
+      .catch(function(err) {
+        if (err.error === 'idpiframe_initialization_failed') {
+          Alert.error(err.details + ' You must allow cookies from accounts.google.com to register with google in incognito mode.');
+        }
+        else { Alert.error('Register Failed'); }
+        ctrl.showRegister = false;
+        ctrl.clearRegisterFields();
       });
     };
 

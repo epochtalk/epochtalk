@@ -5,10 +5,13 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
     var scopes = 'https://www.googleapis.com/auth/userinfo.email';
     var domain = 'dev.epochtalk.com:8080';
     var deferred = $q.defer();
-
+    var token;
 
     function handleAuthResult(authResult) {
-      if (authResult && !authResult.error) { return deferred.resolve(authResult); }
+      if (authResult && !authResult.error) {
+        token = authResult.access_token;
+        return deferred.resolve(authResult);
+      }
       else { return deferred.resolve('Error: There was an issue logging in with Google'); }
     }
 
@@ -30,10 +33,19 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
     $window.initGapi = function () { gapi.load('client:auth2', initClient); };
 
     var serviceAPI = {
-      attemptAuth: function() {
+      getAuthToken: function() {
+        return gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false, hd: domain }, handleAuthResult);
+      },
+      completeRegistration: function(username) {
+        return User.authWithGoogle({ access_token: token, username: username }).$promise
+        .then(function(resource) { Session.setUser(resource); })
+        .then(function() { PreferencesSvc.pullPreferences(); })
+        .then(function() { $rootScope.$emit('loginEvent'); });
+      },
+      login: function(username) {
         return gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false, hd: domain }, handleAuthResult)
         .then(function(authResult) {
-          return User.authWithGoogle({ access_token: authResult.access_token }).$promise
+          return User.authWithGoogle({ access_token: authResult.access_token, username: username }).$promise
         })
         .then(function(resource) { Session.setUser(resource); })
         .then(function() { PreferencesSvc.pullPreferences(); })
