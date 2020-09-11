@@ -39,14 +39,15 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
           else { return resolve(gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false, hd: domain }, handleAuthResult)); }
         })
         .then(function(authResult) {
-          return User.authWithGoogle({ access_token: authResult.access_token, username: username }).$promise
+          return User.authWithGoogle({ access_token: authResult.access_token, username: username }).$promise;
         })
         .then(function(data) {
           if (data && data.has_account === false) { return { has_account: false }; }
           else {
             return new Promise(function(resolve) { return resolve(Session.setUser(data)); })
             .then(function() { PreferencesSvc.pullPreferences(); })
-            .then(function() { $rootScope.$emit('loginEvent'); }); }
+            .then(function() { $rootScope.$emit('loginEvent'); });
+          }
         });
       },
       checkAuth: function() {
