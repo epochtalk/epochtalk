@@ -103,7 +103,7 @@ var ctrl = ['$scope', '$window', '$location', '$timeout', '$state', '$stateParam
         if ($state.next) {
           $state.go($state.next, $state.nextParams, { reload: true });
           $state.next = undefined;
-          $state.nextParams = undefined; //clear out next state info after redirect
+          $state.nextParams = undefined; // clear out next state info after redirect
         }
         else { $state.go($state.current, $stateParams, { reload: true }); }
       })
@@ -116,13 +116,16 @@ var ctrl = ['$scope', '$window', '$location', '$timeout', '$state', '$stateParam
     this.logout = function() {
       Auth.logout()
       .then(function() {
-        if (ctrl.hasGoogleCredentials) { GoogleAuth.signOut(); }
+        if (ctrl.hasGoogleCredentials && GoogleAuth.isAuthenticated()) {
+          GoogleAuth.signOut();
+          // $window.location.reload();
+        }
         $state.go($state.current, $stateParams, { reload: true });
       });
     };
 
-    this.signInWithGoogle = function(username) {
-      GoogleAuth.signIn(username)
+    this.signInWithGoogle = function(username, prompt) {
+      GoogleAuth.signIn(username, prompt)
       .then(function(data) {
         if (data && data.has_account === false) {
           ctrl.showRegister = false;
