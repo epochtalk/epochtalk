@@ -2,8 +2,8 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
   function (User, Session, PreferencesSvc, BanSvc, $window, $timeout, $http, $rootScope, $q) {
     var clientId = $window.forumData.google_client_id;
     var apiKey = $window.forumData.google_api_key;
+    var domain = $window.forumData.google_app_domain;
     var scopes = 'https://www.googleapis.com/auth/userinfo.email';
-    var domain = 'dev.epochtalk.com:8080';
     var deferred = $q.defer();
     var token;
 

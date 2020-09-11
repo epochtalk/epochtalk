@@ -137,13 +137,12 @@
       favicon: '{{favicon}}',
       title: '{{title}}',
       logo: '{{logo}}',
-      google_api_key: '{{google_api_key}}',
-      google_client_id: '{{google_client_id}}',
       default_avatar: '{{default_avatar}}',
       websocket_host: '{{websocket_host}}',
       websocket_port: '{{websocket_port}}',
       google_api_key: '{{google_api_key}}',
       google_client_id: '{{google_client_id}}',
+      google_app_domain: '{{google_app_domain}}',
       post_max_length: {{post_max_length}},
       max_image_size: {{max_image_size}},
       portal: {
@@ -163,7 +162,7 @@
   <script src="https://www.google-analytics.com/analytics.js" async defer></script>
   <script>
     (function() {
-      if ('{{google_client_id}}'.length) {
+      if ('{{google_api_key}}'.length && '{{google_client_id}}'.length && '{{google_app_domain}}'.length) {
         document.write('<script src="https://apis.google.com/js/client.js?onload=init"><\/script>');
       }
     })();

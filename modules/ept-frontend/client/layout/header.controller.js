@@ -7,7 +7,7 @@ var ctrl = ['$scope', '$window', '$location', '$timeout', '$state', '$stateParam
     this.loggedIn = Session.isAuthenticated;
     this.breadcrumbs = BreadcrumbSvc.crumbs;
     this.isBanned = BanSvc.isBanned();
-    this.hasGoogleCredentials = $window.forumData.google_client_id;
+    this.hasGoogleCredentials = $window.forumData.google_client_id && $window.forumData.google_api_key && $window.forumData.google_app_domain;
     // Update preview mode on change
     $scope.$watch(function() { return BanSvc.isBanned(); }, function(val) {
       ctrl.isBanned = val;

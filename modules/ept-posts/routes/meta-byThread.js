@@ -32,6 +32,7 @@ module.exports = {
       GAKey: config.gaKey,
       google_api_key: config.googleAPIKey,
       google_client_id: config.googleClientId,
+      google_app_domain: config.googleAppDomain,
       currentYear: new Date().getFullYear()
     };
 
