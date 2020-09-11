@@ -6,6 +6,7 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
     var scopes = 'https://www.googleapis.com/auth/userinfo.email';
     var deferred = $q.defer();
     var token;
+    var isAuthenticated = false;
 
     function handleAuthResult(authResult) {
       if (authResult && !authResult.error) {
@@ -33,10 +34,10 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
     $window.initGapi = function () { gapi.load('client:auth2', initClient); };
 
     var serviceAPI = {
-      signIn: function(username) {
+      signIn: function(username, prompt) {
         return new Promise(function(resolve) {
           if (token) { return resolve({ access_token: token }); }
-          else { return resolve(gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false, hd: domain }, handleAuthResult)); }
+          else { return resolve(gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false, hd: domain, prompt: prompt }, handleAuthResult)); }
         })
         .then(function(authResult) {
           return User.authWithGoogle({ access_token: authResult.access_token, username: username }).$promise;
@@ -46,7 +47,8 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
           else {
             return new Promise(function(resolve) { return resolve(Session.setUser(data)); })
             .then(function() { PreferencesSvc.pullPreferences(); })
-            .then(function() { $rootScope.$emit('loginEvent'); });
+            .then(function() { $rootScope.$emit('loginEvent'); })
+            .then(function() { isAuthenticated = true; });
           }
         });
       },
@@ -56,10 +58,16 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
         }
         catch(e) { return deferred.resolve(false);  }
       },
+      isAuthenticated: function() { return isAuthenticated; },
       signOut: function() {
         try {
           var auth2 = gapi.auth2.getAuthInstance();
-          auth2.signOut().then(auth2.disconnect());
+          auth2.signOut()
+          .then(auth2.disconnect())
+          .then(function() {
+            token = undefined;
+            isAuthenticated = false;
+          });
         }
         catch(e) {}
       }
