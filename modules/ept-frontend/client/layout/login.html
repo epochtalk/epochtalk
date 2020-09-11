@@ -14,9 +14,11 @@
         Login
       </button>
     </div>
-    <br />
-    <div class="clear centered-text">
-      <button ng-click="HeaderCtrl.signInWithGoogle()">Sign In With Google</button>
+    <div ng-if="HeaderCtrl.hasGoogleCredentials">
+      <hr />
+      <div class="centered-text clear">
+        <button ng-click="HeaderCtrl.signInWithGoogle()"> Sign In With Google </button>
+      </div>
     </div>
     <hr />
     <div class="centered-text">
