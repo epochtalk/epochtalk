@@ -41,6 +41,9 @@ module.exports = {
         logo: config.website.logo,
         favicon: config.website.favicon,
         GAKey: config.gaKey,
+        google_api_key: config.googleAPIKey,
+        google_client_id: config.googleClientId,
+        google_app_domain: config.googleAppDomain,
         tos: tos,
         privacy: privacy,
         disclaimer: disclaimer

@@ -12,6 +12,9 @@ module.exports = {
       favicon: config.website.favicon,
       siteKey: config.recaptchaSiteKey,
       GAKey: config.gaKey,
+      google_api_key: config.googleAPIKey,
+      google_client_id: config.googleClientId,
+      google_app_domain: config.googleAppDomain,
       lockout: JSON.stringify(request.server.plugins.backoff.getLockoutTimes()),
     };
     return request.server.plugins.backoff.getAccessLogs(request.db.db, ip)

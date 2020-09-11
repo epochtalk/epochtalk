@@ -14,6 +14,12 @@
         Login
       </button>
     </div>
+    <div ng-if="HeaderCtrl.hasGoogleCredentials">
+      <hr />
+      <div class="centered-text clear">
+        <button ng-click="HeaderCtrl.signInWithGoogle()"> Sign In With Google </button>
+      </div>
+    </div>
     <hr />
     <div class="centered-text">
       <a ng-href="/recover" target="_blank" rel="noopener noreferrer">Help, I forgot my password!</a>

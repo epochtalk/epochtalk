@@ -108,12 +108,18 @@
       default_avatar_shape: '{{default_avatar_shape}}',
       websocket_host: '{{websocket_host}}',
       websocket_port: '{{websocket_port}}',
+      google_api_key: '{{google_api_key}}',
+      google_client_id: '{{google_client_id}}',
+      google_app_domain: '{{google_app_domain}}',
       post_max_length: {{post_max_length}},
       max_image_size: {{max_image_size}},
       portal: {
         enabled: {{portal.enabled}}
       }
     };
+    var init = function() {
+      window.initGapi();
+    }
   </script>
   <script src="/static/js/bundle.js" type="text/javascript"></script>
   <!-- Google Analytics -->
@@ -122,6 +128,13 @@
       ga('create','{{GAKey}}','auto');ga('send','pageview')
   </script>
   <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+  <script>
+    (function() {
+      if ('{{google_api_key}}'.length && '{{google_client_id}}'.length && '{{google_app_domain}}'.length) {
+        document.write('<script src="https://apis.google.com/js/client.js?onload=init"><\/script>');
+      }
+    })();
+  </script>
 </body>
 
 </html>
