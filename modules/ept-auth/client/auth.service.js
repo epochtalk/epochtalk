@@ -14,21 +14,18 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope', 'Ale
         })
         .catch(console.log);
       },
-
       login: function(user) {
         return User.login(user).$promise
         .then(function(resource) { Session.setUser(resource); })
         .then(function() { PreferencesSvc.pullPreferences(); })
-        .then(function() { $rootScope.$emit('loginEvent'); })
+        .then(function() { $rootScope.$emit('loginEvent'); });
       },
-
       logout: function() {
         return User.logout().$promise
         .then(function() { Session.clearUser(); })
         .then(function() { PreferencesSvc.clearPreferences(); })
         .finally(function() { $rootScope.$emit('logoffEvent'); })
       },
-
       authenticate: function() {
         if (Session.getToken()) {
           User.ping().$promise

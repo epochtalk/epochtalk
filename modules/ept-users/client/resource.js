@@ -14,6 +14,10 @@ var resource = ['$resource',
         method: 'POST',
         url: '/api/login'
       },
+      authWithGoogle: {
+        method: 'POST',
+        url: '/api/auth/google'
+      },
       resetPassword: {
         method: 'POST',
         url: '/api/reset'

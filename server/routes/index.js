@@ -42,6 +42,9 @@ exports.endpoints = function(internalConfig) {
           max_image_size: internalConfig.images.maxSize,
           portal: { enabled: config.portal.enabled },
           GAKey: config.gaKey,
+          google_api_key: config.googleAPIKey,
+          google_client_id: config.googleClientId,
+          google_app_domain: config.googleAppDomain,
           currentYear: new Date().getFullYear()
         };
         return reply.view('index', data);

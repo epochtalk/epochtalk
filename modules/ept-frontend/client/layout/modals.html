@@ -12,9 +12,17 @@
       Remember Me
     </label>
     <div class="clear">
-      <button id="login-btn" class=" fill-row" ng-click="HeaderCtrl.login()" type="submit" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.user.password.length < 8">
+      <button id="login-btn" class="fill-row" ng-click="HeaderCtrl.login()" type="submit" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.user.password.length < 8">
         Login
       </button>
+    </div>
+    <div ng-if="HeaderCtrl.hasGoogleCredentials">
+      <hr />
+      <div class="input-section centered-text clear">
+        <button ng-click="HeaderCtrl.signInWithGoogle()">
+          Sign In With Google
+        </button>
+      </div>
     </div>
     <hr />
     <div class="centered-text">
@@ -28,6 +36,37 @@
   <h3 class="thin-underline">Registration Success</h3>
   <br />
   Thank you for registering. Please check your email and confirm your account.
+</modal>
+
+<!-- Registration With Google Modal -->
+<modal show="HeaderCtrl.showGoogleUsername">
+  <h3 class="thin-underline">Choose your Username</h3>
+  <br />
+  Please enter a username
+  <div class="input-section">
+    <label>
+      <div ng-if="$parent.form.username.$touched && $parent.form.username.$error.required" class="input-error invalid right">
+        Username is required
+      </div>
+      <div ng-if="$parent.form.username.$touched && $parent.form.username.$error.unique && !$parent.form.username.$error.pattern" class="input-error invalid right">
+        Username is taken
+      </div>
+      <div ng-if="$parent.form.username.$touched && !$parent.form.username.$error.unique && $parent.form.username.$error.pattern" class="input-error invalid right">
+        Usernames may only contain A-Z, 0-9, -, _ and .
+      </div>
+      <input type="text" class="input-text icon-padding" name="username" maxlength="50" ng-model="HeaderCtrl.registerUser.username" unique-username ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Username ( a-z, 0-9, -, _ and . )" ng-pattern=/^[a-zA-Z\d-_.]+$/ required />
+      <i ng-if="$parent.form.username.$touched && !$parent.form.username.$error.unique && !$parent.form.username.$error.pattern && !$parent.form.username.$error.required" class="fa fa-check input-icon valid"></i>
+      <i ng-if="$parent.form.username.$touched && ($parent.form.username.$error.required || $parent.form.username.$error.unique || $parent.form.username.$error.pattern)" class="fa fa-times input-icon invalid"></i>
+    </label>
+  </div>
+  <div ng-if="HeaderCtrl.hasGoogleCredentials">
+    <hr />
+    <div class="input-section centered-text clear">
+      <button ng-click="HeaderCtrl.signInWithGoogle(HeaderCtrl.registerUser.username)">
+        Sign In With Google
+      </button>
+    </div>
+  </div>
 </modal>
 
 <!-- Register Modal -->
@@ -110,6 +149,14 @@
       <button class="fill-row" ng-click="HeaderCtrl.register()" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.registerUser.password.length < 8 || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation">
         Register
       </button>
+    </div>
+    <div ng-if="HeaderCtrl.hasGoogleCredentials">
+      <hr />
+      <div class="input-section centered-text clear">
+        <button ng-click="HeaderCtrl.signInWithGoogle()">
+          Sign In With Google
+        </button>
+      </div>
     </div>
   </form>
 </modal>
