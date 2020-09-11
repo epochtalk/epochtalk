@@ -40,6 +40,7 @@ module.exports = {
   handler: function(request) {
     var userInfoApi = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json';
     var rememberMe = request.payload.remember_me;
+    var username = request.payload.username;
     var userData;
     var promise = new Promise(function(resolve, reject) {
       var headers = { Authorization: 'Bearer ' + request.payload.access_token };
@@ -85,9 +86,9 @@ module.exports = {
         .error(request.errorMap.toHttpError);
       }
       // Create account
-      else {
+      else if (username) {
         var newUser = {
-          username: request.payload.username || userData.email,
+          username: request.payload.username,
           email: userData.email,
           password: null
         };
@@ -128,6 +129,7 @@ module.exports = {
         })
         .error(request.errorMap.toHttpError);
       }
+      else { return { has_account: false }; }
     });
 
     return promise;

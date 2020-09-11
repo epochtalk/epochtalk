@@ -1,5 +1,5 @@
-var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'GoogleAuth', 'Session', 'BreadcrumbSvc', 'Alert', 'ThemeSVC', 'NotificationSvc', 'BanSvc', 'PreferencesSvc',
-  function($scope, $location, $timeout, $state, $stateParams, Auth, GoogleAuth, Session, BreadcrumbSvc, Alert, ThemeSVC, NotificationSvc, BanSvc, PreferencesSvc) {
+var ctrl = ['$scope', '$window', '$location', '$timeout', '$state', '$stateParams', 'Auth', 'GoogleAuth', 'Session', 'BreadcrumbSvc', 'Alert', 'ThemeSVC', 'NotificationSvc', 'BanSvc', 'PreferencesSvc',
+  function($scope, $window, $location, $timeout, $state, $stateParams, Auth, GoogleAuth, Session, BreadcrumbSvc, Alert, ThemeSVC, NotificationSvc, BanSvc, PreferencesSvc) {
     var ctrl = this;
     this.currentUser = Session.user;
     this.hasPermission = Session.hasPermission;
@@ -7,7 +7,7 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
     this.loggedIn = Session.isAuthenticated;
     this.breadcrumbs = BreadcrumbSvc.crumbs;
     this.isBanned = BanSvc.isBanned();
-
+    this.hasGoogleCredentials = $window.forumData.google_client_id;
     // Update preview mode on change
     $scope.$watch(function() { return BanSvc.isBanned(); }, function(val) {
       ctrl.isBanned = val;
@@ -121,18 +121,31 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
       });
     };
 
-    this.loginWithGoogle = function() {
-      GoogleAuth.login()
-      .then(function() {
-        ctrl.collapseMobileKeyboard();
-        ctrl.showLogin = false;
-        ctrl.clearLoginFields();
-        if ($state.next) {
-          $state.go($state.next, $state.nextParams, { reload: true });
-          $state.next = undefined;
-          $state.nextParams = undefined; //clear out next state info after redirect
+    this.signInWithGoogle = function(username) {
+      GoogleAuth.signIn(username)
+      .then(function(data) {
+        if (data && data.has_account === false) {
+          ctrl.showRegister = false;
+          ctrl.clearRegisterFields();
+          ctrl.showLogin = false;
+          ctrl.clearLoginFields();
+          ctrl.collapseMobileKeyboard();
+          ctrl.showGoogleUsername = true;
         }
-        else { $state.go($state.current, $stateParams, { reload: true }); }
+        else {
+          ctrl.showRegister = false;
+          ctrl.clearRegisterFields();
+          ctrl.showLogin = false;
+          ctrl.clearLoginFields();
+          ctrl.collapseMobileKeyboard();
+          ctrl.showGoogleUsername = false;
+          if ($state.next) {
+            $state.go($state.next, $state.nextParams, { reload: true });
+            $state.next = undefined;
+            $state.nextParams = undefined; //clear out next state info after redirect
+          }
+          else { $state.go($state.current, $stateParams, { reload: true }); }
+        }
       })
       .catch(function(err) {
         if (err.error === 'idpiframe_initialization_failed') {
@@ -141,47 +154,6 @@ var ctrl = ['$scope', '$location', '$timeout', '$state', '$stateParams', 'Auth',
         else { Alert.error('Login Failed'); }
         ctrl.showLogin = false;
         ctrl.clearLoginFields();
-      });
-    };
-
-    this.registerWithGoogle = function() {
-      GoogleAuth.getAuthToken()
-      .then(function() {
-        ctrl.showRegister = false;
-        ctrl.clearRegisterFields();
-        ctrl.collapseMobileKeyboard();
-        ctrl.showGoogleUsername = true;
-      })
-      .catch(function(err) {
-        if (err.error === 'idpiframe_initialization_failed') {
-          Alert.error(err.details + ' You must allow cookies from accounts.google.com to register with google in incognito mode.');
-        }
-        else { Alert.error('Register Failed'); }
-        ctrl.showRegister = false;
-        ctrl.clearRegisterFields();
-      });
-    };
-
-    this.completeGoogleRegistration = function() {
-      var username = ctrl.registerUser.username;
-      GoogleAuth.completeRegistration(username)
-      .then(function() {
-        ctrl.showGoogleUsername = false;
-        ctrl.collapseMobileKeyboard();
-        if ($state.next) {
-          $state.go($state.next, $state.nextParams, { reload: true });
-          $state.next = undefined;
-          $state.nextParams = undefined; //clear out next state info after redirect
-        }
-        else { $state.go($state.current, $stateParams, { reload: true }); }
-      })
-      .catch(function(err) {
-        if (err.error === 'idpiframe_initialization_failed') {
-          Alert.error(err.details + ' You must allow cookies from accounts.google.com to register with google in incognito mode.');
-        }
-        else { Alert.error('Register Failed'); }
-        ctrl.showRegister = false;
-        ctrl.clearRegisterFields();
       });
     };
 

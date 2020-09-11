@@ -1,5 +1,5 @@
-var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeout', '$http', '$rootScope', '$q', 'Alert',
-  function (User, Session, PreferencesSvc, BanSvc, $window, $timeout, $http, $rootScope, $q, Alert) {
+var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeout', '$http', '$rootScope', '$q',
+  function (User, Session, PreferencesSvc, BanSvc, $window, $timeout, $http, $rootScope, $q) {
     var clientId = $window.forumData.google_client_id;
     var apiKey = $window.forumData.google_api_key;
     var scopes = 'https://www.googleapis.com/auth/userinfo.email';
@@ -33,23 +33,21 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$window', '$timeo
     $window.initGapi = function () { gapi.load('client:auth2', initClient); };
 
     var serviceAPI = {
-      getAuthToken: function() {
-        return gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false, hd: domain }, handleAuthResult);
-      },
-      completeRegistration: function(username) {
-        return User.authWithGoogle({ access_token: token, username: username }).$promise
-        .then(function(resource) { Session.setUser(resource); })
-        .then(function() { PreferencesSvc.pullPreferences(); })
-        .then(function() { $rootScope.$emit('loginEvent'); });
-      },
-      login: function(username) {
-        return gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false, hd: domain }, handleAuthResult)
+      signIn: function(username) {
+        return new Promise(function(resolve) {
+          if (token) { return resolve({ access_token: token }); }
+          else { return resolve(gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false, hd: domain }, handleAuthResult)); }
+        })
         .then(function(authResult) {
           return User.authWithGoogle({ access_token: authResult.access_token, username: username }).$promise
         })
-        .then(function(resource) { Session.setUser(resource); })
-        .then(function() { PreferencesSvc.pullPreferences(); })
-        .then(function() { $rootScope.$emit('loginEvent'); });
+        .then(function(data) {
+          if (data && data.has_account === false) { return { has_account: false }; }
+          else {
+            return new Promise(function(resolve) { return resolve(Session.setUser(data)); })
+            .then(function() { PreferencesSvc.pullPreferences(); })
+            .then(function() { $rootScope.$emit('loginEvent'); }); }
+        });
       },
       checkAuth: function() {
         try {

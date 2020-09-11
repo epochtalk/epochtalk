@@ -161,7 +161,14 @@
       ga('create','{{GAKey}}','auto');ga('send','pageview')
   </script>
   <script src="https://www.google-analytics.com/analytics.js" async defer></script>
-  <script src="https://apis.google.com/js/client.js?onload=init"></script>
+  <script>
+    (function() {
+      if ('{{google_client_id}}'.length) {
+        document.write('<script src="https://apis.google.com/js/client.js?onload=init"><\/script>');
+      }
+    })();
+  </script>
+
   </script>
 </body>
 

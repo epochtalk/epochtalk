@@ -16,9 +16,13 @@
         Login
       </button>
     </div>
-    <br />
-    <div class="clear centered-text">
-      <button ng-click="HeaderCtrl.loginWithGoogle()">Login With Google</button>
+    <div ng-if="HeaderCtrl.hasGoogleCredentials">
+      <hr />
+      <div class="input-section clear">
+        <button class="fill-row" ng-click="HeaderCtrl.signInWithGoogle()">
+          Sign In With Google
+        </button>
+      </div>
     </div>
     <hr />
     <div class="centered-text">
@@ -55,10 +59,13 @@
       <i ng-if="$parent.form.username.$touched && ($parent.form.username.$error.required || $parent.form.username.$error.unique || $parent.form.username.$error.pattern)" class="fa fa-times input-icon invalid"></i>
     </label>
   </div>
-  <div class="input-section clear">
-    <button class="fill-row" ng-click="HeaderCtrl.completeGoogleRegistration()" ng-disabled="$parent.form.$invalid || $parent.form.$errors">
-      Register With Google
-    </button>
+  <div ng-if="HeaderCtrl.hasGoogleCredentials">
+    <hr />
+    <div class="input-section clear">
+      <button class="fill-row" ng-click="HeaderCtrl.signInWithGoogle(HeaderCtrl.registerUser.username)">
+        Sign In With Google
+      </button>
+    </div>
   </div>
 </modal>
 
@@ -143,8 +150,13 @@
         Register
       </button>
     </div>
-    <div class="clear centered-text">
-      <button ng-click="HeaderCtrl.registerWithGoogle()">Register With Google</button>
+    <div ng-if="HeaderCtrl.hasGoogleCredentials">
+      <hr />
+      <div class="input-section centered-text clear">
+        <button ng-click="HeaderCtrl.signInWithGoogle()">
+          Sign In With Google
+        </button>
+      </div>
     </div>
   </form>
 </modal>
