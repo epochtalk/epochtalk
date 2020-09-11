@@ -14,6 +14,7 @@ var Request = require('request');
   * @apiParam (Payload) {boolean} remember_me Keep user logged in
   *
   * @apiSuccess {string} token User's authentication token
+  * @apiSuccess {boolean} has_account if the user has an existing account
   * @apiSuccess {string} id User's unique id
   * @apiSuccess {string} username The user account username
   * @apiSuccess {string} avatar User's avatar url
