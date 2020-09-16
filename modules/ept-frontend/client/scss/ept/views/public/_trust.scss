@@ -1,3 +1,11 @@
+.trust-main {
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: none;
+  }
+}
+
 .trust-section {
   @include row;
   @include clearfix;
