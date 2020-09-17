@@ -87,6 +87,12 @@
     }
   }
 
+  .modal-dialog-secondary-actions {
+    border-top: $border;
+    padding: 1rem;
+    text-align: center;
+  }
+
   button, 
   .button, 
   .clear button, 

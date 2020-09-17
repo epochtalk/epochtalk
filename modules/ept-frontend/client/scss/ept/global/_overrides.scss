@@ -177,6 +177,15 @@ textarea,
   }
 }
 
+.checkbox-container {
+  display: flex;
+  align-items: center;
+
+  input[type="checkbox"] {
+    margin: 0 0.25rem;
+  }
+}
+
 input[type="checkbox"] { margin-bottom: 1rem; }
 input[type="checkbox"] + label, input[type="radio"] + label {
   display: inline-block;
