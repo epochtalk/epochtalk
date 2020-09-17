@@ -20,7 +20,7 @@
 
 .button, button, button:focus, .button:focus {
   @include border-radius(3px);
-  @include transition(color 0.15s ease, background-color 0.15s ease);
+  @include transition(color 0.15s ease, background-color 0.15s ease, box-shadow 150ms ease, transform 150ms ease);
   border: 0;
   background-color: $color-primary;
   border-color: $color-primary;
@@ -40,14 +40,29 @@
   text-decoration: none;
   text-align: center;
   -webkit-appearance: none;
+
   &:hover {
-   @include transition(color 0.15s ease, background-color 0.15s ease);
-   background-color: $color-primary-alt;
-   border-color: $color-primary-alt;
-   color: $button-text-color;
-   text-decoration: none;
+    @include transition(color 0.15s ease, background-color 0.15s ease);
+    background-color: $color-primary-alt;
+    border-color: $color-primary-alt;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    color: $button-text-color;
+    text-decoration: none;
+    transform: translateY(-1px);
   }
-  &.disabled, &.disabled:hover, &.disabled:focus, &[disabled], &[disabled]:hover, &[disabled]:focus {
+
+  &:disabled:hover,
+  &.disabled:hover {
+    box-shadow: none;
+    transform: none;
+  }
+
+  &.disabled, 
+  &.disabled:hover, 
+  &.disabled:focus, 
+  &[disabled], 
+  &[disabled]:hover, 
+  &[disabled]:focus {
     background-color: $secondary-font-color-light;
     border-color: $secondary-font-color-light;
   }
@@ -95,6 +110,7 @@
     margin-bottom: 0.5rem;
   }
 }
+
 
 button.icon {
   @include pad(0);
