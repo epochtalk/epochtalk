@@ -103,7 +103,7 @@ code {
 input[type], textarea {
   box-shadow: none;
   &.ng-invalid,
-  &.ng-invalid-mismatch { border-color: red; }
+  &.ng-invalid-mismatch { border-color: $color-alert; }
   &.ng-untouched { border-color: $border-color; }
   &:focus { box-shadow: none; }
 }
@@ -130,10 +130,24 @@ select {
   margin-top: 0.05rem;
 }
 select:-moz-focusring { color: transparent; text-shadow: 0 0 0 #000; }
-input[type="text"], input[type="password"], input[type="date"], input[type="datetime"],
-input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"],
-input[type="number"], input[type="search"], input[type="tel"], input[type="time"],
-input[type="url"], input[type="color"], select, textarea, .input-text {
+
+input[type="text"], 
+input[type="password"], 
+input[type="date"], 
+input[type="datetime"],
+input[type="datetime-local"], 
+input[type="month"], 
+input[type="week"], 
+input[type="email"],
+input[type="number"], 
+input[type="search"], 
+input[type="tel"], 
+input[type="time"],
+input[type="url"], 
+input[type="color"], 
+select, 
+textarea, 
+.input-text {
   @include border-radius(0);
   @include transition(all 0.15s linear);
   -webkit-appearance: none;
@@ -151,8 +165,18 @@ input[type="url"], input[type="color"], select, textarea, .input-text {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  &:disabled, &[disabled] { background-color: $secondary-font-color-light; }
+  
+  &:disabled, 
+  &[disabled] { 
+    background-color: $secondary-font-color-light; 
+  }
+
+  &::placeholder {
+    color: $secondary-font-color;
+    opacity: 1;
+  }
 }
+
 input[type="checkbox"] { margin-bottom: 1rem; }
 input[type="checkbox"] + label, input[type="radio"] + label {
   display: inline-block;

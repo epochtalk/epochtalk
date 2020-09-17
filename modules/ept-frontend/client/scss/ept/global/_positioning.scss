@@ -80,23 +80,75 @@ $grid-2-column: 1fr $sidebarWidth;
 /* -- Input Layout --*/
 .input-section {
   position: relative;
-  margin-bottom: 1.875rem;
-  input {
-    margin-bottom: 0;
-    &.icon-padding { padding-right: 40px; }
+  margin-bottom: 1rem;
+
+  label {
+    font-size: $font-size-tiny;
+    color: $secondary-font-color;
+    padding: 0.5rem;
+    position: absolute;
+    width: 100%;
   }
+
+  input {
+    border: $border;
+    border-radius: 3px;
+    box-shadow: none;
+    font-size: $base-font-size;
+    margin-bottom: 0;
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+
+    &.icon-padding { 
+      padding-right: 40px; 
+    }
+
+    &:hover {
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    &:focus {
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .input-validation-message {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    text-align: right;
+  }
+
+  .input-info {
+    background: none;
+    color: $secondary-font-color;
+    padding: 0 0.5rem;
+  }
+
   button, .button { margin-bottom: 0; }
+  
   &:last-child {margin-bottom: 0px; }
+  
   .input-error { margin-top: -1.5625rem; }
-  .invalid { color: rgba(206, 4, 6, 0.64); }
-  .valid { color: rgba(27, 196, 63, 0.64); }
+  
+  .invalid { 
+    color: $color-alert; 
+    fill: $color-alert;
+  }
+  
+  .valid { 
+    color: $color-valid; 
+    fill: $color-valid; 
+  }
+  
   .input-icon {
     cursor: text;
     font-size: 1.25rem;
     position: absolute;
     z-index: 99999;
-    bottom: 0.5rem;
-    right: 0.8rem;
+    top: 1.5rem;
+    right: 0.5rem;
+    height: 1rem;
   }
 }
 .input-nine-three-col {

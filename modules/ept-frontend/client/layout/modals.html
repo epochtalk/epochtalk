@@ -71,93 +71,131 @@
   </form>
 </modal>
 
+
+
 <!-- Register Modal -->
 <modal show="HeaderCtrl.showRegister" on-close="HeaderCtrl.clearRegisterFields()">
   <form name="$parent.form" novalidate>
-    <h3 class="thin-underline">Register</h3>
+    <h1 class="view-title">Register a new account</h1>
 
-    <div class='input-section'>
-      <label>
+    <div class="modal-dialog-main">
+      <div class='input-section'>
+        <label for="email">
+          Email
+  
+          <div ng-if="$parent.form.email.$touched && $parent.form.email.$error.required" class="invalid input-validation-message">
+            Email is required
+          </div>
+          <div ng-if="$parent.form.email.$touched && $parent.form.email.$error.email" class="invalid input-validation-message">
+            Email is invalid
+          </div>
+          <div ng-if="$parent.form.email.$touched && $parent.form.email.$error.unique" class="invalid input-validation-message">
+            Email is taken
+          </div>
+        </label>
+  
+        <input type="email" class="icon-padding" id="email" name="email" maxlength="255" ng-model="HeaderCtrl.registerUser.email" unique-email ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="your-email@email.com" modal-focus="{{HeaderCtrl.showRegister}}" required />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" ng-if="$parent.form.email.$touched && !$parent.form.email.$error.email && !$parent.form.email.$error.required && !$parent.form.email.$error.unique" class="input-icon valid">
+          <title>checkmark</title>
+          <polygon class="cls-1" points="19.69 37.19 7.23 24.73 10.77 21.2 19.69 30.12 37.23 12.58 40.77 16.11 19.69 37.19"/>
+        </svg>
+        <svg enable-background="new 0 0 16 16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" ng-if="$parent.form.email.$touched && ($parent.form.email.$error.email || $parent.form.email.$error.required || $parent.form.email.$error.unique)" class="input-icon invalid">
+          <path clip-rule="evenodd" d="m12.7 5.2-1.2-1.2-3.1 3.2-3.2-3.2-1.2 1.2 3.2 3.2-3.2 3.1 1.2 1.2 3.2-3.2 3.1 3.2 1.2-1.2-3.2-3.1z" fill-rule="evenodd"/>
+        </svg>
+  
         <div class="input-info">
-          Email must be valid to confirm account
+          Enter a valid email (we'll use it to confirm your account)
         </div>
-        <div ng-if="$parent.form.email.$touched && $parent.form.email.$error.required" class="invalid right">
-          Email is required
-        </div>
-        <div ng-if="$parent.form.email.$touched && $parent.form.email.$error.email" class="invalid right">
-          Email is invalid
-        </div>
-        <div ng-if="$parent.form.email.$touched && $parent.form.email.$error.unique" class="invalid right">
-          Email is taken
-        </div>
-        <input type="email" class="icon-padding" name="email" maxlength="255" ng-model="HeaderCtrl.registerUser.email" unique-email ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Email" modal-focus="{{HeaderCtrl.showRegister}}" required />
-        <i ng-if="$parent.form.email.$touched && !$parent.form.email.$error.email && !$parent.form.email.$error.required && !$parent.form.email.$error.unique" class="fa fa-check input-icon valid"></i>
-        <i ng-if="$parent.form.email.$touched && ($parent.form.email.$error.email || $parent.form.email.$error.required || $parent.form.email.$error.unique)" class="fa fa-times input-icon invalid"></i>
-      </label>
-    </div>
+      </div>
+  
+      <div class="input-section">
+        <label for="username">
+          Username
+          <div ng-if="$parent.form.username.$touched && $parent.form.username.$error.required" class="invalid input-validation-message">
+            Username is required
+          </div>
+          <div ng-if="$parent.form.username.$touched && $parent.form.username.$error.unique && !$parent.form.username.$error.pattern" class="invalid input-validation-message">
+            Username is taken
+          </div>
+          <div ng-if="$parent.form.username.$touched && !$parent.form.username.$error.unique && $parent.form.username.$error.pattern" class="invalid input-validation-message">
+            Usernames may only contain A-Z, 0-9, -, _ and .
+          </div>
+        </label>
+  
+        <input type="text" class="input-text icon-padding" id="username" name="username" maxlength="50" ng-model="HeaderCtrl.registerUser.username" unique-username ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="your-username" ng-pattern=/^[a-zA-Z\d-_.]+$/ required />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" ng-if="$parent.form.username.$touched && !$parent.form.username.$error.unique && !$parent.form.username.$error.pattern && !$parent.form.username.$error.required" class="input-icon valid">
+          <title>checkmark</title>
+          <polygon class="cls-1" points="19.69 37.19 7.23 24.73 10.77 21.2 19.69 30.12 37.23 12.58 40.77 16.11 19.69 37.19"/>
+        </svg>
+        <svg enable-background="new 0 0 16 16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" ng-if="$parent.form.username.$touched && ($parent.form.username.$error.required || $parent.form.username.$error.unique || $parent.form.username.$error.pattern)" class="input-icon invalid">
+          <path clip-rule="evenodd" d="m12.7 5.2-1.2-1.2-3.1 3.2-3.2-3.2-1.2 1.2 3.2 3.2-3.2 3.1 1.2 1.2 3.2-3.2 3.1 3.2 1.2-1.2-3.2-3.1z" fill-rule="evenodd"/>
+        </svg>
 
-    <div class="input-section">
-      <label>
-        <div ng-if="$parent.form.username.$touched && $parent.form.username.$error.required" class="input-error invalid right">
-          Username is required
+        <div class="input-info">
+          You can use <strong>a-z</strong>, <strong>A-Z</strong>, <strong>0-9</strong>, <strong>-</strong>, <strong>_</strong> and <strong>.</strong>
         </div>
-        <div ng-if="$parent.form.username.$touched && $parent.form.username.$error.unique && !$parent.form.username.$error.pattern" class="input-error invalid right">
-          Username is taken
-        </div>
-        <div ng-if="$parent.form.username.$touched && !$parent.form.username.$error.unique && $parent.form.username.$error.pattern" class="input-error invalid right">
-          Usernames may only contain A-Z, 0-9, -, _ and .
-        </div>
-        <input type="text" class="input-text icon-padding" name="username" maxlength="50" ng-model="HeaderCtrl.registerUser.username" unique-username ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Username ( a-z, 0-9, -, _ and . )" ng-pattern=/^[a-zA-Z\d-_.]+$/ required />
-        <i ng-if="$parent.form.username.$touched && !$parent.form.username.$error.unique && !$parent.form.username.$error.pattern && !$parent.form.username.$error.required" class="fa fa-check input-icon valid"></i>
-        <i ng-if="$parent.form.username.$touched && ($parent.form.username.$error.required || $parent.form.username.$error.unique || $parent.form.username.$error.pattern)" class="fa fa-times input-icon invalid"></i>
-      </label>
-    </div>
-
-    <div class="input-section">
-      <label>
-        <div ng-if="$parent.form.password.$touched && $parent.form.password.$error.required" class="input-error invalid right">
-          Password is required
-        </div>
-        <div ng-if="$parent.form.password.$touched && HeaderCtrl.registerUser.password.length < 8" class="input-error invalid right">
-          Password must be at least 8 characters
-        </div>
-        <div ng-if="$parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.password.length >= 8 && !$parent.form.password.$error.required" class="input-error invalid right">
-          Password and confirmation do not match
-        </div>
-        <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.password.length < 8 }" class="icon-padding" name="password" ng-model="HeaderCtrl.registerUser.password" placeholder="Password" required />
-        <i ng-if="($parent.form.password.$touched && !$parent.form.confirmation.$touched && !$parent.form.password.$error.required && HeaderCtrl.registerUser.password.length >= 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.password.length >= 8 && !$parent.form.password.$error.required)" class="fa fa-check input-icon valid"></i>
-        <i ng-if="($parent.form.password.$touched && $parent.form.password.$error.required) || ($parent.form.password.$touched && HeaderCtrl.registerUser.password.length < 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
-      </label>
-    </div>
-
-    <div class="input-section">
-      <label>
-        <div ng-if="$parent.form.confirmation.$touched && $parent.form.confirmation.$error.required" class="input-error invalid right">
-          Confirmation is required
-        </div>
-        <div ng-if="$parent.form.confirmation.$touched && HeaderCtrl.registerUser.confirmation.length < 8" class="input-error invalid right">
-          Confirmation must be at least 8 characters
-        </div>
-        <div ng-if="$parent.form.password.$touched && HeaderCtrl.registerUser.password !== '' && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.confirmation.length >= 8 && !$parent.form.confirmation.$error.required" class="input-error invalid right">
-          Password and confirmation do not match
-        </div>
-        <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.confirmation.length < 8 }" class="icon-padding" name="confirmation" ng-model="HeaderCtrl.registerUser.confirmation" placeholder="Confirm Password" required />
-        <i ng-if="($parent.form.confirmation.$touched  && HeaderCtrl.registerUser.confirmation !== '' && !$parent.form.password.$touched && !$parent.form.confirmation.$error.required && HeaderCtrl.registerUser.confirmation.length >= 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.confirmation.length >= 8 && !$parent.form.confirmation.$error.required)" class="fa fa-check input-icon valid"></i>
-        <i ng-if="($parent.form.confirmation.$touched && $parent.form.confirmation.$error.required) || ($parent.form.confirmation.$touched && HeaderCtrl.registerUser.confirmation.length < 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="fa fa-times input-icon invalid"></i>
-      </label>
-    </div>
-
-    <div class="input-section clear">
-      <button class="fill-row" ng-click="HeaderCtrl.register()" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.registerUser.password.length < 8 || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation">
-        Register
-      </button>
-    </div>
-    <div ng-if="HeaderCtrl.hasGoogleCredentials">
-      <hr />
-      <div class="input-section centered-text clear">
-        <button ng-click="HeaderCtrl.signInWithGoogle(undefined, 'select_account')">
-          Sign In With Google
+      </div>
+  
+      <div class="input-section">
+        <label for="password">
+          Password
+          <div ng-if="$parent.form.password.$touched && $parent.form.password.$error.required" class="invalid input-validation-message">
+            Password is required
+          </div>
+          <div ng-if="$parent.form.password.$touched && HeaderCtrl.registerUser.password.length < 8" class="invalid input-validation-message">
+            Password must be at least 8 characters
+          </div>
+          <div ng-if="$parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.password.length >= 8 && !$parent.form.password.$error.required" class="invalid input-validation-message">
+            Password and confirmation do not match
+          </div>
+        </label>
+  
+        <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.password.length < 8 }" class="icon-padding" id="password" name="password" ng-model="HeaderCtrl.registerUser.password" placeholder="Enter a password" required />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" ng-if="($parent.form.password.$touched && !$parent.form.confirmation.$touched && !$parent.form.password.$error.required && HeaderCtrl.registerUser.password.length >= 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.password.length >= 8 && !$parent.form.password.$error.required)" class="input-icon valid">
+          <title>checkmark</title>
+          <polygon class="cls-1" points="19.69 37.19 7.23 24.73 10.77 21.2 19.69 30.12 37.23 12.58 40.77 16.11 19.69 37.19"/>
+        </svg>
+        <svg enable-background="new 0 0 16 16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" ng-if="($parent.form.password.$touched && $parent.form.password.$error.required) || ($parent.form.password.$touched && HeaderCtrl.registerUser.password.length < 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="input-icon invalid">
+          <path clip-rule="evenodd" d="m12.7 5.2-1.2-1.2-3.1 3.2-3.2-3.2-1.2 1.2 3.2 3.2-3.2 3.1 1.2 1.2 3.2-3.2 3.1 3.2 1.2-1.2-3.2-3.1z" fill-rule="evenodd"/>
+        </svg>
+      </div>
+  
+      <div class="input-section">
+        <label for="confirmation">
+          Confirm Password
+          <div ng-if="$parent.form.confirmation.$touched && $parent.form.confirmation.$error.required" class="invalid input-validation-message">
+            Confirmation is required
+          </div>
+          <div ng-if="$parent.form.confirmation.$touched && HeaderCtrl.registerUser.confirmation.length < 8" class="invalid input-validation-message">
+            Confirmation must be at least 8 characters
+          </div>
+          <div ng-if="$parent.form.password.$touched && HeaderCtrl.registerUser.password !== '' && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.confirmation.length >= 8 && !$parent.form.confirmation.$error.required" class="invalid input-validation-message">
+            Password and confirmation do not match
+          </div>
+        </label>
+  
+        <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.confirmation.length < 8 }" class="icon-padding" name="confirmation" id="confirmation" ng-model="HeaderCtrl.registerUser.confirmation" placeholder="Enter your password again" required />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" ng-if="($parent.form.confirmation.$touched  && HeaderCtrl.registerUser.confirmation !== '' && !$parent.form.password.$touched && !$parent.form.confirmation.$error.required && HeaderCtrl.registerUser.confirmation.length >= 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.confirmation.length >= 8 && !$parent.form.confirmation.$error.required)" class="input-icon valid">
+          <title>checkmark</title>
+          <polygon class="cls-1" points="19.69 37.19 7.23 24.73 10.77 21.2 19.69 30.12 37.23 12.58 40.77 16.11 19.69 37.19"/>
+        </svg>
+        <svg enable-background="new 0 0 16 16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" ng-if="($parent.form.confirmation.$touched && $parent.form.confirmation.$error.required) || ($parent.form.confirmation.$touched && HeaderCtrl.registerUser.confirmation.length < 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="input-icon invalid">
+          <path clip-rule="evenodd" d="m12.7 5.2-1.2-1.2-3.1 3.2-3.2-3.2-1.2 1.2 3.2 3.2-3.2 3.1 1.2 1.2 3.2-3.2 3.1 3.2 1.2-1.2-3.2-3.1z" fill-rule="evenodd"/>
+        </svg>
+      </div>
+  
+      <div class="modal-actions">
+        <button class="" ng-click="HeaderCtrl.register()" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.registerUser.password.length < 8 || HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation">
+          Register
         </button>
+
+        <div ng-if="HeaderCtrl.hasGoogleCredentials" class="modal-actions-sso-google">
+          <span class="separator-text">or</span>
+          <button ng-click="HeaderCtrl.signInWithGoogle(undefined, 'select_account')">
+            <svg height="18" viewBox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="m17.64 9.20454545c0-.63818181-.0572727-1.25181818-.1636364-1.84090909h-8.4763636v3.48136364h4.8436364c-.2086364 1.125-.8427273 2.0781818-1.7959091 2.7163636v2.2581819h2.9086363c1.7018182-1.5668182 2.6836364-3.874091 2.6836364-6.61500005z" fill="#4285f4"/><path d="m9 18c2.43 0 4.4672727-.8059091 5.9563636-2.1804545l-2.9086363-2.2581819c-.8059091.54-1.8368182.8590909-3.0477273.8590909-2.34409091 0-4.32818182-1.5831818-5.03590909-3.7104545h-3.00681818v2.3318182c1.48090909 2.9413636 4.52454545 4.9581818 8.04272727 4.9581818z" fill="#34a853"/><path d="m3.96409091 10.71c-.18-.54-.28227273-1.11681818-.28227273-1.71s.10227273-1.17.28227273-1.71v-2.33181818h-3.00681818c-.60954546 1.215-.95727273 2.58954545-.95727273 4.04181818 0 1.4522727.34772727 2.8268182.95727273 4.0418182z" fill="#fbbc05"/><path d="m9 3.57954545c1.3213636 0 2.5077273.45409091 3.4404545 1.3459091l2.5813637-2.58136364c-1.5586364-1.45227273-3.5959091-2.34409091-6.0218182-2.34409091-3.51818182 0-6.56181818 2.01681818-8.04272727 4.95818182l3.00681818 2.33181818c.70772727-2.12727273 2.69181818-3.71045455 5.03590909-3.71045455z" fill="#ea4335"/><path d="m0 0h18v18h-18z"/></g></svg>
+            Sign in With Google
+          </button>
+        </div>
       </div>
     </div>
   </form>

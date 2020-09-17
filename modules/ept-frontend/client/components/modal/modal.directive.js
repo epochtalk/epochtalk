@@ -11,7 +11,7 @@ module.exports = ['$document', function($document) {
     '<div class="ng-modal" ng-show="show">' +
       '<div class="ng-modal-overlay" ng-click="close()"></div>' +
       '<div class="ng-modal-dialog" ng-style="dialogStyle">' +
-        '<div class="ng-modal-close" ng-click="close()"><i class="fa fa-times"></i></div>' +
+        '<div class="ng-modal-close" ng-click="close()"><svg enable-background="new 0 0 16 16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="m12.7 5.2-1.2-1.2-3.1 3.2-3.2-3.2-1.2 1.2 3.2 3.2-3.2 3.1 1.2 1.2 3.2-3.2 3.1 3.2 1.2-1.2-3.2-3.1z" fill-rule="evenodd"/></svg></div>' +
         '<div class="ng-modal-dialog-content" ng-transclude></div>' +
       '</div>' +
     '</div>',
