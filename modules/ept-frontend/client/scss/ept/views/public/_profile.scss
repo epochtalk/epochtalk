@@ -528,6 +528,11 @@ profile {
   }
 }
 
+image-uploader {
+  display: block;
+  margin-top: 1rem;
+}
+
 @include break-mobile-med {
   .pagination-wrap {
     pagination {

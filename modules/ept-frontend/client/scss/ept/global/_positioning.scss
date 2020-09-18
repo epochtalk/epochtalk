@@ -90,7 +90,8 @@ $grid-2-column: 1fr $sidebarWidth;
     width: 100%;
   }
 
-  input {
+  input,
+  textarea {
     border: $border;
     border-radius: 3px;
     box-shadow: none;
@@ -109,6 +110,19 @@ $grid-2-column: 1fr $sidebarWidth;
 
     &:focus {
       box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  &.textarea {
+    label {
+      background-color: #fff;
+      left: 1px;
+      top: 1px;
+      width: calc(100% - 4px);
+    }
+
+    textarea {
+      height: 10rem;
     }
   }
 
@@ -151,6 +165,14 @@ $grid-2-column: 1fr $sidebarWidth;
     height: 1rem;
   }
 }
+
+.fieldgroup-double {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-gap: 1rem;
+}
+
+
 .input-nine-three-col {
   @include omega(2n);
   div:first-child { @include span-columns(9); }
