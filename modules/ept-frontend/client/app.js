@@ -91,30 +91,36 @@ app
       if (error === 'NoPageChange') { return; }
       // Unauthorized is redirected to login, save next so we can redirect after login
       else if (error.status === 401) {
-        $state.go('login');
-        $state.next = next;
-        $state.nextParams = nextParams;
+        $timeout(function() {
+          $state.go('login');
+          $state.next = next;
+          $state.nextParams = nextParams;
+        });
       }
       // Forbidden
       else if (error.status === 403 && (error.statusText === 'Forbidden' || error.data.error === 'Forbidden')) {
-        $state.go('403');
-        $state.next = next;
-        $state.nextParams = nextParams;
+        $timeout(function() {
+          $state.go('403');
+          $state.next = next;
+          $state.nextParams = nextParams;
+        });
       }
       // Too Many Requests
       else if (error.status === 429) { Alert.error('Too Many Requests'); }
       // logout from private board or thread (returns a 404)
-      else if (error.status === 404 && (prev.name === 'threads.data' || prev.name === 'posts.data')) { $state.go('home'); }
+      else if (error.status === 404 && (prev.name === 'threads.data' || prev.name === 'posts.data')) { $timeout(function() { $state.go('home'); }); }
       // 404 Not Found
       else if (error.status === 404 && (next.name === 'threads.data' || next.name === 'posts.data')) {
-        $state.go('404');
-        $state.next = next;
-        $state.nextParams = nextParams;
+        $timeout(function() {
+          $state.go('404');
+         $state.next = next;
+         $state.nextParams = nextParams;
+        });
       }
       // 404 catch all
-      else if (error.status === 404) { $state.go('404'); }
+      else if (error.status === 404) { $timeout(function() { $state.go('404'); }); }
       // 503 Service Unavailable
-      else { $state.go('503'); }
+      else { $timeout(function() { $state.go('503'); }); }
     }
   });
 }]);
