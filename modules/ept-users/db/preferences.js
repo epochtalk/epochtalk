@@ -39,7 +39,7 @@ module.exports = function(userId) {
     }
     else { prefs.collapsed_categories = []; }
     if (prefs.ignored_boards) {
-      prefs.ignored_boards = prefs.ignored_boards.boards;
+      prefs.ignored_boards = prefs.ignored_boards.boards.map(function(id) { return helper.slugify(id); });
     }
     else { prefs.ignored_boards = []; }
     return prefs;
