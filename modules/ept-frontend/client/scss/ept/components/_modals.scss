@@ -55,6 +55,14 @@
     }
   }
 
+  // Accomodate older modal headers. Will remove when refactoring all modals
+  .thin-underline {
+    font-size: $font-size-sm;
+    line-height: 2.5;
+    margin: -1rem -1rem 1rem;
+    padding-left: 1rem;
+  }
+
   p { 
     margin-bottom: 1rem; 
   }
