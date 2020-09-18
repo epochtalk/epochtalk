@@ -50,30 +50,41 @@
 <!-- Registration With Google Modal -->
 <modal show="HeaderCtrl.showGoogleUsername">
   <form name="$parent.form" novalidate>
-    <h3 class="thin-underline">Choose your Username</h3>
-    <br />
-    Please enter a username
-    <div class="input-section">
-      <label>
-        <div ng-if="$parent.form.username.$touched && $parent.form.username.$error.required" class="input-error invalid right">
-          Username is required
-        </div>
-        <div ng-if="$parent.form.username.$touched && $parent.form.username.$error.unique && !$parent.form.username.$error.pattern" class="input-error invalid right">
-          Username is taken
-        </div>
-        <div ng-if="$parent.form.username.$touched && !$parent.form.username.$error.unique && $parent.form.username.$error.pattern" class="input-error invalid right">
-          Usernames may only contain A-Z, 0-9, -, _ and .
-        </div>
-        <input type="text" class="input-text icon-padding" name="username" maxlength="50" ng-model="HeaderCtrl.registerUser.username" unique-username ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Username ( a-z, 0-9, -, _ and . )" ng-pattern=/^[a-zA-Z\d-_.]+$/ required />
-        <i ng-if="$parent.form.username.$touched && !$parent.form.username.$error.unique && !$parent.form.username.$error.pattern && !$parent.form.username.$error.required" class="fa fa-check input-icon valid"></i>
-        <i ng-if="$parent.form.username.$touched && ($parent.form.username.$error.required || $parent.form.username.$error.unique || $parent.form.username.$error.pattern)" class="fa fa-times input-icon invalid"></i>
-      </label>
-    </div>
-    <div ng-if="HeaderCtrl.hasGoogleCredentials">
-      <hr />
-      <div class="input-section centered-text clear">
+    <h1 class="view-title">Choose your Username</h1>
+
+    <div class="modal-dialog-main">
+      <div class="input-section">
+        <label for="username">
+          Username
+          <div ng-if="$parent.form.username.$touched && $parent.form.username.$error.required" class="input-validation-message invalid right">
+            Username is required
+          </div>
+          <div ng-if="$parent.form.username.$touched && $parent.form.username.$error.unique && !$parent.form.username.$error.pattern" class="input-validation-message invalid right">
+            Username is taken
+          </div>
+          <div ng-if="$parent.form.username.$touched && !$parent.form.username.$error.unique && $parent.form.username.$error.pattern" class="input-validation-message invalid right">
+            Usernames may only contain A-Z, 0-9, -, _ and .
+          </div>
+        </label>
+
+          <input type="text" class="input-text icon-padding" id="username" name="username" maxlength="50" ng-model="HeaderCtrl.registerUser.username" unique-username ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Enter a username" ng-pattern=/^[a-zA-Z\d-_.]+$/ required />
+
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" ng-if="$parent.form.username.$touched && !$parent.form.username.$error.unique && !$parent.form.username.$error.pattern && !$parent.form.username.$error.required" class="input-icon valid">
+            <title>checkmark</title>
+            <polygon class="cls-1" points="19.69 37.19 7.23 24.73 10.77 21.2 19.69 30.12 37.23 12.58 40.77 16.11 19.69 37.19"/>
+          </svg>
+
+          <svg enable-background="new 0 0 16 16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" ng-if="$parent.form.username.$touched && ($parent.form.username.$error.required || $parent.form.username.$error.unique || $parent.form.username.$error.pattern)" class="input-icon invalid">
+            <path clip-rule="evenodd" d="m12.7 5.2-1.2-1.2-3.1 3.2-3.2-3.2-1.2 1.2 3.2 3.2-3.2 3.1 1.2 1.2 3.2-3.2 3.1 3.2 1.2-1.2-3.2-3.1z" fill-rule="evenodd"/>
+          </svg>
+
+          <div class="input-info">
+            You can use <strong>a-z</strong>, <strong>A-Z</strong>, <strong>0-9</strong>, <strong>-</strong>, <strong>_</strong> and <strong>.</strong>
+          </div>
+      </div>
+      <div ng-if="HeaderCtrl.hasGoogleCredentials" class="modal-actions">
         <button ng-click="HeaderCtrl.signInWithGoogle(HeaderCtrl.registerUser.username)" ng-disabled="$parent.form.$invalid || $parent.form.$errors || !HeaderCtrl.registerUser.username.length">
-          Sign In With Google
+          Sign in with Google
         </button>
       </div>
     </div>
