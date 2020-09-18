@@ -1,10 +1,20 @@
 .img-picker-list {
   margin-left: 0;
+
   &.one-col {
     li {
       @include span-columns(12);
       @include omega;
     }
+
+    .image-picker-cell {
+      .picker-body {
+        img {
+          height: initial;
+        }
+      }
+    }
+
   }
   &.two-col {
     li {
@@ -13,24 +23,36 @@
     }
   }
   .image-picker-cell {
-    margin-bottom: 0.5rem;
-    border: 2px solid $border-color;
+    margin-bottom: 1rem;
+    // border: 2px solid $border-color;
+
     .header {
-      background-color: $border-color-alt;
       color: $base-font-color;
       padding-left: 0.3125rem;
-      border-bottom: 2px solid $border-color;
+      padding-bottom: 0.25rem;
       font-size: 0.8125rem;
       transition: background-color 1s;
+
+      &.added {
+        background-color: $color-primary;
+      }
     }
-    .header.added { background-color: $color-primary; }
+
     .picker-body {
-      @include fill-parent;
-      @include clearfix;
-      height: 8rem;
+      // height: 8rem;
       position: relative;
-      img {height: 8rem; @include fill-parent; object-fit: cover; }
+
+      img {
+        height: 10rem; 
+        @include fill-parent; 
+        object-fit: cover; 
+      }
+
       .after {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
         position: absolute;
         bottom: 0;
         left: 0;

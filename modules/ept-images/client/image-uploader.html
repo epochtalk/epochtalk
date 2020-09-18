@@ -31,29 +31,32 @@
 
 <!-- Image Modal -->
 <modal class="medium image-modal" show="imageModal">
-  <ul ng-class="images.length > 4 ? 'two-col' : 'one-col'" class="img-picker-list">
-    <li ng-repeat="image in images">
-      <div class="image-picker-cell">
-        <!-- image picker header -->
-        <div class="header" ng-class="{ added: image.added }" >
-          (<span ng-bind="image.progress"></span>%):
-          <a ng-href="{{image.url}}" target="_blank" ng-if="image.url">
-            <span ng-bind="image.name"></span>
-          </a>
-          <span ng-bind=image.status ng-if="!image.url"></span>
+  <h1 class="view-title">Image Picker</h1>
+  <div class="modal-dialog-slim">
+    <ul ng-class="images.length > 1 ? 'two-col' : 'one-col'" class="img-picker-list">
+      <li ng-repeat="image in images">
+        <div class="image-picker-cell">
+          <!-- image picker header -->
+          <div class="header" ng-class="{ added: image.added }" >
+            (<span ng-bind="image.progress"></span>%):
+            <a ng-href="{{image.url}}" target="_blank" ng-if="image.url">
+              <span ng-bind="image.name"></span>
+            </a>
+            <span ng-bind=image.status ng-if="!image.url"></span>
+          </div>
+          <!-- image picker body -->
+          <div class="picker-body">
+            <img ng-src="{{image.url}}" ng-click="fireDone(image)"/>
+            <a class="after" ng-if="image.url" ng-click="fireDone(image)">
+              <div>
+                <span class="stroke" ng-if="!image.added">Add to Editor</span>
+                <span ng-if="image.added"><strong>Added!</strong></span>
+              </div>
+            </a>
+          </div>
         </div>
-        <!-- image picker body -->
-        <div class="picker-body">
-          <img ng-src="{{image.url}}" ng-click="fireDone(image)"/>
-          <a class="after" ng-if="image.url" ng-click="fireDone(image)">
-            <div>
-              <span class="stroke" ng-if="!image.added">Add to Editor</span>
-              <span ng-if="image.added"><strong>Added!</strong></span>
-            </div>
-          </a>
-        </div>
-      </div>
-    </li>
-  </ul>
+      </li>
+    </ul>
+  </div>
   <div class="clear"></div>
 </modal>
