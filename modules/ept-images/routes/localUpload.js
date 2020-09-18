@@ -11,7 +11,8 @@ module.exports = function(internalConfig) {
       payload: {
         maxBytes: internalConfig.images.maxSize,
         output: 'stream',
-        parse: true
+        parse: true,
+        multipart: true
       }
     },
     handler: function(request, h) {
