@@ -23,6 +23,7 @@
   right: 0;
   top: 10vh;
   margin: 0 auto;
+  padding: 1rem;
   position: fixed;
   z-index: 10000;
   background-color: $base-background-color;
@@ -33,10 +34,10 @@
   width: 50vw;
 
   .modal-dialog-main {
-    padding: 2rem 3rem 3rem;
+    padding: 2rem;
 
     @include media($mobile) {
-      padding: 1rem 1rem 1.5rem;
+      padding: 1rem 0 2rem;
     }
   }
 
@@ -45,7 +46,7 @@
     color: $secondary-font-color;
     font-size: $font-size-sm;
     font-weight: normal;
-    margin-bottom: 0;
+    margin: -1rem -1rem 0;
     padding-left: 1rem;
     text-transform: uppercase;
 
@@ -89,6 +90,7 @@
 
   .modal-dialog-secondary-actions {
     border-top: $border;
+    margin: 0 -1rem -1rem;
     padding: 1rem;
     text-align: center;
   }
