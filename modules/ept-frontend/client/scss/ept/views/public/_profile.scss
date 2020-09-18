@@ -279,6 +279,8 @@ profile {
       background: inherit;
       border-color: rgba($color-primary, .8);
       color: rgba($color-primary, .8);
+      box-shadow: none;
+      transform: initial;
     }
 
     &.active {
