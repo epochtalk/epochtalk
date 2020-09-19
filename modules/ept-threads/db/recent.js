@@ -42,6 +42,7 @@ module.exports = function(userId, priority, opts) {
         SELECT 1
         FROM boards b
         WHERE b.id = t.board_id
+        AND NOT (b.id::text = ANY(SELECT jsonb_array_elements_text(up.ignored_boards->'boards') FROM users.preferences up WHERE up.user_id = $1))
         AND ( b.viewable_by IS NULL OR b.viewable_by >= $2 )
         AND ( SELECT EXISTS ( SELECT 1 FROM board_mapping WHERE board_id = t.board_id ))
       )
