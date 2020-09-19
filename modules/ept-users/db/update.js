@@ -98,7 +98,7 @@ module.exports = function(user) {
       }
       else { prefs.collapsed_categories = { cats: [] }; }
       if (user.ignored_boards) {
-        prefs.ignored_boards = { boards: user.ignored_boards };
+        prefs.ignored_boards = { boards:  user.ignored_boards.map(function(id) { return helper.deslugify(id); }) };
       }
       else { prefs.ignored_boards = { boards: [] }; }
       if (exists) { return common.updateUserPreferences(prefs, client); }
