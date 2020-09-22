@@ -47,7 +47,7 @@ module.exports = {
         sticky: Joi.boolean().default(false),
         moderated: Joi.boolean().default(false),
         title: Joi.string().min(1).max(255).required(),
-        slug: Joi.string().regex(/^[a-zA-Z0-9-~!@)(_+:'"\.](-?[a-zA-Z0-9-~!@)(_+:'"\.])*$/).min(1).max(100).required(),
+        slug: Joi.string().regex(/^[a-zA-Z0-9-_+:\.](-?[a-zA-Z0-9-_+:\.])*$/).min(1).max(100).required(),
         body: Joi.string().min(1).max(64000).required(),
         board_id: Joi.string().required(),
         poll: Joi.object({
