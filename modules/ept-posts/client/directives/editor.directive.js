@@ -130,7 +130,6 @@ var directive = ['$timeout', '$window', '$rootScope', '$filter', 'Posts', 'Messa
 
       $scope.insertQuote = function(newQuote) {
         editor.focus();
-        console.log(newQuote);
         var quote = '[quote author=' + newQuote.username;
         if (newQuote.slug) {
           quote += ' link=';
