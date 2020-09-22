@@ -332,6 +332,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
             threadSlug: ctrl.thread.slug,
             page: ctrl.page,
             postId: post.id,
+            slug: post.slug,
             createdAt: new Date(post.created_at).getTime(),
             body: post.body || post.body_html
           };
