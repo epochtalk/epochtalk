@@ -33,8 +33,6 @@
  This module allows you to parse BBCode and to extend to the mark-up language
  to add in your own tags.
  */
-var bbcodeDumbCompiler = require('./bbcode-dumb');
-
 var XBBCODE = (function () {
     "use strict";
 
@@ -201,6 +199,14 @@ var XBBCODE = (function () {
         "br": {
             openTag: function () {
                 return '<br />';
+            },
+            closeTag: function () {
+                return '';
+            }
+        },
+        "hr": {
+            openTag: function () {
+                return '<hr />';
             },
             closeTag: function () {
                 return '';
@@ -1092,9 +1098,6 @@ var XBBCODE = (function () {
             openTag = tags[tagName].openTag(tagParams, processedContent),
             closeTag = tags[tagName].closeTag(tagParams, processedContent);
 
-        console.log('\n\nOpen Tag', openTag);
-        console.log('\nClose Tag', closeTag);
-
         if (tags[tagName].displayContent === false) {
             processedContent = "";
         }
@@ -1140,6 +1143,25 @@ var XBBCODE = (function () {
         return text;
     }
 
+    function fixSelfClosingTags(text) {
+        text.replace('[/br]', '');
+        text.replace('[/hr]', '');
+
+        var selfClosingTags = [
+            { bbcode: '[br /]', fix: '[br][/br]' },
+            { bbcode: '[br/]', fix: '[br][/br]' },
+            { bbcode: '[br]', fix: '[br][/br]' },
+            { bbcode: '[hr /]', fix: '[hr][/hr]' },
+            { bbcode: '[hr/]', fix: '[hr][/hr]' },
+            { bbcode: '[hr]', fix: '[hr][/hr]' }
+        ];
+
+        selfClosingTags.forEach(function(data) {
+            text = text.replace(data.bbcode, data.fix);
+        });
+        return text;
+    }
+
     function addBbcodeLevels(text) {
         var matchFunction = function (matchStr, tagName, tagParams, tagContents) {
             matchStr = matchStr.replace(/\[/g, "<");
@@ -1168,12 +1190,10 @@ var XBBCODE = (function () {
         config.text = config.text.replace(closeTags, function (matchStr, openB, contents, closeB) {
             return "<" + contents + ">";
         });
-        console.log('a', config.text);
         config.text = config.text.replace(/\[/g, "&#91;"); // escape ['s that aren't apart of tags
         config.text = config.text.replace(/\]/g, "&#93;"); // escape ['s that aren't apart of tags
         config.text = config.text.replace(/</g, "["); // escape ['s that aren't apart of tags
         config.text = config.text.replace(/>/g, "]"); // escape ['s that aren't apart of tags
-        console.log('a2', config.text);
 
         // process tags that don't have their content parsed
         while (config.text !== (config.text = config.text.replace(pbbRegExp2, function (matchStr, tagName, tagParams, tagContents) {
@@ -1183,15 +1203,11 @@ var XBBCODE = (function () {
             tagContents = tagContents || "";
             return "[" + tagName + tagParams + "]" + tagContents + "[/" + tagName + "]";
         })));
-        console.log('b', config.text);
 
         config.text = fixStarTag(config.text); // add in closing tags for the [*] tag
-        if (config.text.indexOf('[') >= 0) {
-          config.text = bbcodeDumbCompiler.process(config.text);
-          config.text = config.text.replace('<br />', '<br></br>');
-        }
+
+        config.text = fixSelfClosingTags(config.text); // add closing tag for self closing tags
         config.text = addBbcodeLevels(config.text); // add in level metadata
-        console.log('c', config.text);
 
         var errQueue = checkParentChildRestrictions("bbcode", config.text, -1, "", "", config.text);
 
@@ -1216,8 +1232,6 @@ var XBBCODE = (function () {
 
         ret.error = (errQueue.length !== 0);
         ret.errorQueue = errQueue;
-        console.log('\n\nParse: ', ret.html);
-        console.log('\n\nErrors:', ret.errorQueue);
         return ret;
     };
 
