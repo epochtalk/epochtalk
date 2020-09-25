@@ -33,7 +33,6 @@
  This module allows you to parse BBCode and to extend to the mark-up language
  to add in your own tags.
  */
-
 var XBBCODE = (function () {
     "use strict";
 
@@ -200,6 +199,14 @@ var XBBCODE = (function () {
         "br": {
             openTag: function () {
                 return '<br />';
+            },
+            closeTag: function () {
+                return '';
+            }
+        },
+        "hr": {
+            openTag: function () {
+                return '<hr />';
             },
             closeTag: function () {
                 return '';
@@ -658,7 +665,6 @@ var XBBCODE = (function () {
                     quoteHeader += '</a>';
                     quoteHeader += '</div>';
                 }
-
                 return quoteHeader + quote;
             },
             closeTag: function () {
@@ -1137,6 +1143,25 @@ var XBBCODE = (function () {
         return text;
     }
 
+    function fixSelfClosingTags(text) {
+        text.replace('[/br]', '');
+        text.replace('[/hr]', '');
+
+        var selfClosingTags = [
+            { bbcode: '[br /]', fix: '[br][/br]' },
+            { bbcode: '[br/]', fix: '[br][/br]' },
+            { bbcode: '[br]', fix: '[br][/br]' },
+            { bbcode: '[hr /]', fix: '[hr][/hr]' },
+            { bbcode: '[hr/]', fix: '[hr][/hr]' },
+            { bbcode: '[hr]', fix: '[hr][/hr]' }
+        ];
+
+        selfClosingTags.forEach(function(data) {
+            text = text.replace(data.bbcode, data.fix);
+        });
+        return text;
+    }
+
     function addBbcodeLevels(text) {
         var matchFunction = function (matchStr, tagName, tagParams, tagContents) {
             matchStr = matchStr.replace(/\[/g, "<");
@@ -1165,7 +1190,6 @@ var XBBCODE = (function () {
         config.text = config.text.replace(closeTags, function (matchStr, openB, contents, closeB) {
             return "<" + contents + ">";
         });
-
         config.text = config.text.replace(/\[/g, "&#91;"); // escape ['s that aren't apart of tags
         config.text = config.text.replace(/\]/g, "&#93;"); // escape ['s that aren't apart of tags
         config.text = config.text.replace(/</g, "["); // escape ['s that aren't apart of tags
@@ -1181,6 +1205,8 @@ var XBBCODE = (function () {
         })));
 
         config.text = fixStarTag(config.text); // add in closing tags for the [*] tag
+
+        config.text = fixSelfClosingTags(config.text); // add closing tag for self closing tags
         config.text = addBbcodeLevels(config.text); // add in level metadata
 
         var errQueue = checkParentChildRestrictions("bbcode", config.text, -1, "", "", config.text);
@@ -1206,7 +1232,6 @@ var XBBCODE = (function () {
 
         ret.error = (errQueue.length !== 0);
         ret.errorQueue = errQueue;
-
         return ret;
     };
 
