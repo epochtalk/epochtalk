@@ -53,7 +53,6 @@ module.exports = {
     if (input.indexOf('[') >= 0) {
       // parse input to generate body
       input = bbcodeCompiler.process({text: input}).html;
-
       // If there are any ['s left we need to parse them
       if (input.indexOf('[') >= 0) {
         input = bbcodeDumbCompiler.process(input);
