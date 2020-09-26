@@ -1148,12 +1148,8 @@ var XBBCODE = (function () {
         text.replace('[/hr]', '');
 
         var selfClosingTags = [
-            { bbcode: '[br /]', fix: '[br][/br]' },
-            { bbcode: '[br/]', fix: '[br][/br]' },
-            { bbcode: '[br]', fix: '[br][/br]' },
-            { bbcode: '[hr /]', fix: '[hr][/hr]' },
-            { bbcode: '[hr/]', fix: '[hr][/hr]' },
-            { bbcode: '[hr]', fix: '[hr][/hr]' }
+            { bbcode: /\[br\s*\/?\]/gi, fix: '[br][/br]' },
+            { bbcode: /\[hr\s*\/?\]/gi, fix: '[hr][/hr]' }
         ];
 
         selfClosingTags.forEach(function(data) {
