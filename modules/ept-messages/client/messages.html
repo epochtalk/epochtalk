@@ -1,18 +1,6 @@
 <div class="messages-grid">
-  <div ng-if="MessagesCtrl.recentMessages.length < 1">
-    <br />
-    <h4 class="centered-text">You're message inbox is currently empty, message someone to get started!</h4>
-
-    <br /><br />
-
-    <div class="centered-text">
-      <button ng-if='MessagesCtrl.canCreateConversation() ' ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = true;">Start a Conversation</button>
-    </div>
-  </div>
-
-
   <!-- Recent Conversations -->
-  <div class="conversations" ng-if="MessagesCtrl.recentMessages.length > 0">
+  <div class="conversations">
     <div id="recentMessagesHeader">
       <div class="inbox" ng-click="MessagesCtrl.loadRecentMessages(); MessagesCtrl.reloadConversation()">
         <i class="fa fa-envelope"></i> Inbox
@@ -32,6 +20,10 @@
       <div class="next">
         <button ng-click="MessagesCtrl.loadRecentMessages(MessagesCtrl.page + 1)" ng-disabled="MessagesCtrl.page === MessagesCtrl.pageMax">&#10095;</button>
       </div>
+    </div>
+
+    <div ng-if="MessagesCtrl.recentMessages.length < 1" class="empty-message-container">
+      <div class="empty-message">No messages</div>
     </div>
 
     <div class="list" ng-if="MessagesCtrl.pageMax > 0">
@@ -80,7 +72,9 @@
       <h4 class=message-details-subject>{{MessagesCtrl.currentSubject}}</h4>
     </div>
     <h4 class="message-details-header" ng-if="MessagesCtrl.recentMessages.length > 0 && MessagesCtrl.currentConversation.messages.length < 1" class="centered-text">
-      No Conversation selected<br />
+      <div class="empty-message-container">
+        <div class="empty-message">Select a conversation to read your messages</div>
+      </div>
     </h4>
 
     <!-- Conversation Messages -->
@@ -136,6 +130,15 @@
       <button class="fill-row no-animate" ng-if="MessagesCtrl.hasMoreMessages()" ng-click="MessagesCtrl.loadMoreMessages()">
         Load More Messages
       </button>
+    </div>
+
+    <!-- Empty view -->
+    <div ng-if="MessagesCtrl.recentMessages.length < 1" class="empty-message-container">
+      <div class="empty-message"><strong>Your inbox is currently empty.</strong> Message someone to get started!</div>
+
+      <div class="">
+        <button ng-if='MessagesCtrl.canCreateConversation() ' ng-click="MessagesCtrl.showEditor = true; MessagesCtrl.editorConvoMode = true;">Start a Conversation</button>
+      </div>
     </div>
   </div>
 
