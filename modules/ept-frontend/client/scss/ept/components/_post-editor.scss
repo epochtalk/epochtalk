@@ -1,3 +1,7 @@
+.editor-container {
+  z-index: 5000;
+}
+
 .editor-fixed-bottom {
   width: 100%;
   position: fixed;
@@ -585,6 +589,8 @@
 
 
 .messages-wrap {
+  position: relative;
+  z-index: 5000;
   .new-message .editor-form { top: 8.4375rem; }
   .new-thread .editor-form { top: 12.4375rem; }
   .new-thread.add-poll .editor-form { top: 49.4375rem; }
