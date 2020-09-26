@@ -1,27 +1,36 @@
-  <form name="$parent.form" class="css-form" novalidate>
-    <h3 class="thin-underline">Login</h3>
-    <input type="text" placeholder="Username" ng-model="HeaderCtrl.user.username" auto-focus="$parent.focus" required>
-    <label>
+  <form name="$parent.form" class="css-form login-view" novalidate>
+    <h1 class="view-title">Register a new account</h1>
+    <div class="input-section">
+      <label for="login-user">Username</label>
+      <input type="text" id="login-user" placeholder="Enter your username" ng-model="HeaderCtrl.user.username" auto-focus="$parent.focus" required>
+    </div>
+
+    <div class="input-section">
+      <label for="login-pass">Password</label>
+      <input type="password" id="password" placeholder="Enter your password" ng-model="HeaderCtrl.user.password"  ng-class="{'ng-invalid': HeaderCtrl.user.password.length < 8 }" required>
       <div class="input-info">Minimum 8 characters</div>
-      <input type="password" placeholder="Password" ng-model="HeaderCtrl.user.password"  ng-class="{'ng-invalid': HeaderCtrl.user.password.length < 8 }" required>
-    </label>
-    <label>
+    </div>
+    <label class="checkbox-container">
       <input type="checkbox" id="remember-me" ng-model="HeaderCtrl.user.rememberMe">
       Remember Me
     </label>
-    <div class="clear">
-      <button class=" fill-row" ng-click="HeaderCtrl.login()" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.user.password.length < 8">
+
+    <div class="login-form-actions">
+      <button ng-click="HeaderCtrl.login()" ng-disabled="$parent.form.$invalid || $parent.form.$errors || HeaderCtrl.user.password.length < 8">
         Login
       </button>
-    </div>
-    <div ng-if="HeaderCtrl.hasGoogleCredentials">
-      <hr />
-      <div class="centered-text clear">
-        <button ng-click="HeaderCtrl.signInWithGoogle()"> Sign In With Google </button>
+      <div ng-if="HeaderCtrl.hasGoogleCredentials" class="login-form-actions-sso-google">
+        <span class="separator-text">or</span>
+        <div class="centered-text clear">
+          <button ng-click="HeaderCtrl.signInWithGoogle()"> 
+            <svg height="18" viewBox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="m17.64 9.20454545c0-.63818181-.0572727-1.25181818-.1636364-1.84090909h-8.4763636v3.48136364h4.8436364c-.2086364 1.125-.8427273 2.0781818-1.7959091 2.7163636v2.2581819h2.9086363c1.7018182-1.5668182 2.6836364-3.874091 2.6836364-6.61500005z" fill="#4285f4"/><path d="m9 18c2.43 0 4.4672727-.8059091 5.9563636-2.1804545l-2.9086363-2.2581819c-.8059091.54-1.8368182.8590909-3.0477273.8590909-2.34409091 0-4.32818182-1.5831818-5.03590909-3.7104545h-3.00681818v2.3318182c1.48090909 2.9413636 4.52454545 4.9581818 8.04272727 4.9581818z" fill="#34a853"/><path d="m3.96409091 10.71c-.18-.54-.28227273-1.11681818-.28227273-1.71s.10227273-1.17.28227273-1.71v-2.33181818h-3.00681818c-.60954546 1.215-.95727273 2.58954545-.95727273 4.04181818 0 1.4522727.34772727 2.8268182.95727273 4.0418182z" fill="#fbbc05"/><path d="m9 3.57954545c1.3213636 0 2.5077273.45409091 3.4404545 1.3459091l2.5813637-2.58136364c-1.5586364-1.45227273-3.5959091-2.34409091-6.0218182-2.34409091-3.51818182 0-6.56181818 2.01681818-8.04272727 4.95818182l3.00681818 2.33181818c.70772727-2.12727273 2.69181818-3.71045455 5.03590909-3.71045455z" fill="#ea4335"/><path d="m0 0h18v18h-18z"/></g></svg>
+            
+            Sign In With Google </button>
+        </div>
       </div>
     </div>
-    <hr />
-    <div class="centered-text">
+
+    <div class="login-form-dialog-secondary-actions">
       <a ng-href="/recover" target="_blank" rel="noopener noreferrer">Help, I forgot my password!</a>
     </div>
   </form>

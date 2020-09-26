@@ -173,6 +173,49 @@ $grid-2-column: 1fr $sidebarWidth;
 }
 
 
+.login-view {
+  max-width: 600px;
+  width: calc(100vw - 2rem);
+}
+
+.login-form-actions {
+    margin-top: 2rem;
+
+    button {
+      width: 100%
+    }
+  }
+
+  .login-form-actions-sso-google {
+    text-align: center;
+
+    button {
+      background: #fff;
+      border: $border;
+      color: rgba(0, 0, 0, 0.54);
+
+      svg {
+        margin-right: 1.5rem;
+      }
+    }
+
+    .separator-text {
+      color: $secondary-font-color;
+      display: block;
+      font-size: $font-size-sm;
+      padding: 1rem 0;
+    }
+  }
+
+  .login-form-dialog-secondary-actions {
+    // border-top: $border;
+    font-size: $font-size-sm;
+    margin: 0 -1rem -1rem;
+    padding: 1rem;
+    text-align: center;
+  }
+
+
 .input-nine-three-col {
   @include omega(2n);
   div:first-child { @include span-columns(9); }
