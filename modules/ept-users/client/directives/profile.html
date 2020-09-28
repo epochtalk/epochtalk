@@ -111,7 +111,7 @@
     <messages-ignore-profile ng-if="vmProfile.isLoggedIn() && !vmProfile.pageOwner()" user="vmProfile.user"></messages-ignore-profile>
   </div>
 
-  <div class="actions-edit actions-panel" ng-iff="vmProfile.canUpdate() || vmProfile.canUpdatePrivate() || vmProfile.pageOwner() || vmProfile.canPageUserNotes() || vmProfile.canBanUser() ||">
+  <div class="actions-edit actions-panel" ng-if="vmProfile.canUpdate() || vmProfile.canUpdatePrivate() || vmProfile.pageOwner() || vmProfile.canPageUserNotes() || vmProfile.canBanUser() ||">
     <div class="profile-action" ng-if="vmProfile.canUpdate()">
       <a ng-href="#" ng-click="vmProfile.openEditProfile()">Edit Profile</a>
     </div>
@@ -137,7 +137,7 @@
     </div>
   </div>
 
-  <div class="actions-destructive actions-panel" ng-iff="vmProfile.canDeactivate() || vmProfile.canReactivate() || vmProfile.canDelete()">
+  <div class="actions-destructive actions-panel" ng-if="vmProfile.canDeactivate() || vmProfile.canReactivate() || vmProfile.canDelete()">
     <reset-password user="vmProfile.user"></reset-password>
     <div class="profile-action" ng-if="vmProfile.canDeactivate()">
       <a ng-href="#" ng-click="vmProfile.showDeactivate = true">Deactivate Account</a>
