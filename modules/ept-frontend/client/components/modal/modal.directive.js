@@ -1,4 +1,4 @@
-module.exports = ['$document', function($document) {
+module.exports = ['$document', '$timeout', function($document, $timeout) {
   return {
     restrict: 'E',
     scope: {
@@ -16,20 +16,35 @@ module.exports = ['$document', function($document) {
       '</div>' +
     '</div>',
     link: function(scope) {
+      scope.listener = false;
       scope.focus = false;
       scope.close = function() {
-        scope.focus = false;
-        scope.show = false;
-        if (scope.form) {
-          scope.form.$setPristine();
-          scope.form.$setUntouched();
-        }
-        if (scope.onClose) { scope.onClose(); }
+        $timeout(function() {
+          scope.focus = false;
+          scope.show = false;
+          if (scope.form) {
+            scope.form.$setPristine();
+            scope.form.$setUntouched();
+          }
+          if (scope.onClose) { scope.onClose(); }
+          $document[0].body.style.overflow = 'hidden auto';
+          $timeout(function() {
+            if(scope.listener) {
+              $(document).off('keydown');
+              scope.listener = false;
+            }
+          });
+        });
       };
       scope.$watch('show', function(show) {
         if (show) {
           scope.focus = true;
-          $document[0].body.style.overflow = 'hidden';
+          $document[0].body.style.overflow = 'hidden hidden';
+          if (!scope.listener) {
+            $(document).on('keydown', function(e) {
+              if (e.which == 27 && scope.show) { scope.close(); }
+            });
+          }
         }
         else {
           scope.close();
