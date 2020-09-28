@@ -111,7 +111,7 @@
     <messages-ignore-profile ng-if="vmProfile.isLoggedIn() && !vmProfile.pageOwner()" user="vmProfile.user"></messages-ignore-profile>
   </div>
 
-  <div class="actions-edit actions-panel" ng-if="vmProfile.canUpdate() || vmProfile.canUpdatePrivate() || vmProfile.pageOwner() || vmProfile.canPageUserNotes() || vmProfile.canBanUser() ||">
+  <div class="actions-edit actions-panel" ng-if="vmProfile.canUpdate() || vmProfile.canUpdatePrivate() || vmProfile.pageOwner() || vmProfile.canPageUserNotes() || vmProfile.canBanUser()">
     <div class="profile-action" ng-if="vmProfile.canUpdate()">
       <a ng-href="#" ng-click="vmProfile.openEditProfile()">Edit Profile</a>
     </div>
@@ -391,45 +391,45 @@
           </label>
           <input type="text" name="username" ng-model="vmProfile.editProfileUser.username" unique-username="{{vmProfile.user.username}}" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }" placeholder="Username ( a-z, 0-9, -, _ and . )" ng-pattern=/^[a-zA-Z\d-_.]+$/ maxlength="255" ng-disabled="!vmProfile.canUpdateUsername()" modal-focus="{{vmProfile.editProfile}}" />
         </div>
-  
+
         <div class="input-section">
           <label for="display-name">Display Name
           </label>
           <input type="text" id="display-name" placeholder="Name" ng-model="vmProfile.editProfileUser.name" maxlength="255">
         </div>
-  
+
         <div class="input-section">
           <label for="website">Website
           </label>
           <input type="text" id="website" placeholder="Website" ng-model="vmProfile.editProfileUser.website">
         </div>
-  
+
         <div class="input-section">
           <label for="bitcoin-address">Bitcoin Address
           </label>
           <input type="text" id="bitcoin-address" placeholder="Bitcoin Address" ng-model="vmProfile.editProfileUser.btc_address" maxlength="255">
         </div>
       </div>
-  
+
       <div class="fieldgroup-section">
         <div class="input-section">
           <label for="gender">Gender
           </label>
           <input type="text" id="gender" placeholder="Gender" ng-model="vmProfile.editProfileUser.gender" maxlength="255">
         </div>
-  
+
         <div class="input-section">
           <label for="dob">Date of Birth
           </label>
           <input type="date" id="dob" placeholder="YYYY-MM-DD" ng-model="vmProfile.editProfileUser.dob">
         </div>
-  
+
         <div class="input-section">
           <label for="location">Location
           </label>
           <input type="text" id="location" placeholder="Location" ng-model="vmProfile.editProfileUser.location" maxlength="255">
         </div>
-  
+
         <div class="input-section">
           <label for="language">Language
           </label>
