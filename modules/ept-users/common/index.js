@@ -8,7 +8,6 @@ function clean(sanitizer, payload) {
   keys.map(function(key) {
     if (payload[key]) { payload[key] = sanitizer.strip(payload[key]); }
   });
-
   var displayKeys = ['signature', 'raw_signature'];
   displayKeys.map(function(key) {
     if (payload[key]) { payload[key] = sanitizer.display(payload[key]); }
@@ -17,7 +16,9 @@ function clean(sanitizer, payload) {
 }
 
 function parse(parser, payload) {
-  payload.signature = parser.parse(payload.raw_signature);
+  if (payload.raw_signature) {
+    payload.signature = parser.parse(payload.raw_signature);
+  }
   return payload;
 }
 
