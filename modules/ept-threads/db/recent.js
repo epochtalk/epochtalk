@@ -11,7 +11,10 @@ module.exports = function(userId, priority, opts) {
   opts.limit = opts.limit || 25;
   opts.page = opts.page || 1;
   opts.offset = (opts.page * opts.limit) - opts.limit;
-
+  var ignoreBoards = '';
+  if (userId) {
+    ignoreBoards = 'AND NOT (b.id::text = ANY(SELECT jsonb_array_elements_text(up.ignored_boards->\'boards\') FROM users.preferences up WHERE up.user_id = $1))'
+  }
   var query = `
   SELECT
     tlist.id,
@@ -42,7 +45,7 @@ module.exports = function(userId, priority, opts) {
         SELECT 1
         FROM boards b
         WHERE b.id = t.board_id
-        AND NOT (b.id::text = ANY(SELECT jsonb_array_elements_text(up.ignored_boards->'boards') FROM users.preferences up WHERE up.user_id = $1))
+        ${ignoreBoards}
         AND ( b.viewable_by IS NULL OR b.viewable_by >= $2 )
         AND ( SELECT EXISTS ( SELECT 1 FROM board_mapping WHERE board_id = t.board_id ))
       )
