@@ -28,12 +28,10 @@ module.exports = ['$document', '$timeout', function($document, $timeout) {
           }
           if (scope.onClose) { scope.onClose(); }
           $document[0].body.style.overflow = 'hidden auto';
-          $timeout(function() {
-            if(scope.listener) {
-              $(document).off('keydown');
-              scope.listener = false;
-            }
-          });
+          if(scope.listener) {
+            $(document).off('keydown');
+            scope.listener = false;
+          }
         });
       };
       scope.$watch('show', function(show) {
