@@ -16,7 +16,7 @@
     <div class="post-user">
       <a ui-sref="profile.posts({ username: post.user.username})">
         <div class="user-avatar {{$webConfigs.default_avatar_shape}}">
-          <span ng-if="post.user.online" class="online green">
+          <span ng-if="post.user.online" class="online green" data-balloon="{{post.user.username}} is online">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
               <title>icon__unread</title>
               <circle cx="24" cy="24" r="16" />

@@ -13,9 +13,8 @@
     <div class="profile-avatar-container {{$webConfigs.default_avatar_shape}}">
       <a ng-href="#" ng-if="vmProfile.canUpdate()" ng-click="vmProfile.openEditAvatar()" class="profile-avatar-image">
         <img ng-src="{{vmProfile.user.avatar || $webConfigs.default_avatar }}" class="image-loader" />
-        <span class="profile-user-status" ng-if="vmProfile.isOnline">
+        <span class="profile-user-status" data-balloon="{{vmProfile.user.username}} is online" ng-if="vmProfile.isOnline">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-            <title>icon__unread</title>
             <circle cx="24" cy="24" r="16"/>
           </svg>
         </span>
