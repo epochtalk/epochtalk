@@ -6,9 +6,9 @@
 <div class="recent-mentions">
   <div class="mention" ng-repeat="mention in MentionsCtrl.mentions" ng-class="{ 'dismissed': mention.viewed }">
     <a class="mention-content" ui-sref="posts.data({ slug: mention.thread_slug, start: mention.post_start, '#': mention.post_id })" ui-sref-opts="{reload: true}" ng-click="MentionsCtrl.dismiss({ type: 'mention', id: mention.notification_id, viewed: mention.viewed })">
-      <div class="mention-status">
+      <div class="mention-status" data-balloon="Unread">
         <svg class="unread" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-          <title>icon__unread</title>
+          <title></title>
           <circle cx="24" cy="24" r="16"/>
         </svg>
       </div>
@@ -25,7 +25,7 @@
           <span class="hidden-mobile">
             <span ng-bind-html="mention.board_name" class="boardName"></span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="caret-right">
-              <title>caret-down</title>
+              <title></title>
               <path d="M24,38.83,4.59,19.41a2,2,0,0,1,2.82-2.82L24,33.17,40.59,16.59a2,2,0,0,1,2.82,2.82Z"/>
             </svg>
           </span>
@@ -38,7 +38,7 @@
       <div class="actions">
         <div ng-click="MentionsCtrl.delete({ id: mention.id, type: 'mention', notification_id: mention.notification_id })" class="action-button delete" data-balloon="Delete" data-balloon-pos="left">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-            <title>delete</title>
+            <title></title>
             <polygon points="37.08 14.45 33.55 10.92 24 20.46 14.45 10.92 10.92 14.45 20.46 24 10.92 33.55 14.45 37.08 24 27.54 33.55 37.08 37.08 33.55 27.54 24 37.08 14.45"/>
           </svg>
         </div>
@@ -59,16 +59,16 @@
 
 <div class="sidebar">
   <div ng-if="MentionsCtrl.mentions.length" class="mention-actions">
-    <a ng-click="MentionsCtrl.delete({ type: 'mention' })" class="button secondary">
+    <a ng-click="MentionsCtrl.delete({ type: 'mention' })" class="button secondary" data-balloon="Delete All">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-        <title>trashcan</title>
+        <title></title>
         <path d="M7.73,14.82,12.08,45H35.92l4.35-30.18H7.73Zm9.69,25.26A1.23,1.23,0,0,1,16.08,39L14.52,21.08a1.23,1.23,0,0,1,1.12-1.34A1.22,1.22,0,0,1,17,20.86l1.57,17.89A1.22,1.22,0,0,1,17.42,40.08ZM31,20.86a1.22,1.22,0,0,1,1.33-1.12,1.23,1.23,0,0,1,1.12,1.34L31.92,39a1.23,1.23,0,0,1-2.46-.21Zm-5.8.08v18a1.23,1.23,0,1,1-2.46,0V20.94a1.23,1.23,0,1,1,2.46,0Z"/><path d="M39.32,7.64H32.14C32.14,3,28.39,3,28.39,3H19.61s-3.75,0-3.75,4.64H8.68a1.93,1.93,0,0,0-2.09,2v3.23H41.41V9.61A1.93,1.93,0,0,0,39.32,7.64Zm-10-.1H18.72V7A1.59,1.59,0,0,1,20.3,5.43h7.4A1.59,1.59,0,0,1,29.28,7Z"/>
       </svg>
       Delete all
     </a>
-    <a ng-click="MentionsCtrl.dismiss({ type: 'mention' })" class="button secondary">
+    <a ng-click="MentionsCtrl.dismiss({ type: 'mention' })" class="button secondary" data-balloon="Mark All As Read">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-        <title>icon__unread</title>
+        <title></title>
         <circle cx="24" cy="24" r="16"/>
       </svg>
       Mark all read

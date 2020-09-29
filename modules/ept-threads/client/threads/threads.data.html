@@ -80,14 +80,14 @@
       <td class="subject">
         <div class="title">
           <div class="thread-state">
-            <svg ng-if="thread.has_new_post" class="is-unread" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-              <title>icon__unread</title>
+            <svg ng-if="thread.has_new_post" class="is-unread" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" data-balloon="Unread">
+              <title></title>
               <g id="icons">
                 <circle cx="16" cy="16" r="16" />
               </g>
             </svg>
 
-            <svg ng-if="thread.sticky" class="is-sticky" viewBox="0 0 40.68 40.68" xmlns="http://www.w3.org/2000/svg">
+            <svg ng-if="thread.sticky" class="is-sticky" viewBox="0 0 40.68 40.68" xmlns="http://www.w3.org/2000/svg" data-balloon="Sticky">
               <path d="m40 9.92-9.24-9.19a2.5 2.5 0 0 0 -3.54 3.54l9.2 9.19a2.5 2.5 0 0 0 3.58-3.54z" />
               <path
                 d="m12 14.52a3 3 0 0 0 -4.24 4.24l5.66 5.66-11.3 11.31-2.12 4.95 5-2.12 11.26-11.31 5.66 5.66a3 3 0 0 0 4.24-4.25z" />
@@ -98,13 +98,13 @@
           <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ slug: thread.slug })"
             ng-bind-html="thread.title"></a>
           <div class="thread-state-secondary">
-            <span class="thread-state-locked" ng-if="thread.locked">
+            <span class="thread-state-locked" ng-if="thread.locked" data-balloon="Locked">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                <title>lock</title>
+                <title></title>
                 <path d="M40,21H37.5V16.48a13.5,13.5,0,0,0-27,0V21H8a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H40a2,2,0,0,0,2-2V23A2,2,0,0,0,40,21ZM15.5,16.48a8.5,8.5,0,0,1,17,0V21h-17Z"/>
               </svg>
             </span>
-            <span class="thread-state-hasPoll" ng-if="thread.poll">
+            <span class="thread-state-hasPoll" ng-if="thread.poll" data-balloon="Includes a Poll">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                 <path class="cls-1" d="M42,2H6A4,4,0,0,0,2,6V42a4,4,0,0,0,4,4H42a4,4,0,0,0,4-4V6A4,4,0,0,0,42,2ZM13.75,40h-6V32h6Zm9,0h-6V22h6Zm9,0h-6V27h6Zm9,0h-6V12h6Z"/>
             </svg>
@@ -145,8 +145,8 @@
       <td class="subject">
         <div class="title">
           <div class="thread-state">
-            <svg class="is-unread" ng-if="thread.has_new_post" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-              <title>icon__unread</title>
+            <svg class="is-unread" ng-if="thread.has_new_post" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" data-balloon="Unread">
+              <title></title>
               <g id="icons">
                 <circle cx="16" cy="16" r="16" />
               </g>
@@ -155,13 +155,13 @@
           <a ng-class="{bold: thread.has_new_post}" class="thread-title" ui-sref="posts.data({ slug: thread.slug })"
             ng-bind-html="thread.title"></a>
             <div class="thread-state-secondary">
-            <span class="thread-state-locked" ng-if="thread.locked">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                <title>lock</title>
+            <span class="thread-state-locked" ng-if="thread.locked" data-balloon="Locked">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" data-balloon="Locked">
+                <title></title>
                 <path d="M40,21H37.5V16.48a13.5,13.5,0,0,0-27,0V21H8a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H40a2,2,0,0,0,2-2V23A2,2,0,0,0,40,21ZM15.5,16.48a8.5,8.5,0,0,1,17,0V21h-17Z"/>
               </svg>
             </span>
-            <span class="thread-state-hasPoll" ng-if="thread.poll">
+            <span class="thread-state-hasPoll" ng-if="thread.poll" data-balloon="Includes a Poll">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                 <path class="cls-1" d="M42,2H6A4,4,0,0,0,2,6V42a4,4,0,0,0,4,4H42a4,4,0,0,0,4-4V6A4,4,0,0,0,42,2ZM13.75,40h-6V32h6Zm9,0h-6V22h6Zm9,0h-6V27h6Zm9,0h-6V12h6Z"/>
             </svg>

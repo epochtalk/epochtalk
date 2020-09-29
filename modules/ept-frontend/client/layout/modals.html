@@ -70,7 +70,7 @@
           <input type="text" class="input-text icon-padding" id="username" name="username" maxlength="50" ng-model="HeaderCtrl.registerUser.username" unique-username ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="Enter a username" ng-pattern=/^[a-zA-Z\d-_.]+$/ required />
 
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" ng-if="$parent.form.username.$touched && !$parent.form.username.$error.unique && !$parent.form.username.$error.pattern && !$parent.form.username.$error.required" class="input-icon valid">
-            <title>checkmark</title>
+            <title></title>
             <polygon class="cls-1" points="19.69 37.19 7.23 24.73 10.77 21.2 19.69 30.12 37.23 12.58 40.77 16.11 19.69 37.19"/>
           </svg>
 
@@ -116,7 +116,7 @@
   
         <input type="email" class="icon-padding" id="email" name="email" maxlength="255" ng-model="HeaderCtrl.registerUser.email" unique-email ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="your-email@email.com" modal-focus="{{HeaderCtrl.showRegister}}" required />
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" ng-if="$parent.form.email.$touched && !$parent.form.email.$error.email && !$parent.form.email.$error.required && !$parent.form.email.$error.unique" class="input-icon valid">
-          <title>checkmark</title>
+          <title></title>
           <polygon class="cls-1" points="19.69 37.19 7.23 24.73 10.77 21.2 19.69 30.12 37.23 12.58 40.77 16.11 19.69 37.19"/>
         </svg>
         <svg enable-background="new 0 0 16 16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" ng-if="$parent.form.email.$touched && ($parent.form.email.$error.email || $parent.form.email.$error.required || $parent.form.email.$error.unique)" class="input-icon invalid">
@@ -144,7 +144,7 @@
   
         <input type="text" class="input-text icon-padding" id="username" name="username" maxlength="50" ng-model="HeaderCtrl.registerUser.username" unique-username ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0}}" placeholder="your-username" ng-pattern=/^[a-zA-Z\d-_.]+$/ required />
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" ng-if="$parent.form.username.$touched && !$parent.form.username.$error.unique && !$parent.form.username.$error.pattern && !$parent.form.username.$error.required" class="input-icon valid">
-          <title>checkmark</title>
+          <title></title>
           <polygon class="cls-1" points="19.69 37.19 7.23 24.73 10.77 21.2 19.69 30.12 37.23 12.58 40.77 16.11 19.69 37.19"/>
         </svg>
         <svg enable-background="new 0 0 16 16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" ng-if="$parent.form.username.$touched && ($parent.form.username.$error.required || $parent.form.username.$error.unique || $parent.form.username.$error.pattern)" class="input-icon invalid">
@@ -172,7 +172,7 @@
   
         <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.password.length < 8 }" class="icon-padding" id="password" name="password" ng-model="HeaderCtrl.registerUser.password" placeholder="Enter a password" required />
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" ng-if="($parent.form.password.$touched && !$parent.form.confirmation.$touched && !$parent.form.password.$error.required && HeaderCtrl.registerUser.password.length >= 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.password.length >= 8 && !$parent.form.password.$error.required)" class="input-icon valid">
-          <title>checkmark</title>
+          <title></title>
           <polygon class="cls-1" points="19.69 37.19 7.23 24.73 10.77 21.2 19.69 30.12 37.23 12.58 40.77 16.11 19.69 37.19"/>
         </svg>
         <svg enable-background="new 0 0 16 16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" ng-if="($parent.form.password.$touched && $parent.form.password.$error.required) || ($parent.form.password.$touched && HeaderCtrl.registerUser.password.length < 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="input-icon invalid">
@@ -196,7 +196,7 @@
   
         <input type="password" ng-class="{'ng-invalid-mismatch': HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation || HeaderCtrl.registerUser.confirmation.length < 8 }" class="icon-padding" name="confirmation" id="confirmation" ng-model="HeaderCtrl.registerUser.confirmation" placeholder="Enter your password again" required />
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" ng-if="($parent.form.confirmation.$touched  && HeaderCtrl.registerUser.confirmation !== '' && !$parent.form.password.$touched && !$parent.form.confirmation.$error.required && HeaderCtrl.registerUser.confirmation.length >= 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password === HeaderCtrl.registerUser.confirmation && HeaderCtrl.registerUser.confirmation.length >= 8 && !$parent.form.confirmation.$error.required)" class="input-icon valid">
-          <title>checkmark</title>
+          <title></title>
           <polygon class="cls-1" points="19.69 37.19 7.23 24.73 10.77 21.2 19.69 30.12 37.23 12.58 40.77 16.11 19.69 37.19"/>
         </svg>
         <svg enable-background="new 0 0 16 16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" ng-if="($parent.form.confirmation.$touched && $parent.form.confirmation.$error.required) || ($parent.form.confirmation.$touched && HeaderCtrl.registerUser.confirmation.length < 8) || ($parent.form.password.$touched && $parent.form.confirmation.$touched && HeaderCtrl.registerUser.password !== HeaderCtrl.registerUser.confirmation)" class="input-icon invalid">

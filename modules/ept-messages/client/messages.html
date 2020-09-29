@@ -28,9 +28,9 @@
 
     <div class="list" ng-if="MessagesCtrl.pageMax > 0">
       <div ng-repeat="message in MessagesCtrl.recentMessages track by message.id" class="cell" ng-click="MessagesCtrl.loadConversation(message.conversation_id)" ng-class="{ 'active': MessagesCtrl.selectedConversationId === message.conversation_id, 'unread': !message.viewed}">
-        <span class="state-unread">
+        <span class="state-unread" data-balloon="Unread">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-            <title>icon__unread</title>
+            <title></title>
             <circle cx="24" cy="24" r="16"/>
           </svg>
         </span>
@@ -51,7 +51,7 @@
     <div class="action-bar">
       <a href="" class="to__messages" ng-click="MessagesCtrl.selectedConversationId = null">
         <svg class="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-          <title>caret-down</title>
+          <title></title>
           <path d="M24,38.83,4.59,19.41a2,2,0,0,1,2.82-2.82L24,33.17,40.59,16.59a2,2,0,0,1,2.82,2.82Z"/>
         </svg>
         Back to Messages
@@ -83,9 +83,9 @@
         <div class="content">
           <div class="message-body-header">
             <div class="message-status">
-              <div class="status-unread">
+              <div class="status-unread" data-balloon="Unread">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                  <title>icon__unread</title>
+                  <title></title>
                   <circle cx="24" cy="24" r="16"/>
                 </svg>
               </div>
