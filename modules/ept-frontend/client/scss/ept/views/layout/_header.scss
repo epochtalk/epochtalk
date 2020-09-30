@@ -171,11 +171,15 @@ header {
   .avatar {
     &.circle { @include border-radius(100px); }
     &.rect, &.circle {
-      // border: 2px solid $header-logo-font-color;
+      margin-right: 0.25rem;
       opacity: 1;
       height: 2.1875rem;
       width: 2.1875rem;
       object-fit: cover;
+    }
+
+    &.rect {
+      height: calc(2.1875rem / 1.5);
     }
   }
 
