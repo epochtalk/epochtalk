@@ -3,6 +3,7 @@ var path = require('path');
 var config = require(path.normalize(__dirname + '/config'));
 var onlineUsers = require(path.normalize(__dirname + '/plugins/online'));
 var subMiddleware = require(path.normalize(__dirname + '/middleware/online-subscribe'));
+var defaultUserId = '(default)';
 
 class Worker extends SCWorker {
   run() {
@@ -12,7 +13,7 @@ class Worker extends SCWorker {
     scServer.addMiddleware(scServer.MIDDLEWARE_SUBSCRIBE, subMiddleware.subscribe);
 
     scServer.on('connection', function(socket) {
-      var userId = 'server';
+      var userId = defaultUserId;
       var prefix = '[WSS]';
       var socketId = socket.id;
       var authToken = socket.authToken;
@@ -61,18 +62,18 @@ class Worker extends SCWorker {
       socket.on('disconnect', function() {
         if (userId) {
           onlineUsers.remove({ id: userId, socketId: socketId });
-          console.log(`${prefix} LOGOUT EVENT: user ${userId} has logged out on process ${process.pid}`);
+          console.log(`${prefix} LOGOUT EVENT: user ${userId} has disconnected on process ${process.pid}`);
           userId = '';
         }
 
-        var user = userId || 'server';
+        var user = userId || defaultUserId;
         console.log(`${prefix} DISCONNECTION EVENT: user ${user} disconnected from process ${process.pid}`);
       });
 
       socket.on('error', function(error) {
         if (userId) {
           onlineUsers.remove({ id: userId, socketId: socketId });
-          console.log(`${prefix} LOGOUT EVENT: user ${userId} has logged out on process ${process.pid}`);
+          console.log(`${prefix} LOGOUT EVENT: user ${userId} has errored out on process ${process.pid}`);
           userId = '';
         }
 
