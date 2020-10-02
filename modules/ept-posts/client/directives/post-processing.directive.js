@@ -254,11 +254,24 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
         var imageCache = {};
         var images = $element.find('img');
         images.each(function(index, image) {
+          var isTopLevel = true;
+          $(image).parents().each(function(index, parent) {
+            // image is not top level dont use image loader
+            if (index > 0 && $(parent)[0].classList.contains('post-body')) {
+              isTopLevel = false;
+            }
+          });
           var uuid = uuidv4();
           var preservedOutterHTML = $(image)[0].outerHTML;
-          image = $(image).addClass('image-loader'); // attach directive
-          imageCache[uuid] = $(image)[0].outerHTML;
-          nonBindableHTML = nonBindableHTML.replace(preservedOutterHTML, uuid);
+          if (isTopLevel) {
+            image = $(image).addClass('image-loader'); // attach directive\
+            imageCache[uuid] = $(image)[0].outerHTML;
+            nonBindableHTML = nonBindableHTML.replace(preservedOutterHTML, uuid);
+          }
+          else { // bypass image loader if image isn't top level
+            image = $(image).addClass('image-loader loaded'); // attach directive
+            nonBindableHTML = nonBindableHTML.replace(preservedOutterHTML, $(image)[0].outerHTML);
+          }
         });
 
         // Remove all images from non-bindable spans
