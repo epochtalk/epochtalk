@@ -137,9 +137,7 @@ var ctrl = ['$scope', '$window', '$location', '$timeout', '$state', '$stateParam
       .then(function() {
         if (ctrl.hasGoogleCredentials && GoogleAuth.isAuthenticated()) {
           GoogleAuth.signOut();
-          // $window.location.reload();
         }
-        $state.go($state.current, $stateParams, { reload: true });
       });
     };
 

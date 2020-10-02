@@ -1,8 +1,7 @@
-var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope', 'Alert',
-  function(User, Session, PreferencesSvc, BanSvc, $rootScope, Alert) {
+var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope', 'Alert', '$state', '$stateParams',
+  function(User, Session, PreferencesSvc, BanSvc, $rootScope, Alert, $state, $stateParams) {
     var toggleLogin = false;
     var toggleRegister = false;
-
     // Service API
     var serviceAPI = {
       register: function(user) {
@@ -27,7 +26,8 @@ var service = ['User', 'Session', 'PreferencesSvc', 'BanSvc', '$rootScope', 'Ale
         return User.logout().$promise
         .then(function() { Session.clearUser(); })
         .then(function() { PreferencesSvc.clearPreferences(); })
-        .finally(function() { $rootScope.$emit('logoffEvent'); })
+        .then(function() { $state.go($state.current, $stateParams, { reload: true }); })
+        .finally(function() { $rootScope.$emit('logoffEvent'); });
       },
       toggleLogin: function(open) {
         toggleLogin = open;
