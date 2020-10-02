@@ -1,7 +1,7 @@
 var Promise = require('bluebird');
 var _ = require('lodash');
 
-var mentionsRegex = /(@[a-zA-Z\d-_.]+)/g;
+var mentionsRegex = /(@[a-zA-Z\d-_.]+)(?!(.(?!\[code\]))*\[\/code\])/gi;
 var userIdRegex = /{@[^>]+?}/g;
 var slugIdRegex = /^[A-Za-z0-9_-]{22}$/;
 
