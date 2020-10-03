@@ -22,8 +22,7 @@ module.exports = ['$location', '$state', function($location, $state) {
         else if (scope.pageNum < 1) {
           page = 1;
         }
-
-        $state.go($state.current, { page: page });
+        $state.go($state.current, { page: page, slug: $state.params.slug }, { inherit: false });
         if (scope.clickAction) { scope.clickAction(); }
       };
 
