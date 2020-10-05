@@ -32,6 +32,7 @@ module.exports = function(username, priority, opts) {
         p.user_id,
         p.content ->> 'body' as body,
         p.position,
+        (SELECT t.slug FROM threads t WHERE t.id = p.thread_id) as thread_slug,
         p.deleted,
         u.deleted as user_deleted,
         p.created_at,
