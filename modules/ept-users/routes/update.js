@@ -123,6 +123,11 @@ module.exports = {
     ]
   },
   handler: function(request) {
+    var returnEmptySig = false;
+    if (request.payload.raw_signature === '') {
+      request.payload.signature = '';
+      returnEmptySig = true;
+    }
     // update the user in db
     request.payload.id = request.params.id;
     var promise = request.db.users.update(request.payload)
@@ -134,6 +139,10 @@ module.exports = {
       delete user.password;
       delete user.confirmation;
       delete user.email_password;
+      if (returnEmptySig) {
+        user.signature = '';
+        user.raw_signature = '';
+      }
       return user;
     })
     .then(function(user) {
