@@ -934,7 +934,7 @@ var XBBCODE = (function () {
                 myUrl = myUrl.trim();
                 urlPattern.lastIndex = 0;
                 if (!urlPattern.test(myUrl)) {
-                    myUrl = "#";
+                    myUrl = "//" + myUrl;
                 }
 
                 return '<a href="' + myUrl + '" target="_blank">';
