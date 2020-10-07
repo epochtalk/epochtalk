@@ -34,7 +34,10 @@ var ctrl = [
         delete $location.$$search.page;
         $location.$$compose();
       }
-      $timeout(function() { highlight($location.hash()); }, 0);
+      $timeout(function() {
+        highlight($location.hash());
+        $anchorScroll();
+      }, 0);
     }
     else { $timeout($anchorScroll, 0); }
 
