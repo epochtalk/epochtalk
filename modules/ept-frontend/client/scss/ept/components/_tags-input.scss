@@ -10,7 +10,7 @@ tags-input .tags {
   -moz-appearance: textfield;
   -webkit-appearance: textfield;
   padding: 0.0625rem;
-  overflow: hidden;
+  overflow-y: scroll;
   word-wrap: break-word;
   cursor: text;
   background-color: $input-background-color;
