@@ -34,9 +34,9 @@ var ctrl = [
         delete $location.$$search.page;
         $location.$$compose();
       }
-      $timeout(function() { highlight($location.hash()); }, 1000);
+      $timeout(function() { highlight($location.hash()); }, 0);
     }
-    else { $timeout($anchorScroll); }
+    else { $timeout($anchorScroll, 0); }
 
     // Posts Permissions
     this.canPost = function() {
@@ -318,7 +318,7 @@ var ctrl = [
       $timeout(function() {
         highlight($location.hash());
         $anchorScroll();
-      });
+      }, 0);
     };
 
     function highlight(postId) {
