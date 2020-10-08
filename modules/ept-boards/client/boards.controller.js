@@ -91,6 +91,7 @@ module.exports = ['$timeout', '$anchorScroll', 'Session', 'User', 'PreferencesSv
         last_post_username: data.last_post_username,
         last_post_avatar: data.last_post_avatar,
         last_thread_id: data.last_thread_id,
+        last_thread_slug: data.last_thread_slug,
         last_thread_title: data.last_thread_title
       }
     }
@@ -111,7 +112,7 @@ module.exports = ['$timeout', '$anchorScroll', 'Session', 'User', 'PreferencesSv
           // Compare curLatest to board
           curLatest = buildLastPostData(greater(curLatest, board));
           // Compare curLatest to actual latest
-          latestPost = buildLastPostData(greater(curLatest, latestPost))
+          latestPost = buildLastPostData(greater(curLatest, latestPost));
         });
       }
       return latestPost;
