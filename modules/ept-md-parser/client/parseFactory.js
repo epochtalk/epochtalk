@@ -22,10 +22,12 @@ function parse(input) {
   // Stop html entities from being encoded by replacing & with entity
   input = input.replace(/(?:&)/g, '&#38;');
   // preserve whitespacing (i'm sorry this is hacky, it's needed to preserve newlines after going through the markdown parser)
+
   input = input.replace(/\r\n|\r|\n/g, "\n$ept-newline$\n");
 
   // compile markdown
   input = compiler(input, { renderer: renderer });
+
 
   input = input.replace(/(?:&#38;#92-preserve;)/g, '&amp;#92; ')
   input = input.replace(/(?:&#38;#92;)/g, '\\');
@@ -33,8 +35,8 @@ function parse(input) {
 
 
   // replace whitespacing
-  input = input.replace(/(?:\n\$ept-newline\$)/g, '\n');
-  input = input.replace(/(?:\$ept-newline\$)/g, '\n');
+  input = input.replace(/(?:\n\$ept-newline\$)/g, '\r');
+  input = input.replace(/(?:\$ept-newline\$)/g, '\r');
 
   // allow single new line in list items
   var liRegex = /<li>([\s\S]*?)<\/li>/gi;
