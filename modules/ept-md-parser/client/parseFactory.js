@@ -31,10 +31,9 @@ function parse(input) {
   input = input.replace(/(?:&#38;#92;)/g, '\\');
   input = input.replace(/(?:&amp;#38;)/g, '&amp;');
 
-
   // replace whitespacing
-  input = input.replace(/(?:\n\$ept-newline\$)/g, '\n');
-  input = input.replace(/(?:\$ept-newline\$)/g, '\n');
+  input = input.replace(/(?:\n\$ept-newline\$)/g, '\r');
+  input = input.replace(/(?:\$ept-newline\$)/g, '\r');
 
   // allow single new line in list items
   var liRegex = /<li>([\s\S]*?)<\/li>/gi;
