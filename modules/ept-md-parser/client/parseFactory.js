@@ -28,11 +28,9 @@ function parse(input) {
   // compile markdown
   input = compiler(input, { renderer: renderer });
 
-
   input = input.replace(/(?:&#38;#92-preserve;)/g, '&amp;#92; ')
   input = input.replace(/(?:&#38;#92;)/g, '\\');
   input = input.replace(/(?:&amp;#38;)/g, '&amp;');
-
 
   // replace whitespacing
   input = input.replace(/(?:\n\$ept-newline\$)/g, '\r');
