@@ -215,6 +215,18 @@ input[disabled].toggle-switch:checked + label:after { background-color: lighten(
 }
 input[type].hide-radio { display: none; }
 
+
+// Form alerts
+.alert-form-input {
+  color: $color-primary;
+  font-size: $font-size-sm;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 /*-- Input With Nested Button --*/
 .nested-input-container { position: relative; }
 input[type].nested-input.valid-username { color: green; }
