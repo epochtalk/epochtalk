@@ -97,7 +97,7 @@ function correctTextSearchVector(request) {
   var mentionIds = request.payload.mentioned_ids;
   if (!mentionIds || !mentionIds.length) { return; }
   var post = request.pre.processed;
-  request.db.mentions.fixTextSearchVector(post)
+  request.db.posts.fixTextSearchVector(post)
   .then(function() { delete request.pre.processed.body_original; });
   return true;
 }
