@@ -187,9 +187,12 @@
   .editor-body {
     width: 100%;
     flex: 1 0 auto;
-    // position: absolute;
-    // top: 35px;
-    // bottom: 4.5rem;
+    display: flex;
+
+    .editor-column-input {
+      flex: 1 0 auto;
+      height: auto;
+    }
 
     input[type],
     .editor-input,
