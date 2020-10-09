@@ -2,6 +2,9 @@
   <div ng-class="editorPosition" ng-show="showEditor">
     <!-- Editor Container-->
     <div class="editor-container" ng-class="{ 'new-message' : editorConvoMode, 'new-thread' : threadEditorMode, 'add-poll' : thread.addPoll }">
+      <!-- Draft Alert -->
+      <span class="alert-form-input">{{draftStatus}}</span>
+      
       <!-- Editor Header -->
       <div class="editor-top-bar">
 
@@ -144,7 +147,6 @@
         <div class="editor-header">
           <a class="first" ng-class="{'selected': !preview }" tabindex="-1" ng-click="preview = false">Compose</a>
           <a ng-class="{'selected': preview }" tabindex="-1" ng-click="preview = true">Preview</a>
-          <span>{{draftStatus}}</span>
         </div>
 
         <div class="editor-body" ng-init="preview = false;">

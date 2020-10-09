@@ -1,5 +1,7 @@
 .editor-container {
   z-index: 5000;
+  display: flex;
+  flex-direction: column;
 }
 
 .editor-fixed-bottom {
@@ -83,6 +85,7 @@
 
 .editor-container {
   background-color: $base-background-color;
+  display: flex;
   position: relative;
   height: 100vh;
   // max-width: calc(100vw - 4rem);
@@ -167,11 +170,9 @@
 }
 
 .editor-form {
-  position: absolute;
-  top: 30px;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  flex: 3 0 auto;
+  display: flex;
+  flex-direction: column;
 
   label {
     color: $secondary-font-color-light;
@@ -180,9 +181,13 @@
 
   .editor-body {
     width: 100%;
-    position: absolute;
-    top: 35px;
-    bottom: 4.5rem;
+    flex: 1 0 auto;
+    display: flex;
+
+    .editor-column-input {
+      flex: 1 0 auto;
+      height: auto;
+    }
 
     input[type],
     .editor-input,
@@ -331,14 +336,11 @@
    pointer-events: none;
 }
 .editor-tools {
-  position: absolute;
-  bottom: 3rem;
   color: $secondary-font-color-dark;
-  left: 0;
-  right: 0;
+  flex: 0 0 auto;
   padding: 0 1rem;
   line-height: 1.5rem;
-  height: 1.5rem;
+
   a {
     color: $secondary-font-color-dark;
     &:hover { color: $secondary-font-color; }
@@ -356,11 +358,10 @@
   padding: 0.25rem 0.5rem 0.375rem;
   font-size: 0.6875rem;
   margin: 0; }
+
 .editor-button-container {
-  position: absolute;
+  flex: 0 0 auto;
   padding: 0.5rem 1rem;
-  bottom: 0;
-  right: 0;
   height: 3rem;
   text-align: right;
   width: 100%;
@@ -409,7 +410,9 @@
       }
     }
   }
-  .editor-body { bottom: 2rem; }
+  .editor-body { 
+    bottom: 2rem;
+  }
 }
 
 .image-picker {
@@ -476,6 +479,10 @@
     @include span-columns(12);
     @include omega;
   }
+}
+
+.editor-header {
+  flex: 0 0 auto;
 }
 
 @include media($mobile) {
@@ -591,7 +598,6 @@
 .messages-wrap {
   position: relative;
   z-index: 5000;
-  .new-message .editor-form { top: 8.4375rem; }
   .new-thread .editor-form { top: 12.4375rem; }
   .new-thread.add-poll .editor-form { top: 49.4375rem; }
   .editor-button-container { padding: 0.5rem;}
@@ -607,8 +613,10 @@
   }
 
   .new-message .editor-top-bar {
-    height: 178px;
+    flex: 0 0 auto;
+    height: auto;
     padding: 1rem;
+    padding-bottom: 0;
     div:first-child {
       padding: 0;
       text-align: left;
