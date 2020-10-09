@@ -173,11 +173,6 @@
   flex: 3 0 auto;
   display: flex;
   flex-direction: column;
-  // position: absolute;
-  // top: 30px;
-  // bottom: 0;
-  // left: 0;
-  // right: 0;
 
   label {
     color: $secondary-font-color-light;
@@ -603,7 +598,6 @@
 .messages-wrap {
   position: relative;
   z-index: 5000;
-  // .new-message .editor-form { top: 8.4375rem; }
   .new-thread .editor-form { top: 12.4375rem; }
   .new-thread.add-poll .editor-form { top: 49.4375rem; }
   .editor-button-container { padding: 0.5rem;}

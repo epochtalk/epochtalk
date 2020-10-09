@@ -8,9 +8,7 @@ tags-input {
   display: block; 
 
   .host { 
-    // position: relative; 
     margin-bottom: 0.5rem; 
-    // height: 2.3125rem; 
 
     &:active { 
       outline: none; 
@@ -28,7 +26,6 @@ tags-input {
     border: 1px solid $border-color;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
     color: $input-font-color;
-    // height: 2.3125rem;
     height: max-content;
     max-height: 6rem;
 
