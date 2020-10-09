@@ -30,14 +30,12 @@ var directive = [function() {
       // Compute user's age
       this.userAge = function(dob) {
         if (!dob) { return; }
-        var yearThen = parseInt(dob.substring(0,4), 10);
-        var monthThen = parseInt(dob.substring(5,7), 10);
-        var dayThen = parseInt(dob.substring(8,10), 10);
         var today = new Date();
-        var birthday = new Date(yearThen, monthThen-1, dayThen);
-        var differenceInMilisecond = today.valueOf() - birthday.valueOf();
-        var year_age = Math.floor(differenceInMilisecond / 31536000000);
-        return Math.abs(year_age);
+        var birthDate = new Date(dob);
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) { age--; }
+        return age;
       };
 
       // Permissions

@@ -22,7 +22,14 @@ module.exports = ['$location', '$state', function($location, $state) {
         else if (scope.pageNum < 1) {
           page = 1;
         }
-        $state.go($state.current, { page: page, slug: $state.params.slug }, { inherit: false });
+        var params = { page: page };
+        var slug = $state.params.slug;
+        var boardSlug = $state.params.boardSlug;
+        var username = $state.params.username;
+        if (slug) { params.slug = slug; }
+        if (boardSlug) { params.boardSlug = boardSlug; }
+        if (username) { params.username = username; }
+        $state.go($state.current, params, { inherit: false });
         if (scope.clickAction) { scope.clickAction(); }
       };
 

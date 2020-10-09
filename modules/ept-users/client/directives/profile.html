@@ -29,8 +29,8 @@
   <div class="profile-user-details">
     <div class="profile-user-name-role">
       <h1 ng-bind="vmProfile.user.username"></h1>
-      <span class="username-screen" ng-bind="vmProfile.user.name"></span>
-      <span class="user-role" style="background-color: {{vmProfile.user.role_highlight_color ? vmProfile.user.role_highlight_color : 'grey'}}" ng-bind="vmProfile.user.role_name"></span>
+      <span class="username-screen" ng-bind-html="vmProfile.user.name"></span>
+      <span class="user-role" style="background-color: {{vmProfile.user.role_highlight_color ? vmProfile.user.role_highlight_color : 'grey'}}" ng-bind-html="vmProfile.user.role_name"></span>
       <span class="user-rank">
         <rank-display ranks="vmProfile.user.metadata.ranks" maps="vmProfile.user.metadata.rank_metric_maps" user="vmProfile.user"></rank-display>
       </span>
@@ -85,19 +85,19 @@
     <a ng-href="mailto:{{vmProfile.user.email}}" target="_blank" ng-bind="vmProfile.user.email"></a>
     <div><span ng-bind="vmProfile.user.btc_address"></span></div>
     <div>
-      <a ng-href="{{vmProfile.user.website}}" target="_blank" ng-bind="vmProfile.user.website"></a>
+      <a ng-href="{{ vmProfile.user.website.indexOf('://') > -1 ? vmProfile.user.website : '//' + vmProfile.user.website }}" target="_blank" ng-bind="vmProfile.user.website"></a>
     </div>
     <div ng-if="vmProfile.user.gender">
-      Gender:&nbsp;&nbsp;<span ng-bind="vmProfile.user.gender"></span>
+      Gender:&nbsp;&nbsp;<span ng-bind-html="vmProfile.user.gender"></span>
     </div>
     <div ng-if="vmProfile.user.dob">
       Age:&nbsp;&nbsp;<span ng-bind="vmProfile.userAge(vmProfile.user.dob)"></span>
     </div>
     <div ng-if="vmProfile.user.location">
-      Location:&nbsp;&nbsp;<span ng-bind="vmProfile.user.location"></span>
+      Location:&nbsp;&nbsp;<span ng-bind-html="vmProfile.user.location"></span>
     </div>
     <div ng-if="vmProfile.user.language">
-      Language:&nbsp;&nbsp;<span ng-bind="vmProfile.user.language"></span>
+      Language:&nbsp;&nbsp;<span ng-bind-html="vmProfile.user.language"></span>
     </div>
   </div>
 
@@ -163,9 +163,9 @@
         &nbsp;
         <span ng-bind="vmProfile.user.username"></span>
       </h4>
-      <div><span ng-bind="vmProfile.user.name"></span></div>
-      <div><span ng-bind="vmProfile.user.position"></span></div>
-      <div><span ng-bind="vmProfile.user.status"></span></div>
+      <div><span ng-bind-html="vmProfile.user.name"></span></div>
+      <div><span ng-bind-html="vmProfile.user.position"></span></div>
+      <div><span ng-bind-html="vmProfile.user.status"></span></div>
       <br />
       <div ng-if="vmProfile.user.activity > -1">Activity:&nbsp;&nbsp;<span ng-bind="vmProfile.user.activity"></span></div>
       <trust-profile ng-if="vmProfile.isLoggedIn()" username="vmProfile.user.username"></trust-profile>
@@ -176,16 +176,16 @@
         <a ng-href="{{ vmProfile.user.website.indexOf('://') > -1 ? vmProfile.user.website : '//' + vmProfile.user.website }}" target="_blank" ng-bind="vmProfile.user.website"></a>
       </div>
       <div ng-if="vmProfile.user.gender">
-        Gender:&nbsp;&nbsp;<span ng-bind="vmProfile.user.gender"></span>
+        Gender:&nbsp;&nbsp;<span ng-bind-html="vmProfile.user.gender"></span>
       </div>
       <div ng-if="vmProfile.user.dob">
         Age:&nbsp;&nbsp;<span ng-bind="vmProfile.userAge(vmProfile.user.dob)"></span>
       </div>
       <div ng-if="vmProfile.user.location">
-        Location:&nbsp;&nbsp;<span ng-bind="vmProfile.user.location"></span>
+        Location:&nbsp;&nbsp;<span ng-bind-html="vmProfile.user.location"></span>
       </div>
       <div ng-if="vmProfile.user.language">
-        Language:&nbsp;&nbsp;<span ng-bind="vmProfile.user.language"></span>
+        Language:&nbsp;&nbsp;<span ng-bind-html="vmProfile.user.language"></span>
       </div>
       <!-- <div><span ng-bind="vmProfile.userLocalTime | date:'h:mm a (Z)'"></span></div> -->
       <hr ng-if="vmProfile.canUpdate() || vmProfile.canUpdatePrivate() || vmProfile.pageOwner() || vmProfile.canDeactivate() || vmProfile.canReactivate() || vmProfile.canDelete() || vmProfile.canPageUserNotes() || vmProfile.canBanUser() || vmProfile.canMessage()">
