@@ -44,7 +44,7 @@
           </div>
         </div>
 
-        <poll-creator poll="thread.poll" valid="thread.pollValid" ng-if="thread.addPoll"></poll-creator>
+        
         <!--  Message Editor Mode -->
         <div ng-if="editorConvoMode">
           <!-- Select User -->
@@ -141,6 +141,10 @@
           </div>
         </div>
       </div>
+
+      <!-- Poll Creator -->
+      <poll-creator poll="thread.poll" valid="thread.pollValid" ng-if="thread.addPoll"></poll-creator>
+
       <!-- Editor -->
       <form name="form" class="editor-form" novalidate>
         <!-- START EDITOR -->

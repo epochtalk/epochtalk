@@ -2,11 +2,11 @@
   <div class="section-poll-questions">
     <span class="section-header">Create a Poll</span>
     <!-- Poll Question -->
-    <h1 class="poll-question">Question:</h1>
+    <label for="question" class="poll-question">Question:</label>
     <input type="text" id="question" ng-model="poll.question" maxlength="255">
   
     <!-- Poll Answers -->
-    <h1 class="poll-answers">Answers:</h1>
+    <label for="answer-1" class="poll-answers">Answers:</h1>
     <div class="answer-row" ng-repeat="answer in poll.answers track by $index">
       <div class="field-inline-action">
         <input type="text" id="answer-{{$index}}" ng-model="poll.answers[$index]" maxlength="255">
@@ -41,7 +41,7 @@
       <label for="pollMaxVote">Maximum answers per vote:</label>
       <input type="number" id="pollMaxVote" min="1" max="{{poll.answers.length}}" value="1" ng-model="poll.max_answers">
       
-      <div class="half-column">
+      <div class="">
         <label>Show poll results: </label>
         <label for="displayAlways">
           <input type="radio" id="displayAlways" ng-model="poll.display_mode"value="always">
