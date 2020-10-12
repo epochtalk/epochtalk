@@ -161,19 +161,6 @@ function unignoreUser(userId, ignoredUserId) {
   });
 }
 
-function fixTextSearchVector(post) {
-  var q = `SELECT
-    setweight(to_tsvector('simple', COALESCE($1,'')), 'A') ||
-    setweight(to_tsvector('simple', COALESCE($2,'')), 'B')
-    AS tsv`;
-  return db.scalar(q, [ post.title, post.body_original ])
-  .then(function(data) {
-    q = 'UPDATE posts SET tsv = $1 WHERE id = $2 RETURNING id';
-    return db.sqlQuery(q, [ data.tsv, helper.deslugify(post.id) ]);
-  })
-  .then(helper.slugify);
-}
-
 function enableMentionEmails(userId, enabled) {
   userId = helper.deslugify(userId);
 
@@ -205,7 +192,6 @@ module.exports = {
   pageIgnoredUsers: pageIgnoredUsers,
   ignoreUser: ignoreUser,
   unignoreUser: unignoreUser,
-  fixTextSearchVector: fixTextSearchVector,
   enableMentionEmails: enableMentionEmails,
   getMentionEmailSettings: getMentionEmailSettings
 };

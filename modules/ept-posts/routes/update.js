@@ -65,8 +65,13 @@ module.exports = {
 function processing(request) {
   var updatePost = request.payload;
   updatePost.id = request.params.id;
+  var post;
   var promise = request.db.posts.update(updatePost, request.auth.credentials)
-  .tap(function(post) {
+  .then(function(dbPost) {
+    post = dbPost;
+    return request.db.posts.fixTextSearchVector(post);
+  })
+  .tap(function() {
     var email;
     if (post.user_id !== request.auth.credentials.id) {
       request.db.users.find(post.user_id)
@@ -93,7 +98,7 @@ function processing(request) {
     return;
   })
   // handle image references
-  .then((post) => { return request.imageStore.updateImageReferences(post); })
+  .then(() => { return request.imageStore.updateImageReferences(post); })
   .error(request.errorMap.toHttpError);
 
   return promise;
