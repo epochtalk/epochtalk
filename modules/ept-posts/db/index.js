@@ -4,6 +4,7 @@ module.exports = {
   create: require(path.normalize(__dirname + '/create')),
   update: require(path.normalize(__dirname + '/update')),
   find: require(path.normalize(__dirname + '/find')),
+  fixTextSearchVector: require(path.normalize(__dirname + '/fixTextSearchVector')),
   byThread: require(path.normalize(__dirname + '/byThread')),
   pageByUserCount: require(path.normalize(__dirname + '/pageByUserCount')),
   pageByUser: require(path.normalize(__dirname + '/pageByUser')),
