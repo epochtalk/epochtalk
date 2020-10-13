@@ -4,7 +4,7 @@
     <!-- Poll Question -->
     <label for="question" class="poll-question">Question:</label>
     <input type="text" id="question" ng-model="poll.question" maxlength="255">
-  
+
     <!-- Poll Answers -->
     <label for="answer-1" class="poll-answers">Answers:</h1>
     <div class="answer-row" ng-repeat="answer in poll.answers track by $index">
@@ -21,12 +21,12 @@
 
   <div class="section-poll-options">
     <span class="section-header">Options:</span >
-    
+
     <div class="checkbox-group">
       <input type="checkbox" id="pollVote" ng-model="poll.change_vote">
       <label for="pollVote">Allow user to change vote</label>
     </div>
-  
+
     <div class="poll-options-expiration">
       <label for="pollExpirationDate" class="fieldgroup-container">
         <span class="fieldgroup-label">Poll expires at -- {{(poll.expiration|humanDate) || 'No Expiration'}}</span>
@@ -40,7 +40,7 @@
     <div class="poll-options-answers">
       <label for="pollMaxVote">Maximum answers per vote:</label>
       <input type="number" id="pollMaxVote" min="1" max="{{poll.answers.length}}" value="1" ng-model="poll.max_answers">
-      
+
       <div class="">
         <label>Show poll results: </label>
         <label for="displayAlways">
