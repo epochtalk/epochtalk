@@ -34,9 +34,11 @@ var ctrl = [
         delete $location.$$search.page;
         $location.$$compose();
       }
-      $timeout(function() { highlight($location.hash()); }, 0);
+      $timeout(function() {
+        highlight($location.hash());
+        $anchorScroll();
+      });
     }
-    else { $timeout($anchorScroll, 0); }
 
     // Posts Permissions
     this.canPost = function() {
@@ -306,14 +308,17 @@ var ctrl = [
       $timeout(function() {
         highlight($location.hash());
         $anchorScroll();
-      }, 0);
+      });
     };
 
     function highlight(postId) {
       if ($location.search().purged === 'true') { purgeSuccess(); }
       else {
         ctrl.posts.map(function(post) {
-          if (post.id === postId) { post.highlighted = true; }
+          if (post.id === postId) {
+            post.highlighted = true;
+            $location.hash(postId);
+          }
           else { post.highlighted = false; }
         });
       }
