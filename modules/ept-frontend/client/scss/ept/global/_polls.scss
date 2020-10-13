@@ -1,21 +1,40 @@
+poll-creator {
+  display: flex;
+  flex-direction: column;
+}
+
 .polls {
   @include border-radius(4px);
+  flex: 2 0 40vh;
   border: 1px solid $border-color;
   box-shadow: 0 2px 24px rgba(0, 0, 0, .1);
   color: $sub-header-font-color;
   margin: 1.5rem 0;
   max-height: calc(100vh - 16rem);
+  min-height: 200px;
   overflow-x: hidden;
   overflow-y: scroll;
   .ng-enter { @include transition(0.3s ease-in all); opacity: 0; }
   .ng-enter-active { opacity: 1; }
   .ng-leave { display: none; }
   button { margin: 0.5rem 0 0; width: 100%; }
+
+  .editor-container & {
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
   
   // poll creation
   &.poll-form {
     max-height: 100%;
     padding: 1rem 1rem 2rem;
+
+    .editor-container & {
+      border-bottom: $border;;
+      border-top: $border;
+      margin: 0;
+    }
 
     .section-poll-questions {
       border-bottom: $border;
