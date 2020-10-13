@@ -6,7 +6,7 @@
     <input type="text" id="question" ng-model="poll.question" maxlength="255">
 
     <!-- Poll Answers -->
-    <label for="answer-1" class="poll-answers">Answers:</h1>
+    <label for="answer-1" class="poll-answers">Answers:</label>
     <div class="answer-row" ng-repeat="answer in poll.answers track by $index">
       <div class="field-inline-action">
         <input type="text" id="answer-{{$index}}" ng-model="poll.answers[$index]" maxlength="255">
