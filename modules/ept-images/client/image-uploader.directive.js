@@ -84,7 +84,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
           }
         });
 
-        var warningMsg = 'Some images exceeded the max image upload size: [' + errImages.join(', ') + ']';
+        var warningMsg = 'Some images exceeded the max image upload size(' + maxImageSize + ' bytes): [' + errImages.join(', ') + ']';
 
         if (!$scope.currentImages.length) {
           $scope.imagesUploading = false;
