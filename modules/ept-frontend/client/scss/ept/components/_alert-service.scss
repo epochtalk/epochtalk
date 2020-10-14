@@ -1,15 +1,20 @@
 .alertService {
-  position: fixed;
-  top: $header-height;
-  width: 960px;
+  width: 100%;
   margin: auto;
   left: 0;
   right: 0;
   z-index: 9000;
-  @include border-radius(0 0 3px 3px);
+  @include border-radius(0 0 4px 4px);
   background-color: $header-dropdown-bg-color;
   max-height: 6.75rem;
+  max-width: 1300px;
   overflow: auto;
+  position: fixed;
+
+  .is-hidden & {
+    pointer-events: initial;
+  }
+
   .alert-box {
     display: block;
     padding: 0.5rem 1rem;
