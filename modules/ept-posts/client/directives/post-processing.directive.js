@@ -284,7 +284,8 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
         var ngLinks = $element.find('[ui-sref]');
         ngLinks.each(function(index, link) {
           var linkHTML = $(link)[0].outerHTML;
-          var replaceWith = '</span>' + linkHTML + '<span ng-non-bindable>';
+          var username = $(link)[0].attributes[0].textContent.split('\'')[1];
+          var replaceWith = '<a href="/profiles/' + username + '">@' + username + '</a>';
           nonBindableHTML = nonBindableHTML.replace(linkHTML, replaceWith);
         });
 
