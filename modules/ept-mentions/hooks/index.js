@@ -83,7 +83,8 @@ function usernameToUserId(request) {
       });
     }, [])
     .each(function(mention) {
-      body = body.replace(new RegExp(mention.replacee, 'g'), mention.replacer);
+      var replacee = mention.replacee.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|<>\-\&])/g,"\\$&");
+      body = body.replace(new RegExp(replacee, 'g'), mention.replacer);
     })
     .then(function() {
       request.payload.body = body;
