@@ -238,7 +238,7 @@ var XBBCODE = (function () {
 
                 var simpleColor = colorCode.replace(/#/gi, '_');
 
-                return '<span class="bbcode-color-' + simpleColor + '" style="color:' + colorCode + '">';
+                return '<span class="bbcode-color-' + simpleColor + '" style="color:' + colorCode + '; display: inline-block;">';
             },
             closeTag: function () {
                 return '</span>';
