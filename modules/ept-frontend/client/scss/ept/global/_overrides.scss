@@ -87,6 +87,7 @@ code {
   color: $code-block-text-color;
   line-height: 0.65rem;
   white-space: pre;
+  white-space: nowrap;
   word-break: normal;
   overflow-wrap: break-word;
   overflow-x: scroll;
@@ -95,9 +96,9 @@ code {
     padding: 0; display: inline-block; 
   }
 
-  @include break-mobile-tablet {
-    max-width: 50vw;
-  }
+  // @include break-mobile-tablet {
+  //   max-width: 50vw;
+  // }
 }
 
 input[type], textarea {
