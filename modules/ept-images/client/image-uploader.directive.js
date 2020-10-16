@@ -69,7 +69,7 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
          // prep each image
         var errImages = [];
         fsImages.forEach(function(fsImage) {
-          var maxImageSize = forumData.max_image_size;
+          var maxImageSize = $scope.purpose === 'avatar' ? 102400 : forumData.max_image_size;
           var image = {
             name: fsImage.name,
             file: fsImage,
@@ -84,9 +84,10 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
           }
         });
 
-        var warningMsg = 'Some images exceeded the max image upload size: [' + errImages.join(', ') + ']';
+        var warningMsg = 'Some images exceeded the max image upload size(' + maxImageSize + ' bytes): [' + errImages.join(', ') + ']';
 
         if (!$scope.currentImages.length) {
+          $scope.imagesUploading = false;
           return $timeout(function() { Alert.warning(warningMsg); });
         }
         // the number of images that are still being uploaded

@@ -10,7 +10,7 @@
   <div class="page-header-split">
     <!-- Show Title -->
     <div ng-if="!PostsParentCtrl.editThread" class="thread-title">
-      <h1 ng-bind-html="::PostsParentCtrl.thread.title"></h1>
+      <h1 ng-bind-html="PostsParentCtrl.thread.title"></h1>
       <a data-balloon="Edit Thread Title" ng-href="#" class="do-edit" ng-if="PostsParentCtrl.canEditTitle()" ng-click="PostsParentCtrl.openEditThread()">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
           <title></title>
