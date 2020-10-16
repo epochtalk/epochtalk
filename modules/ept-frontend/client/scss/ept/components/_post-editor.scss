@@ -88,8 +88,6 @@
   display: flex;
   position: relative;
   height: 100vh;
-  // max-width: calc(100vw - 4rem);
-  // margin: 0 auto;
   border: 1px solid $border-color;
   border-bottom: 0;
   box-shadow: 0 0 20px rgba(0,0,0,0.2);
@@ -179,12 +177,13 @@
   }
 
   .editor-body {
+    height: auto;
     width: 100%;
     flex: 1 0 auto;
     display: flex;
 
     .editor-column-input {
-      flex: 1 0 auto;
+      flex: 1 0 100%;
       height: auto;
     }
 
@@ -251,6 +250,15 @@
       line-height: 1.6; }
   }
 
+  .editor-column-preview {
+    flex: 1 0 auto;
+    height: calc(100vh - 152px);
+
+    @include break-mobile-sm {
+      height: calc(100vh - 158px);
+    }
+  }
+
   .editor-preview {
     white-space: pre-wrap;
     overflow: auto;
@@ -263,20 +271,15 @@
   .editor-footer {
     color: $secondary-font-color-light;
     font-size: .875rem;
-    position: absolute;
-    bottom: 0px;
-    // left: -50px;
+    flex: 0 0 32px;
+    display: flex;
+    align-items: center;
     width: 100%;
     background-color: $base-background-color;
-    height: 3rem;
-    border-top: 1px solid $border-color;
+    border-bottom: $border;
     .upload-editor {
       text-align: left;
-      // width: $max-width / 2;
-      // margin-left: 50px;
       padding-left: 1rem;
-      position: absolute;
-      top: -1.35rem;
       z-index: 500;
       a {
         color: $secondary-font-color-dark;
@@ -294,6 +297,7 @@
 
   .editor-image-uploader {
     display: block;
+    margin-top: 0;
     width: 100%;
     text-align: center;
   }
