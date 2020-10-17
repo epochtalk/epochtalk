@@ -205,8 +205,8 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
           for (var i = 0; i < codeBlocks.length; i++) {
             var codeBlock = angular.element(codeBlocks[i]);
             var text = codeBlock.text();
-            if (text && text.charAt(0) === '\r') {
-              text = text.substr(1);
+            if (text && text.charAt(0) === '\n') {
+              text = text.substr(2);
               codeBlock.text(text);
             }
           }
@@ -218,7 +218,7 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
           for (var i = 0; i < quoteBlocks.length; i++) {
             var quoteBlock = angular.element(quoteBlocks[i])[0].nextSibling;
             var text = quoteBlock ? quoteBlock.nodeValue : '';
-            if (text && text.charAt(0) === '\r') {
+            if (text && text.charAt(0) === '\n') {
               quoteBlock.nodeValue = text.substr(2);
             }
           }

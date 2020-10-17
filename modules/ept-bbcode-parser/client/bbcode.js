@@ -351,6 +351,7 @@ var XBBCODE = (function () {
                 // url
                 var myUrl = content;
                 myUrl = myUrl.trim();
+                myUrl = myUrl.replace(/ /g, '%20');
                 imgPattern.lastIndex = 0;
                 if (!imgPattern.test(myUrl)) {
                     myUrl = "";
@@ -431,6 +432,7 @@ var XBBCODE = (function () {
                 }
 
                 myUrl = myUrl.trim();
+                myUrl = myUrl.replace(/ /g, '%20');
                 return '<a href="#post_' + myUrl + '">';
             },
             closeTag: function () {
@@ -932,6 +934,7 @@ var XBBCODE = (function () {
                 }
 
                 myUrl = myUrl.trim();
+                myUrl = myUrl.replace(/ /g, '%20');
                 urlPattern.lastIndex = 0;
                 if (!urlPattern.test(myUrl)) {
                     myUrl = "//" + myUrl;

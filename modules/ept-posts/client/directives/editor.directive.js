@@ -273,7 +273,10 @@ var directive = ['User', '$transitions', '$timeout', '$window', '$rootScope', '$
 
       // focus input on editor element
       $scope.focusEditorFn = function() {
-        $timeout(function() { editor.focus(); }, 10);
+        $timeout(function() {
+          editor.focus();
+          editor.setSelectionRange(0,0);
+        }, 10);
         $scope.focusSwitch = false;
       };
 
