@@ -82,22 +82,20 @@ code {
   background-color: $code-block-bg-color;
   margin-bottom: 0.5rem;
   margin-top: 0.5rem;
+  max-height: 300px;
   padding: 1rem;
   display: block;
   font-size: 0.85rem;
   color: $code-block-text-color;
-  line-height: 0.65rem;
+  line-height: 1.2;
   white-space: pre;
   word-break: normal;
   overflow-wrap: break-word;
   overflow-x: scroll;
+  overflow-y: auto;
   
   &.preview { 
     padding: 0; display: inline-block; 
-  }
-
-  @include break-mobile-tablet {
-    max-width: 50vw;
   }
 }
 
