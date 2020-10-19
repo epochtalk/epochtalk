@@ -84,7 +84,7 @@ function usernameToUserId(request) {
     }, [])
     .each(function(mention) {
       var replacee = mention.replacee.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|<>\-\&])/g,"\\$&");
-      body = body.replace(new RegExp(replacee, 'g'), mention.replacer);
+      body = body.replace(new RegExp(replacee, 'gi'), mention.replacer);
     })
     .then(function() {
       request.payload.body = body;
