@@ -27,6 +27,9 @@ function parse(input) {
   // compile markdown
   input = compiler(input, { renderer: renderer });
 
+  // Fix issue with parser turning ``` into <pre><code> instead of just <code>
+  input = input.replace(/<pre><code>/gi, '<code>').replace(/<\/code><\/pre>/gi, '</code>');
+
   input = input.replace(/(?:&#38;#92-preserve;)/g, '&amp;#92; ')
   input = input.replace(/(?:&#38;#92;)/g, '\\');
   input = input.replace(/(?:&amp;#38;)/g, '&amp;');

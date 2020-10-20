@@ -28,9 +28,9 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
         }
         return date;
       };
-
+/^(?:https?|file|c):(?:\/{1,3}|\\{1})[-a-zA-Z0-9:;!@#%&()~_?\+=\/\\\.]*$/
       // Auto Link Regex
-      var autoLinkRegex = /(?!<code[^>]*?>)((?:https?\:\/\/)+(?![^\s]*?")([\w.,@?^=%&amp;:\/~\(\)+#-]*[\w@?^=%&amp;\/~\(\)+%#-])?)(?![^<]*?<\/code>)/ig;
+      var autoLinkRegex = /(?!<code[^>]*?>)((?:https?\:\/\/)+(?![^\s]*?")([-a-zA-Z0-9:;!@#%&()~_?\+=\/\\\.]*[-a-zA-Z0-9:;!@#%&()~_?\+=\/\\\.])?)(?![^<]*?<\/code>)/ig;
       var autoLink = function(url) {
         var wrap = document.createElement('div');
         var anch = document.createElement('a');
@@ -48,7 +48,7 @@ var directive = ['$timeout', '$filter', '$compile', function($timeout, $filter, 
       var validUrl = function(s) {
         try {
           var testUrl = new URL(s);
-          var urlRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,%;=.]+$/gm;
+          var urlRegex = /^(?:https?):(?:\/{1,3}|\\{1})[-a-zA-Z0-9:;!@#%&()~_?\+=\/\\\.]*$/;
           var reg = new RegExp(urlRegex);
           return s.match(reg);
         }
