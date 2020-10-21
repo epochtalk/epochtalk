@@ -16,6 +16,7 @@ module.exports = function(opts, priority) {
 
   var q = `SELECT * FROM
     (SELECT
+      p.deleted,
       p.id,
       ts_headline('simple', (SELECT content ->> 'title' as title from posts WHERE thread_id = p.thread_id ORDER BY created_at LIMIT 1), q, 'StartSel=<mark>, StopSel=</mark>') as thread_title,
       p.user_id,
