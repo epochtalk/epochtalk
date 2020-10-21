@@ -49,7 +49,7 @@ module.exports = {
       })
     },
     pre: [
-      { method: (request) => request.server.methods.auth.posts.search(request.server, request.auth) },
+      { method: (request) => request.server.methods.auth.posts.search(request.server, request.auth), assign: 'viewables' },
       { method: (request) => request.server.methods.hooks.preProcessing(request) },
       [
         { method: (request) => request.server.methods.hooks.parallelProcessing(request), assign: 'parallelProcessed' },
