@@ -1,4 +1,6 @@
 var Joi = require('@hapi/joi');
+var path = require('path');
+var common = require(path.normalize(__dirname + '/../common'));
 
 /**
   * @apiVersion 0.4.0
@@ -78,7 +80,7 @@ function processing(request) {
   var userPriority = request.server.plugins.acls.getUserPriority(request.auth);
   var promise = request.db.posts.search(opts, userPriority)
   .then(function(data) {
-
+    data.posts = common.cleanPosts(data.posts, request.auth.credentials.id, request.pre.viewables, request);
     // Loop through all posts
     data.posts.forEach(function(post) {
       // The search text were trying to match
