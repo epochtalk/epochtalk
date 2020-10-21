@@ -7,7 +7,7 @@ var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$
     this.page = pageData.page;
     this.limit = pageData.limit;
     this.desc = pageData.desc || true; // default to true
-    this.usersPosts = pageData.posts;
+    this.usersPosts = pageData.posts.filter(post => !post._deleted);
     this.threads = pageData.threads ? true : false;
     this.next = pageData.next;
     this.prev = pageData.prev;
@@ -82,7 +82,7 @@ var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$
       if (threads) {
         Posts.pageStartedByUser(params).$promise
         .then(function(pageData) {
-          ctrl.usersPosts = pageData.posts;
+          ctrl.usersPosts = pageData.posts.filter(posts => !posts._deleted);
           ctrl.next = pageData.next;
           ctrl.prev = pageData.prev;
         });
@@ -91,7 +91,7 @@ var ctrl = ['user', 'pageData', 'Posts', '$location', '$scope', '$rootScope', '$
         Posts.pageByUser(params).$promise
         .then(function(pageData) {
           ctrl.pageCount = Math.ceil(pageData.count / pageData.limit);
-          ctrl.usersPosts = pageData.posts;
+          ctrl.usersPosts = pageData.posts.filter(posts => !posts._deleted);
         });
       }
     };
