@@ -68,8 +68,8 @@ var directive = ['$timeout', 'S3ImageUpload', 'Alert', function($timeout, s3Imag
          */
          // prep each image
         var errImages = [];
+        var maxImageSize = $scope.purpose === 'avatar' ? 102400 : forumData.max_image_size;
         fsImages.forEach(function(fsImage) {
-          var maxImageSize = $scope.purpose === 'avatar' ? 102400 : forumData.max_image_size;
           var image = {
             name: fsImage.name,
             file: fsImage,
