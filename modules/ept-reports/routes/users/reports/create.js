@@ -8,7 +8,6 @@ var Joi = require('@hapi/joi');
   * @apiPermission User
   * @apiDescription Used to report a user for moderators/administrators to review.
   *
-  * @apiParam (Payload) {string} reporter_user_id The unique id of the user initiating the report
   * @apiParam (Payload) {string} reporter_reason The reporter's reason for reporting the offending user
   * @apiParam (Payload) {string} offender_user_id The unique id of the user being reported
   *
@@ -30,7 +29,6 @@ module.exports = {
     auth: { strategy: 'jwt' },
     validate: {
       payload: Joi.object({
-        reporter_user_id: Joi.string().required(),
         reporter_reason: Joi.string().max(255).required(),
         offender_user_id: Joi.string().required()
       })
@@ -39,6 +37,7 @@ module.exports = {
   },
   handler: function(request) {
     var report = request.payload;
+    report.reporter_user_id = request.auth.credentials.id;
     var promise = request.db.reports.createUserReport(report)
     .error(request.errorMap.toHttpError);
 
