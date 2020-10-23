@@ -86,7 +86,7 @@ function processing(request) {
           mod_username: request.auth.credentials.username,
           thread_name: thread.title,
           site_name: config.website.title,
-          thread_url: config.publicUrl + '/threads/' + thread.id + '/posts?start=' + post.position + '#' + post.id,
+          thread_url: config.publicUrl + '/threads/' + thread.slug + '/posts?start=' + post.position + '#' + post.id,
           action: 'edited'
         };
         request.server.log('debug', emailParams);

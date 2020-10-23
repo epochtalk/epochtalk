@@ -58,7 +58,7 @@ module.exports = {
               mod_username: request.auth.credentials.username,
               thread_name: thread.title,
               site_name: config.website.title,
-              thread_url: config.publicUrl + '/threads/' + thread.id + '/posts',
+              thread_url: config.publicUrl + '/threads/' + thread.slug + '/posts',
               action: 'deleted'
             };
             request.server.log('debug', emailParams);
