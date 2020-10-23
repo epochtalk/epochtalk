@@ -163,7 +163,7 @@ function createMention(request) {
                     post_author: request.auth.credentials.username,
                     thread_name: thread.title,
                     site_name: config.website.title,
-                    thread_url: config.publicUrl + '/threads/' + post.thread_id + '/posts?start=' + post.position + '#' + post.id
+                    thread_url: config.publicUrl + '/threads/' + post.thread_slug + '/posts?start=' + post.position + '#' + post.id
                   };
                   // Do not return, otherwise user has to wait for email to send
                   // before post is created
