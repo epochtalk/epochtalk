@@ -9,11 +9,11 @@ module.exports = function(threadId, slug) {
   var q, params;
   if (threadId) {
     threadId = helper.deslugify(threadId);
-    var q = 'SELECT p.id, p.content ->> \'title\' as title, p.content ->> \'body\' as body, p.thread_id, u.username FROM posts p LEFT JOIN users u ON u.id = p.user_id WHERE p.thread_id = $1 ORDER BY p.created_at LIMIT 1';
+    var q = 'SELECT p.id, p.content ->> \'title\' as title, p.content ->> \'body\' as body, p.thread_id, t.slug as thread_slug, u.username FROM posts p LEFT JOIN users u ON u.id = p.user_id LEFT JOIN threads t ON t.id = p.thread_id WHERE p.thread_id = $1 ORDER BY p.created_at LIMIT 1';
     params = [threadId];
   }
   else {
-    var q = 'SELECT p.id, p.content ->> \'title\' as title, p.content ->> \'body\' as body, p.thread_id, u.username FROM posts p LEFT JOIN users u ON u.id = p.user_id LEFT JOIN threads t ON t.id = p.thread_id WHERE t.slug = $1 ORDER BY p.created_at LIMIT 1';
+    var q = 'SELECT p.id, p.content ->> \'title\' as title, p.content ->> \'body\' as body, p.thread_id, t.slug as thread_slug, u.username FROM posts p LEFT JOIN users u ON u.id = p.user_id LEFT JOIN threads t ON t.id = p.thread_id WHERE t.slug = $1 ORDER BY p.created_at LIMIT 1';
     params = [slug];
   }
   return db.sqlQuery(q, params)
