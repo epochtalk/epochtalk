@@ -7,6 +7,7 @@ function subscribeToThread(request) {
 
 function emailSubscribers(request) {
   var threadId = request.pre.processed.thread_id;
+  var threadSlug = request.pre.processed.thread_slug;
   var authedUserId = request.auth.credentials.id;
   var config = request.server.app.config;
   request.db.threadNotifications.getSubscriberEmailData(threadId, authedUserId)
@@ -15,7 +16,7 @@ function emailSubscribers(request) {
       email: emailData.email,
       thread_name: emailData.title,
       site_name: config.website.title,
-      thread_url: config.publicUrl + '/threads/' + threadId + '/posts?start=' + emailData.last_post_position + '#' + emailData.last_post_id
+      thread_url: config.publicUrl + '/threads/' + threadSlug + '/posts?start=' + emailData.last_post_position + '#' + emailData.last_post_id
     };
     return request.emailer.send('threadNotification', emailParams)
     .then(function() {
