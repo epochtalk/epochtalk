@@ -20,7 +20,7 @@ module.exports = function(post) {
   queryUpdateThreadCreatedAt = 'UPDATE threads SET created_at = (SELECT created_at FROM posts WHERE thread_id = $1 ORDER BY created_at limit 1) WHERE id = $1'
   queryUpdateThreadUpdatedAt = 'UPDATE threads SET updated_at = (SELECT created_at FROM posts WHERE thread_id = $1 ORDER BY created_at DESC limit 1) WHERE id = $1'
   queryUpdatePostPosition = 'UPDATE posts SET position = (SELECT post_count + 1 FROM threads WHERE id = $1) WHERE id = $2 RETURNING position';
-  queryIncThreadPostCount = 'UPDATE threads SET post_count = post_count + 1 WHERE id = $1';
+  queryIncThreadPostCount = 'UPDATE threads SET post_count = post_count + 1 WHERE id = $1 RETURNING slug';
 
   params = [post.thread_id, post.user_id, post_json, post.deleted, post.locked];
 
@@ -49,7 +49,11 @@ module.exports = function(post) {
     })
     .then(function(result) {
       post.position = result.rows[0].position;
-      return client.query(queryIncThreadPostCount, [post.thread_id]);
+      return client.query(queryIncThreadPostCount, [post.thread_id])
+      .then(function(result) {
+        post.thread_slug = result.rows[0].slug;
+        return;
+      });
     });
   })
   .then(function() { return helper.slugify(post); });

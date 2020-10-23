@@ -311,9 +311,9 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
 
     this.copyQuote = function(post) {
       var quote = '[quote author=' + post.user.username;
-      if (ctrl.thread.id) {
+      if (ctrl.thread.slug) {
         quote += ' link=';
-        quote += '/threads/' + ctrl.thread.id + '/posts?page=' + ctrl.page + '#' + post.id;
+        quote += '/threads/' + ctrl.thread.slug + '/posts?page=' + ctrl.page + '#' + post.id;
       }
       quote += ' date=' + new Date(post.created_at).getTime() + ']';
       quote += post.body || post.body_html;

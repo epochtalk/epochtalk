@@ -44,7 +44,6 @@ module.exports = {
           replacee = replacee.replace(/```/, '[code]');
           replacee = replacee.slice(0, -3) + '[/code]';
         }
-        console.log(replacee);
         cleanedText = cleanedText.replace(val, replacee);
       });
     }
