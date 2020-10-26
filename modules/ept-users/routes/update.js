@@ -93,7 +93,7 @@ module.exports = {
         password: Joi.string().min(8).max(255),
         confirmation: Joi.ref('password'),
         name: Joi.string().max(255).allow(''),
-        website: Joi.string().regex(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,%;=.]+$/).allow(''),
+        website: Joi.string().regex(/^(?:http(s)?:\/\/)?[\p{L}.-]+(?:\.[\p{L}\.-]+)+[\p{L}\-\._~:/?#[\]@!\$&'\(\)\*\+,%;=.]+$/).allow(''),
         btc_address: Joi.string().max(255).allow(''),
         gender: Joi.string().max(255).allow(''),
         dob: Joi.date().allow('', null),
