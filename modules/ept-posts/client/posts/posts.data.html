@@ -113,7 +113,7 @@
               </svg>
             </a>
           </li>
-          <li ng-if="PostsParentCtrl.loggedIn() && post.user.id !== PostsCtrl.user.id && (PostsParentCtrl.reportControlAccess.reportPosts || PostsParentCtrl.reportControlAccess.reportUsers) && !PostsParentCtrl.bannedFromBoard" ng-hide="post.reported && post.reported_author">
+          <li ng-if="PostsParentCtrl.loggedIn() && (PostsParentCtrl.reportControlAccess.reportPosts || PostsParentCtrl.reportControlAccess.reportUsers) && !PostsParentCtrl.bannedFromBoard">
             <a ng-href="" class="post-action-icon" data-balloon="Report" ng-click="PostsCtrl.openReportModal(post)">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                 <title></title>

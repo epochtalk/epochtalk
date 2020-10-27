@@ -115,7 +115,7 @@
               <a ng-if="MessagesCtrl.canDeleteMessage(message.sender_id)" ng-href="#" class="action" ng-click="MessagesCtrl.openDeleteModal(message.id)" data-balloon="Delete">
                 <i class="fa fa-trash"></i>
               </a>
-              <a ng-if="message.sender_id !== MessagesCtrl.currentUserId && MessagesCtrl.controlAccess.reportMessages && !message.reported" ng-href="#" class="action" ng-click="MessagesCtrl.openReportModal(message)" data-balloon="Report">
+              <a ng-if="MessagesCtrl.controlAccess.reportMessages" ng-href="#" class="action" ng-click="MessagesCtrl.openReportModal(message)" data-balloon="Report">
                 <i class="icon-epoch-flag"></i>
               </a>
             </div>
