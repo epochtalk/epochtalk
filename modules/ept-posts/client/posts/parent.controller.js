@@ -600,12 +600,12 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
       ctrl.showReportModal = true;
     };
 
-    this.closeReportModal = function(userReport) {
+    this.closeReportModal = function(userReport, reported) {
       $timeout(function() {
-        if (userReport) {
+        if (userReport && reported) {
           ctrl.reportedPost.reported_author = true;
         }
-        else {
+        else if (reported) {
           ctrl.reportedPost.reported = true;
         }
         ctrl.showReportModal = false;
@@ -636,7 +636,7 @@ var ctrl = [ '$scope', '$stateParams', '$timeout', '$location', '$filter', '$sta
         reportPromise = Reports.createUserReport(report).$promise;
       }
       reportPromise.then(function() {
-        ctrl.closeReportModal(reportUser);
+        ctrl.closeReportModal(reportUser, true);
         $timeout(function() { Alert.success('Successfully sent report'); }, 500);
       })
       .catch(function() {
