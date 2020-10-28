@@ -130,9 +130,12 @@ var uploadImage = function(url, filename) {
       if (url[0] === '/') { url = config.publicUrl + url; }
 
       // get image from url and pipe to cdn
-      var stream = request(url)
-      .on('error', function(err) { console.log(err); })
-      .pipe(ftc).pipe(sc);
+      try {
+        var stream = request(url)
+        .on('error', function(err) { console.log(err); })
+        .pipe(ftc).pipe(sc);
+      }
+      catch(e) { return console.log(err); }
 
       // write to s3
       var options = {
@@ -142,9 +145,12 @@ var uploadImage = function(url, filename) {
         ContentType: contentType,
         Body: stream
       };
-      client.upload(options, function(err, data) {
-        if(err) { console.log(err); }
-      });
+      try {
+        client.upload(options, function(err, data) {
+          if(err) { console.log(err); }
+        });
+      }
+      catch(e) { return console.log(err); }
     }
   });
 };
