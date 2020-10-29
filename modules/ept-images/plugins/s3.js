@@ -137,7 +137,7 @@ var uploadImage = function(url, filename) {
           .pipe(ftc).pipe(sc);
         }
         catch(e) {
-          return reject(new Error('Avatar upload error; invalid URL' + e));
+          return reject(new Error('Avatar upload error; ' + e));
         }
 
         // write to s3
@@ -154,7 +154,7 @@ var uploadImage = function(url, filename) {
           });
         }
         catch(e) {
-          return reject(new Error('S3 write error;' + e));
+          return reject(new Error('S3 write error; ' + e));
         }
       }
     });
