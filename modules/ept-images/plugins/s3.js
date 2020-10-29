@@ -150,7 +150,8 @@ var uploadImage = function(url, filename) {
         };
         try {
           client.upload(options, function(err, data) {
-            if(err) { console.log(err); }
+            if(err) { return reject(err); }
+            else { return resolve(); }
           });
         }
         catch(e) {
