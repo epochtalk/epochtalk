@@ -126,19 +126,17 @@ images.imageSub = (post) => {
 };
 
 images.avatarSub = (user) => {
-  return new Promise(function(resolve, reject) {
-    if (!user.avatar) { return resolve(user); }
-    else {
-      images.saveImage(user.avatar)
-      .then(function(savedUrl) {
-        user.avatar = savedUrl;
-        return resolve(user);
-      })
-      .catch(function(err) {
-        return reject(Boom.badRequest(err));
-      });
-    }
-  });
+  if (!user.avatar) { return Promise.resolve(user); }
+  else {
+    return images.saveImage(user.avatar)
+    .then(function(savedUrl) {
+      user.avatar = savedUrl;
+      return user;
+    })
+    .catch(function(err) {
+      return Boom.badRequest(err);
+    });
+  }
 };
 
 images.addPostImageReference = function(postId, imageUrl) {
