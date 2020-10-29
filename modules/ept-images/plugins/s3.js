@@ -267,7 +267,10 @@ s3.saveImage = function(imgSrc) {
   // hotlink image
   else {
     var filename = images.generateHotlinkFilename(imgSrc);
-    uploadImage(imgSrc, filename);
+    uploadImage(imgSrc, filename)
+    .catch(function(error) {
+      console.log('ept-images/plugins/s3', error);
+    });
     url = generateImageUrl(filename);
   }
 
