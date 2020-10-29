@@ -82,6 +82,7 @@ var generateImageUrl = function(filename) {
 };
 
 var uploadImage = function(url, filename) {
+  return new Promise(function(resolve, reject) {
   // check if this already exists in cdn
   var s3Url = generateImageUrl(filename);
   request.head(s3Url, function(err, response) {
@@ -135,7 +136,9 @@ var uploadImage = function(url, filename) {
         .on('error', function(err) { console.log(err); })
         .pipe(ftc).pipe(sc);
       }
-      catch(e) { return console.log(err); }
+      catch(e) {
+        return reject(new Error('Avatar upload error; invalid URL' + e));
+      }
 
       // write to s3
       var options = {
@@ -150,8 +153,11 @@ var uploadImage = function(url, filename) {
           if(err) { console.log(err); }
         });
       }
-      catch(e) { return console.log(err); }
+      catch(e) {
+        return reject(new Error('S3 write error;' + e));
+      }
     }
+  });
   });
 };
 
