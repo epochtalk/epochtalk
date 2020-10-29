@@ -257,13 +257,14 @@ s3.uploadPolicy = function(filename) {
 };
 
 s3.saveImage = function(imgSrc) {
-  return new Promise(function(resolve, reject) {
     // image uploaded by client
     if (imgSrc.indexOf(config.images.s3.root) === 0) {
-      // clear any expirations
-      images.clearExpiration(imgSrc);
-      // return original image url
-      return imgSrc;
+      return new Promise(function(resolve, reject) {
+        // clear any expirations
+        images.clearExpiration(imgSrc);
+        // return original image url
+        return resolve(imgSrc);
+      });
     }
     // hotlink image
     else {
@@ -272,12 +273,8 @@ s3.saveImage = function(imgSrc) {
       .then(function() {
         // return generated image url
         return generateImageUrl(filename);
-      })
-      .catch(function(error) {
-        console.log('ept-images/plugins/s3', error);
       });
     }
-  });
 };
 
 s3.removeImage = function(imageUrl) {
