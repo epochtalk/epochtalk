@@ -257,24 +257,24 @@ s3.uploadPolicy = function(filename) {
 };
 
 s3.saveImage = function(imgSrc) {
-    // image uploaded by client
-    if (imgSrc.indexOf(config.images.s3.root) === 0) {
-      return new Promise(function(resolve, reject) {
-        // clear any expirations
-        images.clearExpiration(imgSrc);
-        // return original image url
-        return resolve(imgSrc);
-      });
-    }
-    // hotlink image
-    else {
-      var filename = images.generateHotlinkFilename(imgSrc);
-      return uploadImage(imgSrc, filename)
-      .then(function() {
-        // return generated image url
-        return generateImageUrl(filename);
-      });
-    }
+  // image uploaded by client
+  if (imgSrc.indexOf(config.images.s3.root) === 0) {
+    return new Promise(function(resolve, reject) {
+      // clear any expirations
+      images.clearExpiration(imgSrc);
+      // return original image url
+      return resolve(imgSrc);
+    });
+  }
+  // hotlink image
+  else {
+    var filename = images.generateHotlinkFilename(imgSrc);
+    return uploadImage(imgSrc, filename)
+    .then(function() {
+      // return generated image url
+      return generateImageUrl(filename);
+    });
+  }
 };
 
 s3.removeImage = function(imageUrl) {
