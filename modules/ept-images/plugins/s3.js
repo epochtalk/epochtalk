@@ -148,15 +148,10 @@ var uploadImage = function(url, filename) {
           ContentType: contentType,
           Body: stream
         };
-        try {
-          client.upload(options, function(err, data) {
-            if(err) { return reject(err); }
-            else { return resolve(); }
-          });
-        }
-        catch(e) {
-          return reject(new Error('S3 write error; ' + e));
-        }
+        client.upload(options, function(err, data) {
+          if(err) { return reject(new Error('S3 write error; ' + err)); }
+          else { return resolve(); }
+        });
       }
     });
   });
