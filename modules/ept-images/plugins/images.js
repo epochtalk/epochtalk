@@ -13,6 +13,7 @@ var clearHandle;
 var options;
 var config;
 var db;
+var Boom = require('boom');
 
 images.init = function(opts) {
   options = opts = opts || {};
@@ -110,28 +111,29 @@ images.imageSub = (post) => {
   // convert each image's src to cdn version
   return Promise.each(postImages, (element) => {
     var imgSrc = $(element).attr('src');
-    var savedUrl = images.saveImage(imgSrc);
-
-    if (savedUrl) {
-      // move original src to data-canonical-src
-      $(element).attr('data-canonical-src', imgSrc);
-      // update src with new url
-      $(element).attr('src', savedUrl);
-    }
-    return Promise.resolve();
+    return images.saveImage(imgSrc)
+    .then(function(savedUrl) {
+      if (savedUrl) {
+        post.body = post.body.replace(imgSrc, savedUrl);
+      }
+    });
   })
   .then(() => { post.body_html = $.html(); })
   .then(() => post);
 };
 
 images.avatarSub = (user) => {
-  return new Promise(function(resolve) {
-    if (!user.avatar) { return resolve(); }
-    var savedUrl = images.saveImage(user.avatar);
-    if (savedUrl) { user.avatar = savedUrl; }
-    return resolve();
-  })
-  .then(() => user);
+  if (!user.avatar) { return Promise.resolve(user); }
+  else {
+    return images.saveImage(user.avatar)
+    .then(function(savedUrl) {
+      user.avatar = savedUrl;
+      return user;
+    })
+    .catch(function(err) {
+      return Boom.badRequest(err);
+    });
+  }
 };
 
 images.addPostImageReference = function(postId, imageUrl) {

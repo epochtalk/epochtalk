@@ -51,20 +51,22 @@ local.uploadPolicy = function(filename) {
 };
 
 local.saveImage = function(imgSrc) {
-  // image uploaded by client
-  var url = imgSrc;
-  if (imgSrc.indexOf(config.publicUrl) === 0 || imgSrc.indexOf(config.images.local.path) === 0) {
-    // clear any expirations
-    images.clearExpiration(imgSrc);
-  }
-  // hotlink image
-  else {
-    var filename = images.generateHotlinkFilename(imgSrc);
-    local.uploadImage(imgSrc, filename);
-    url = generateImageUrl(filename);
-  }
+  return new Promise(function(resolve, reject) {
+    // image uploaded by client
+    var url = imgSrc;
+    if (imgSrc.indexOf(config.publicUrl) === 0 || imgSrc.indexOf(config.images.local.path) === 0) {
+      // clear any expirations
+      images.clearExpiration(imgSrc);
+    }
+    // hotlink image
+    else {
+      var filename = images.generateHotlinkFilename(imgSrc);
+      local.uploadImage(imgSrc, filename);
+      url = generateImageUrl(filename);
+    }
 
-  return url;
+    return resolve(url);
+  });
 };
 
 var generateImageUrl = function(filename) {
