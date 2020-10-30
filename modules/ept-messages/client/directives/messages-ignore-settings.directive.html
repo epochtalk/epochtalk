@@ -43,7 +43,7 @@
   <tbody ng-repeat="user in vmIgnoreUserMessages.users track by user.id">
     <tr>
       <td>
-        <div class="user-avatar">
+        <div class="user-avatar {{$webConfigs.default_avatar_shape}}">
           <a ui-sref="profile.posts({ username: user.username })">
             <img ng-src="{{::user.avatar || $webConfigs.default_avatar}}">
           </a>
@@ -79,4 +79,3 @@
   </a>
   <span ng-show="!vmIgnoreUserMessages.next">Next &#10095;</span>
 </div>
-
