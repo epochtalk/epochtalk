@@ -111,15 +111,15 @@ images.imageSub = (post) => {
   // convert each image's src to cdn version
   return Promise.each(postImages, (element) => {
     var imgSrc = $(element).attr('src');
-    var savedUrl = images.saveImage(imgSrc);
-
-    if (savedUrl) {
-      // move original src to data-canonical-src
-      $(element).attr('data-canonical-src', imgSrc);
-      // update src with new url
-      $(element).attr('src', savedUrl);
-    }
-    return Promise.resolve();
+    return images.saveImage(imgSrc)
+    .then(function(savedUrl) {
+      if (savedUrl) {
+        // move original src to data-canonical-src
+        $(element).attr('data-canonical-src', imgSrc);
+        // update src with new url
+        $(element).attr('src', savedUrl);
+      }
+    });
   })
   .then(() => { post.body_html = $.html(); })
   .then(() => post);
