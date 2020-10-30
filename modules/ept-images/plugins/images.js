@@ -114,10 +114,7 @@ images.imageSub = (post) => {
     return images.saveImage(imgSrc)
     .then(function(savedUrl) {
       if (savedUrl) {
-        // move original src to data-canonical-src
-        $(element).attr('data-canonical-src', imgSrc);
-        // update src with new url
-        $(element).attr('src', savedUrl);
+        post.body = post.body.replace(imgSrc, savedUrl);
       }
     });
   })
