@@ -82,76 +82,78 @@ var generateImageUrl = function(filename) {
 };
 
 var uploadImage = function(url, filename) {
-  // check if this already exists in cdn
-  var s3Url = generateImageUrl(filename);
-  request.head(s3Url, function(err, response) {
-    // if it already exists, just return
-    if (response && response.statusCode === 200) { return; }
-    else { // otherwise, try uploading image to cdn
+  return new Promise(function(resolve, reject) {
+    // check if this already exists in cdn
+    var s3Url = generateImageUrl(filename);
+    request.head(s3Url, function(err, response) {
+      // if it already exists, just return
+      if (response && response.statusCode === 200) { return resolve(); }
+      else { // otherwise, try uploading image to cdn
 
-      // manual file type check
-      var contentType = checkFileType(filename);
+        // manual file type check
+        var contentType = checkFileType(filename);
 
-      // check file type
-      var newStream = true;
-      var fileTypeCheck = new Magic(mmm.MAGIC_MIME_TYPE);
-      var ftc = through2(function(chunk, enc, cb) {
-        fileTypeCheck.detect(chunk, function(err, result) {
-          var error;
-          if (err) { error = err; }
+        // check file type
+        var newStream = true;
+        var fileTypeCheck = new Magic(mmm.MAGIC_MIME_TYPE);
+        var ftc = through2(function(chunk, enc, cb) {
+          fileTypeCheck.detect(chunk, function(err, result) {
+            var error;
+            if (err) { error = err; }
 
-          // check results
-          if (result && newStream) {
-            newStream = false;
-            if (result.indexOf('image') !== 0 || result !== contentType) {
-              error = new Error('Invalid File Type');
+            // check results
+            if (result && newStream) {
+              newStream = false;
+              if (result.indexOf('image') !== 0 || result !== contentType) {
+                error = new Error('Invalid File Type');
+              }
             }
-          }
 
-          // next
+            // next
+            return cb(error, chunk);
+          });
+        });
+        ftc.on('error', function(err) { return console.log(err); });
+
+        // check file size
+        var size = 0;
+        var sc = through2(function(chunk, enc, cb) {
+          var error;
+          size += chunk.length;
+          if (size > config.images.maxSize) {
+            error = new Error('Exceeded File Size');
+          }
           return cb(error, chunk);
         });
-      });
-      ftc.on('error', function(err) { return console.log(err); });
+        sc.on('error', function(err) { return console.log(err); });
 
-      // check file size
-      var size = 0;
-      var sc = through2(function(chunk, enc, cb) {
-        var error;
-        size += chunk.length;
-        if (size > config.images.maxSize) {
-          error = new Error('Exceeded File Size');
+        // Handle relative paths
+        if (url[0] === '/') { url = config.publicUrl + url; }
+
+        // get image from url and pipe to cdn
+        try {
+          var stream = request(url)
+          .on('error', function(err) { console.log(err); })
+          .pipe(ftc).pipe(sc);
         }
-        return cb(error, chunk);
-      });
-      sc.on('error', function(err) { return console.log(err); });
+        catch(e) {
+          return reject(new Error('Avatar upload error; ' + e));
+        }
 
-      // Handle relative paths
-      if (url[0] === '/') { url = config.publicUrl + url; }
-
-      // get image from url and pipe to cdn
-      try {
-        var stream = request(url)
-        .on('error', function(err) { console.log(err); })
-        .pipe(ftc).pipe(sc);
-      }
-      catch(e) { return console.log(err); }
-
-      // write to s3
-      var options = {
-        Bucket: config.images.s3.bucket,
-        Key: config.images.s3.dir + filename,
-        ACL: 'public-read',
-        ContentType: contentType,
-        Body: stream
-      };
-      try {
+        // write to s3
+        var options = {
+          Bucket: config.images.s3.bucket,
+          Key: config.images.s3.dir + filename,
+          ACL: 'public-read',
+          ContentType: contentType,
+          Body: stream
+        };
         client.upload(options, function(err, data) {
-          if(err) { console.log(err); }
+          if(err) { return reject(new Error('S3 write error; ' + err)); }
+          else { return resolve(); }
         });
       }
-      catch(e) { return console.log(err); }
-    }
+    });
   });
 };
 
@@ -251,21 +253,24 @@ s3.uploadPolicy = function(filename) {
 };
 
 s3.saveImage = function(imgSrc) {
-  var url = imgSrc;
-
   // image uploaded by client
   if (imgSrc.indexOf(config.images.s3.root) === 0) {
-    // clear any expirations
-    images.clearExpiration(imgSrc);
+    return new Promise(function(resolve, reject) {
+      // clear any expirations
+      images.clearExpiration(imgSrc);
+      // return original image url
+      return resolve(imgSrc);
+    });
   }
   // hotlink image
   else {
     var filename = images.generateHotlinkFilename(imgSrc);
-    uploadImage(imgSrc, filename);
-    url = generateImageUrl(filename);
+    return uploadImage(imgSrc, filename)
+    .then(function() {
+      // return generated image url
+      return generateImageUrl(filename);
+    });
   }
-
-  return url;
 };
 
 s3.removeImage = function(imageUrl) {
