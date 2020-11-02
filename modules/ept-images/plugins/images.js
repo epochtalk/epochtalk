@@ -40,7 +40,7 @@ images.reinit = function() { images.init(options); };
 
 images.saveImage = (imgSrc) => {
   if (imgSrc) { return imageHandlers[config.images.storage].saveImage(imgSrc); }
-  else { return true; }
+  else { return Promise.resolve(); }
 };
 
 images.uploadPolicy = (filename) => {
