@@ -36,7 +36,7 @@ var directive = ['Mentions', '$timeout', 'Alert',
       this.unignore = function(user) {
         return Mentions.unignoreUser({ username: user.username }).$promise
         .then(function() {
-          Alert.success('Successfully uningored ' + user.username);
+          Alert.success('Successfully unignored ' + user.username);
           $timeout(function() { user.ignored = false; });
         });
       };
@@ -44,7 +44,7 @@ var directive = ['Mentions', '$timeout', 'Alert',
       this.ignore = function(user) {
         return Mentions.ignoreUser({username: user.username}).$promise
         .then(function(res) {
-          Alert.success('Successfully ingored ' + user.username);
+          Alert.success('Successfully ignored ' + user.username);
           $timeout(function() { user.ignored = true; });
           return res;
         });
@@ -53,7 +53,7 @@ var directive = ['Mentions', '$timeout', 'Alert',
       this.ignoreUser = function(username) {
         return Mentions.ignoreUser({username: username}).$promise
         .then(function(res) {
-          Alert.success('Successfully ingored ' + username);
+          Alert.success('Successfully ignored ' + username);
           ctrl.pullPage(0);
           ctrl.userToIgnore = {};
           return res;

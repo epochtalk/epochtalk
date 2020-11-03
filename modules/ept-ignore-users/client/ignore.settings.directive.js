@@ -33,7 +33,7 @@ var directive = ['IgnoreUsers', 'Alert', '$timeout',
       this.unignore = function(user) {
         return IgnoreUsers.unignore({ id: user.id }).$promise
         .then(function() {
-          Alert.success('Successfully uningored ' + user.username);
+          Alert.success('Successfully unignored ' + user.username);
           $timeout(function() { user.ignored = false; });
         });
       };
@@ -41,7 +41,7 @@ var directive = ['IgnoreUsers', 'Alert', '$timeout',
       this.ignore = function(user) {
         return IgnoreUsers.ignore({id: user.id}).$promise
         .then(function(res) {
-          Alert.success('Successfully ingored ' + user.username);
+          Alert.success('Successfully ignored ' + user.username);
           $timeout(function() { user.ignored = true; });
           return res;
         });
@@ -50,7 +50,7 @@ var directive = ['IgnoreUsers', 'Alert', '$timeout',
       this.ignoreUser = function(user) {
         return IgnoreUsers.ignore({id: user.user_id}).$promise
         .then(function(res) {
-          Alert.success('Successfully ingored ' + user.username);
+          Alert.success('Successfully ignored ' + user.username);
           ctrl.pullPage(0);
           ctrl.userToIgnore = {};
           return res;
