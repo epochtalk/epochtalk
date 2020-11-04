@@ -243,6 +243,7 @@ s3.uploadPolicy = function(filename) {
   images.setExpiration(config.images.expiration, imageUrl);
 
   return {
+    bucket: config.images.s3.bucket,
     policy: policy,
     signature: signature,
     accessKey: config.images.s3.accessKey,
