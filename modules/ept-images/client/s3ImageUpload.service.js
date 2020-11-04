@@ -1,3 +1,4 @@
+var AWS = require('aws-sdk');
 var service = ['$q', '$http', 'Session',
 function ($q, $http, Session) {
   return {
