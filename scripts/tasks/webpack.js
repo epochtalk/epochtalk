@@ -46,8 +46,7 @@ const config = {
       nodeModulesPath + '/nestable/jquery.nestable',
       nodeModulesPath + '/angular-sortable-view/src/angular-sortable-view.min',
       nodeModulesPath + '/ng-tags-input/build/ng-tags-input.min',
-      nodeModulesPath + '/slugify/slugify',
-      nodeModulesPath + '/aws-sdk'
+      nodeModulesPath + '/slugify/slugify'
     ],
     rules: [
       {
