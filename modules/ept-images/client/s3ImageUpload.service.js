@@ -19,19 +19,11 @@ function ($q, $http, Session) {
       });
     },
     upload: function (image) {
-      if (storageType === 's3') {
-        var upload = new AWS.S3.ManagedUpload({
-          params: {
-            Bucket: image.policy.bucket,
-            Key: image.policy.key,
-            Body: image.file
-          }
-        });
-      }
-      else if (storageType === 'local') {
-        var deferred = $q.defer();
-        var promise = deferred.promise;
+      var deferred = $q.defer();
+      var promise = deferred.promise;
+      var storageType = image.policy.storageType;
 
+      if (storageType === 'local') {
         // get policy and signature
         var policy = image.policy.policy;
         var signature = image.policy.signature;
@@ -93,9 +85,64 @@ function ($q, $http, Session) {
           return promise;
         };
         promise.abort = function() { xhr.abort(); };
-
-        return promise;
       }
+      else {
+        var bucket = new AWS.S3({
+          accessKeyId: "[REDACTED]",
+          secretAccessKey: "[CONFIDENTIAL]",
+          region: "[TOP SECRET]"
+        });
+
+        const params = {
+          Bucket: image.policy.bucket,
+          Key: image.policy.key,
+          Body: image.file,
+          ContentType: image.file.type
+        };
+        var uploadFile = bucket.upload(params, function(err, data) {
+          if (err) {
+            alert('There was an error uploading your file: ', err);
+            return deferred.reject(err);
+          }
+          else {
+            alert('Successfully uploaded file.', data);
+            return true;
+          }
+        });
+
+        var imageUrl = image.policy.imageUrl;
+        uploadFile.on('httpUploadProgress', function(progress) {
+          let progressPercentage = Math.round(progress.loaded / progress.total * 100);
+          if (progressPercentage == 100) {
+            alert('upload success');
+            return deferred.resolve(imageUrl);
+          }
+          else {
+            alert(progressPercentage);
+            return deferred.notify(progressPercentage);
+          }
+        });
+        promise.progress = function(fn) {
+          promise.then(function(progressPercentage) {
+            fn(percent);
+          });
+          return promise;
+        };
+        promise.error = function(fn) {
+          promise.error_fn = fn;
+          promise.then(function(error) {
+            fn(error);
+          });
+          return promise;
+        };
+        promise.success = function(fn) {
+          promise.then(function(imageUrl) {
+            fn(imageUrl);
+          });
+          return promise;
+        };
+      }
+      return promise;
     }
   };
 }];
