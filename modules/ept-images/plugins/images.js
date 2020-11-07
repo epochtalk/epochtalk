@@ -156,7 +156,16 @@ images.createImageReferences = (post) => {
   // save all images with a reference to post
   postImages.map(function(element) {
     var imgSrc = $(element).attr('src');
-    images.addPostImageReference(post.id, imgSrc);
+    if (imgSrc.indexOf(config.images.s3.root) === 0) {
+      return checkImageReferences(imgSrc)
+      .then(function(noMoreReferences) {
+        // If the src matches our s3 root and its not referenced in posts, then it is being
+        // used elsewhere and should not be expired by being add to the posts image refs
+        if (noMoreReferences) { return; }
+        else { return images.addPostImageReference(post.id, imgSrc); }
+      });
+    }
+    else { return images.addPostImageReference(post.id, imgSrc); }
   });
 
   return post;
