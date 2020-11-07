@@ -231,7 +231,7 @@ s3.uploadPolicy = function(filename) {
   conditions.push(['starts-with', '$key', key]);
   conditions.push({'acl': 'public-read'});
   conditions.push(['starts-with', '$Content-Type', 'image']);
-  conditions.push(['content-length-range', 1024, config.images.maxSize]);
+  conditions.push(['content-length-range', 1, config.images.maxSize]);
   var policy = { expiration: expiration, conditions: conditions };
   policy = JSON.stringify(policy);
   policy = Buffer.from(policy).toString('base64');
