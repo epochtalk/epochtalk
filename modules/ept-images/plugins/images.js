@@ -114,7 +114,12 @@ images.imageSub = (post) => {
     return images.saveImage(imgSrc)
     .then(function(savedUrl) {
       if (savedUrl) {
-        post.body = post.body.replace(imgSrc, savedUrl);
+        if (post.content) {
+          post.content.body = post.content.body.replace(imgSrc, savedUrl);
+        }
+        else {
+          post.body = post.body.replace(imgSrc, savedUrl);
+        }
       }
     });
   })
