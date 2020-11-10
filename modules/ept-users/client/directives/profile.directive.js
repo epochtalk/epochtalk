@@ -154,7 +154,13 @@ var directive = [function() {
           if(ctrl.pageOwner()) { Session.setAvatar(ctrl.editAvatarUser.avatar); }
         })
         .then(function() { Alert.success('Successfully updated avatar'); })
-        .catch(function() { Alert.error('Avatar could not be updated'); })
+        .catch(function(err) {
+          var msg = 'Avatar could not be updated';
+          if (err && err.data && err.data.message) {
+            msg += '. ' + err.data.message;
+          }
+          Alert.error(msg);
+        })
         .finally(function() { ctrl.editAvatar = false; });
       };
 

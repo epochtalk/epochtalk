@@ -100,12 +100,10 @@ var uploadImage = function(url, filename) {
           fileTypeCheck.detect(chunk, function(err, result) {
             var error;
             if (err) { error = err; }
-
-            // check results
             if (result && newStream) {
               newStream = false;
               if (result.indexOf('image') !== 0 || result !== contentType) {
-                error = new Error('Invalid File Type');
+                error = new Error('Invalid File Type: Possible MIME type mistmatch');
               }
             }
 
@@ -113,7 +111,7 @@ var uploadImage = function(url, filename) {
             return cb(error, chunk);
           });
         });
-        ftc.on('error', function(err) { return console.log(err); });
+        ftc.on('error', function(err) { return reject(err); });
 
         // check file size
         var size = 0;
@@ -125,7 +123,7 @@ var uploadImage = function(url, filename) {
           }
           return cb(error, chunk);
         });
-        sc.on('error', function(err) { return console.log(err); });
+        sc.on('error', function(err) { return reject(err); });
 
         // Handle relative paths
         if (url[0] === '/') { url = config.publicUrl + url; }
