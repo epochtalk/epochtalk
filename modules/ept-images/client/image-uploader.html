@@ -9,7 +9,8 @@
 <div ng-if="!imagesUploading && purpose !== 'editor'">
   Drag and drop images here or
   <a ng-href="#" ng-click="openImagePicker()">click here</a>
-
+  <br>
+  <div class="input-info">Images should not exceed 100kB</div>
   <div ng-if="model && purpose === 'avatar'" class="profile-avatar-container">
     <img ng-src="{{ model }}" />
   </div>
