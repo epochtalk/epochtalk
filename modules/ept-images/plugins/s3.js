@@ -146,18 +146,21 @@ var uploadImage = function(url, filename) {
           return reject(new Error('Avatar upload error; ' + e));
         }
         })
-
-        // write to s3
-        var options = {
-          Bucket: config.images.s3.bucket,
-          Key: config.images.s3.dir + filename,
-          ACL: 'public-read',
-          ContentType: contentType,
-          Body: stream
-        };
-        client.upload(options, function(err, data) {
-          if(err) { return reject(new Error('S3 write error; ' + err)); }
-          else { return resolve(); }
+        .then(function(stream) {
+          return new Promise(function(resolveS3, rejectS3) {
+            // write to s3
+            var options = {
+              Bucket: config.images.s3.bucket,
+              Key: config.images.s3.dir + filename,
+              ACL: 'public-read',
+              ContentType: contentType,
+              Body: stream
+            };
+            client.upload(options, function(err, data) {
+              if(err) { return rejectS3(new Error('S3 write error; ' + err)); }
+              else { return resolveS3(); }
+            });
+          });
         });
       }
     });
