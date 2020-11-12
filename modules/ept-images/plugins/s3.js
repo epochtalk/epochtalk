@@ -174,7 +174,7 @@ var uploadImage = function(url, filename) {
         })
         .catch(function(error) {
           // upload failed
-          return rejectUpload(new Error(error));
+          return rejectUpload(error);
         });
       }
     });
