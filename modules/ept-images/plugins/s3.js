@@ -88,7 +88,8 @@ var uploadImage = function(url, filename) {
     request.head(s3Url, function(err, response) {
       // if it already exists, just return
       if (response && response.statusCode === 200) { return resolveUpload(); }
-      else { // otherwise, try uploading image to cdn
+      // otherwise, try uploading image to cdn
+      else {
 
         // manual file type check
         var contentType = checkFileType(filename);
