@@ -119,7 +119,7 @@ var uploadImage = function(url, filename) {
           var error;
           size += chunk.length;
           if (size > config.images.maxSize) {
-            error = new Error('Exceeded File Size');
+            error = new Error(`File size check failed; max size ${config.images.maxSize}`);
           }
           return cb(error, chunk);
         });
