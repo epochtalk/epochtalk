@@ -144,8 +144,8 @@ var uploadImage = function(url, filename) {
               return resolveStream(stream);
             });
           }
-          catch(e) {
-            return reject(new Error('Avatar upload error; ' + e));
+          catch(error) {
+            return rejectStream(error);
           }
         })
         .then(function(stream) {
