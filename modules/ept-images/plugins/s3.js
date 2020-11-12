@@ -127,24 +127,30 @@ var uploadImage = function(url, filename) {
         // Handle relative paths
         if (url[0] === '/') { url = config.publicUrl + url; }
 
-        // get image from url and pipe to cdn
+        // await file checks before uploading
         return new Promise(function(resolveStream, rejectStream) {
+          // get image from url and pipe to cdn
           var stream = request(url)
+          // file type check
           .pipe(ftc)
           .on('error', function(err) {
             // file type check error
             return rejectStream(err);
           })
+          // size check
           .pipe(sc)
           .on('error', function(err) {
             // size check error
             return rejectStream(err);
           })
           .on('finish', function(data) {
+            // successful, checks passed
             return resolveStream(stream);
           });
         })
+        // on success, upload
         .then(function(stream) {
+          // await s3 upload
           return new Promise(function(resolveS3, rejectS3) {
             // write to s3
             var options = {
@@ -155,15 +161,19 @@ var uploadImage = function(url, filename) {
               Body: stream
             };
             client.upload(options, function(err, data) {
+              // upload unsuccessful
               if(err) { return rejectS3(new Error('S3 write error; ' + err)); }
+              // upload successful
               else { return resolveS3(); }
             });
           });
         })
         .then(function() {
+          // upload succeeded
           return resolveUpload();
         })
         .catch(function(error) {
+          // upload failed
           return rejectUpload(new Error(error));
         });
       }
