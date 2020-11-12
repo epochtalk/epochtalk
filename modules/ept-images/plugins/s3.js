@@ -111,7 +111,6 @@ var uploadImage = function(url, filename) {
             return cb(error, chunk);
           });
         });
-        ftc.on('error', function(err) { return reject(err); });
 
         // check file size
         var size = 0;
@@ -123,7 +122,6 @@ var uploadImage = function(url, filename) {
           }
           return cb(error, chunk);
         });
-        sc.on('error', function(err) { return reject(err); });
 
         // Handle relative paths
         if (url[0] === '/') { url = config.publicUrl + url; }
@@ -131,8 +129,14 @@ var uploadImage = function(url, filename) {
         // get image from url and pipe to cdn
         try {
           var stream = request(url)
-          .on('error', function(err) { console.log(err); })
-          .pipe(ftc).pipe(sc);
+          .pipe(ftc)
+          .on('error', function(err) {
+            // file type check error
+          })
+          .pipe(sc)
+          .on('error', function(err) {
+            // size check error
+          });
         }
         catch(e) {
           return reject(new Error('Avatar upload error; ' + e));
