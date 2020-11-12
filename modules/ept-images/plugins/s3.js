@@ -163,6 +163,12 @@ var uploadImage = function(url, filename) {
               else { return resolveS3(); }
             });
           });
+        })
+        .then(function() {
+          return resolveUpload();
+        })
+        .catch(function(error) {
+          return rejectUpload(new Error(error));
         });
       }
     });
