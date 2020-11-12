@@ -127,6 +127,7 @@ var uploadImage = function(url, filename) {
         if (url[0] === '/') { url = config.publicUrl + url; }
 
         // get image from url and pipe to cdn
+        return new Promise(function(resolveStream, rejectStream) {
         try {
           var stream = request(url)
           .pipe(ftc)
@@ -136,11 +137,15 @@ var uploadImage = function(url, filename) {
           .pipe(sc)
           .on('error', function(err) {
             // size check error
+          })
+          .on('finish', function(data) {
+            return resolveStream(stream);
           });
         }
         catch(e) {
           return reject(new Error('Avatar upload error; ' + e));
         }
+        })
 
         // write to s3
         var options = {
