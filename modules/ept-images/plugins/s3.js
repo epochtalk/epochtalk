@@ -82,12 +82,12 @@ var generateImageUrl = function(filename) {
 };
 
 var uploadImage = function(url, filename) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function(resolveUpload, rejectUpload) {
     // check if this already exists in cdn
     var s3Url = generateImageUrl(filename);
     request.head(s3Url, function(err, response) {
       // if it already exists, just return
-      if (response && response.statusCode === 200) { return resolve(); }
+      if (response && response.statusCode === 200) { return resolveUpload(); }
       else { // otherwise, try uploading image to cdn
 
         // manual file type check
