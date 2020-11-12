@@ -133,10 +133,12 @@ var uploadImage = function(url, filename) {
             .pipe(ftc)
             .on('error', function(err) {
               // file type check error
+              return rejectStream(err);
             })
             .pipe(sc)
             .on('error', function(err) {
               // size check error
+              return rejectStream(err);
             })
             .on('finish', function(data) {
               return resolveStream(stream);
