@@ -103,7 +103,7 @@ var uploadImage = function(url, filename) {
             if (result && newStream) {
               newStream = false;
               if (result.indexOf('image') !== 0 || result !== contentType) {
-                error = new Error('Invalid File Type: Possible MIME type mistmatch');
+                error = new Error('File type check failed');
               }
             }
 
