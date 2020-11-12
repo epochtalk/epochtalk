@@ -128,25 +128,20 @@ var uploadImage = function(url, filename) {
 
         // get image from url and pipe to cdn
         return new Promise(function(resolveStream, rejectStream) {
-          try {
-            var stream = request(url)
-            .pipe(ftc)
-            .on('error', function(err) {
-              // file type check error
-              return rejectStream(err);
-            })
-            .pipe(sc)
-            .on('error', function(err) {
-              // size check error
-              return rejectStream(err);
-            })
-            .on('finish', function(data) {
-              return resolveStream(stream);
-            });
-          }
-          catch(error) {
-            return rejectStream(error);
-          }
+          var stream = request(url)
+          .pipe(ftc)
+          .on('error', function(err) {
+            // file type check error
+            return rejectStream(err);
+          })
+          .pipe(sc)
+          .on('error', function(err) {
+            // size check error
+            return rejectStream(err);
+          })
+          .on('finish', function(data) {
+            return resolveStream(stream);
+          });
         })
         .then(function(stream) {
           return new Promise(function(resolveS3, rejectS3) {
