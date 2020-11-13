@@ -3,12 +3,12 @@
     <button ng-click="ProfilePostsCtrl.toggleThreads(true)" ng-class="{'active': ProfilePostsCtrl.threads}">
       <strong>Threads&nbsp;</strong> <span class="username">by {{ProfilePostsCtrl.user.username}}</span>
     </button>
-  
+
     <button ng-click="ProfilePostsCtrl.toggleThreads(false)" ng-class="{'active': !ProfilePostsCtrl.threads}">
       <strong>Posts&nbsp;</strong> <span class="username">by {{ProfilePostsCtrl.user.username}}</span>
     </button>
   </div>
-  
+
   <!-- User's Paged Posts -->
   <div ng-if="!ProfilePostsCtrl.threads">
     <div class="">
@@ -16,18 +16,18 @@
         <pagination page-count="ProfilePostsCtrl.pageCount" page="ProfilePostsCtrl.page" query-params="ProfilePostsCtrl.queryParams"></pagination>
       </div>
     </div>
-  
+
     <div class="no-table-contents" ng-if="ProfilePostsCtrl.pageCount === 0">
       <h4>This user has no posts to display</h4>
     </div>
-  
+
     <div class="" ng-if="ProfilePostsCtrl.pageCount > 0">
       <table class="profile-posts-table" width="100%">
         <thead>
-          <th class="thread"></span>Thread</th>
+          <th class="thread">Thread</th>
           <th class="timestamp pointer" ng-click="ProfilePostsCtrl.setDesc()"><span ng-class="ProfilePostsCtrl.getDesc()"></span>&nbsp;Post Date</th>
         </thead>
-  
+
         <tbody>
           <tr ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
             <td data-balloon="{{post.thread_title}}" data-balloon-pos="top">
@@ -46,11 +46,11 @@
       </table>
     </div>
   </div>
-  
-  
+
+
   <div ng-if="ProfilePostsCtrl.threads">
     <!-- User's Paged Threads -->
-  
+
       <div class="pagination-wrap" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
         <div class="pagination-simple">
           <a ng-show="ProfilePostsCtrl.prev" ui-sref=".({ threads: ProfilePostsCtrl.threads, page: ProfilePostsCtrl.prev, limit: ProfilePostsCtrl.limit, desc: ProfilePostsCtrl.desc })">
@@ -64,18 +64,18 @@
           <span ng-hide="ProfilePostsCtrl.next">Next &#10095;</span>
         </div>
       </div>
-  
+
     <div class="no-table-contents" ng-if="ProfilePostsCtrl.usersPosts.length < 1">
-      This user has no threads to display
+      <h4>This user has no threads to display</h4>
     </div>
-  
+
     <div class="" ng-if="ProfilePostsCtrl.usersPosts.length > 0">
       <table class="profile-posts-table" width="100%">
         <thead>
-          <th class="thread"></span>Thread</th>
+          <th class="thread">Thread</th>
           <th class="timestamp pointer" ng-click="ProfilePostsCtrl.setDesc()"><span ng-class="ProfilePostsCtrl.getDesc()"></span>&nbsp;Post Date</th>
         </thead>
-  
+
         <tbody>
           <tr ng-repeat="post in ProfilePostsCtrl.usersPosts track by post.id">
             <td data-balloon="{{post.thread_title}}" data-balloon-pos="top">
