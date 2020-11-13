@@ -82,13 +82,14 @@ var generateImageUrl = function(filename) {
 };
 
 var uploadImage = function(url, filename) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function(resolveUpload, rejectUpload) {
     // check if this already exists in cdn
     var s3Url = generateImageUrl(filename);
     request.head(s3Url, function(err, response) {
       // if it already exists, just return
-      if (response && response.statusCode === 200) { return resolve(); }
-      else { // otherwise, try uploading image to cdn
+      if (response && response.statusCode === 200) { return resolveUpload(); }
+      // otherwise, try uploading image to cdn
+      else {
 
         // manual file type check
         var contentType = checkFileType(filename);
@@ -97,21 +98,25 @@ var uploadImage = function(url, filename) {
         var newStream = true;
         var fileTypeCheck = new Magic(mmm.MAGIC_MIME_TYPE);
         var ftc = through2(function(chunk, enc, cb) {
-          fileTypeCheck.detect(chunk, function(err, result) {
-            var error;
-            if (err) { error = err; }
-            if (result && newStream) {
-              newStream = false;
-              if (result.indexOf('image') !== 0 || result !== contentType) {
-                error = new Error('Invalid File Type: Possible MIME type mistmatch');
+          if(newStream) {
+            fileTypeCheck.detect(chunk, function(err, result) {
+              var error;
+              if (err) { error = err; }
+              if (result) {
+                newStream = false;
+                if (result.indexOf('image') !== 0 || result !== contentType) {
+                  error = new Error('File extension does not match analyzed content type');
+                }
               }
-            }
 
-            // next
-            return cb(error, chunk);
-          });
+              // next
+              return cb(error, chunk);
+            });
+          }
+          else {
+            return cb(undefined, chunk);
+          }
         });
-        ftc.on('error', function(err) { return reject(err); });
 
         // check file size
         var size = 0;
@@ -119,36 +124,92 @@ var uploadImage = function(url, filename) {
           var error;
           size += chunk.length;
           if (size > config.images.maxSize) {
-            error = new Error('Exceeded File Size');
+            error = new Error(`File size check failed; max size ${config.images.maxSize}`);
           }
           return cb(error, chunk);
         });
-        sc.on('error', function(err) { return reject(err); });
 
         // Handle relative paths
         if (url[0] === '/') { url = config.publicUrl + url; }
 
-        // get image from url and pipe to cdn
-        try {
+        // await file checks before uploading
+        return new Promise(function(resolveStream, rejectStream) {
+          // keep track of file check errors
+          var fileCheckError;
+          // get image from url and pipe to cdn
           var stream = request(url)
-          .on('error', function(err) { console.log(err); })
-          .pipe(ftc).pipe(sc);
-        }
-        catch(e) {
-          return reject(new Error('Avatar upload error; ' + e));
-        }
+          // file type check
+          .pipe(ftc)
+          .on('error', function(err) {
+            // file type check error
+            fileCheckError = err;
+          })
+          // size check
+          .pipe(sc)
+          .on('error', function(err) {
+            // size check error
+            fileCheckError = err;
+          })
+          .on('finish', function(data) {
+            // successful, checks passed
+          });
 
-        // write to s3
-        var options = {
-          Bucket: config.images.s3.bucket,
-          Key: config.images.s3.dir + filename,
-          ACL: 'public-read',
-          ContentType: contentType,
-          Body: stream
-        };
-        client.upload(options, function(err, data) {
-          if(err) { return reject(new Error('S3 write error; ' + err)); }
-          else { return resolve(); }
+          // write to s3
+          var options = {
+            Bucket: config.images.s3.bucket,
+            Key: config.images.s3.dir + filename,
+            ACL: 'public-read',
+            ContentType: contentType,
+            Body: stream
+          };
+          client.upload(options, function(err, data) {
+            // upload unsuccessful
+            if(err) {
+              return rejectStream(new Error('S3 write error; ' + err));
+            }
+            // upload successful
+            else {
+              return resolveStream(fileCheckError);
+            }
+          });
+        })
+        .then(function(fileCheckError) {
+          // stream error while uploading
+          if(fileCheckError) {
+            return Promise.reject(fileCheckError);
+          }
+          else {
+            // upload succeeded
+            return resolveUpload();
+          }
+        })
+        // upload error
+        .catch(function(uploadError) {
+          // upload failed, delete object
+          return new Promise(function(resolveDelete, rejectDelete) {
+            var options = {
+              Bucket: config.images.s3.bucket,
+              Key: config.images.s3.dir + filename
+            };
+            client.deleteObject(options, function(deleteError) {
+              if(deleteError) {
+                // error during deletion
+                return rejectDelete(deleteError);
+              }
+              else {
+                // file successfully deleted
+                return resolveDelete();
+              }
+            });
+          })
+          .then(function() {
+            // handle error during upload
+            return rejectUpload(uploadError);
+          })
+          .catch(function(deleteError) {
+            // handle error during deletion
+            return rejectUpload(deleteError);
+          });
         });
       }
     });
