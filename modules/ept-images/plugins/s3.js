@@ -134,52 +134,57 @@ var uploadImage = function(url, filename) {
 
         // await file checks before uploading
         return new Promise(function(resolveStream, rejectStream) {
+          // keep track of file check errors
+          var fileCheckError;
           // get image from url and pipe to cdn
           var stream = request(url)
           // file type check
           .pipe(ftc)
           .on('error', function(err) {
             // file type check error
-            return rejectStream(err);
+            fileCheckError = err;
           })
           // size check
           .pipe(sc)
           .on('error', function(err) {
             // size check error
-            return rejectStream(err);
+            fileCheckError = err;
           })
           .on('finish', function(data) {
             // successful, checks passed
-            return resolveStream(stream);
+          });
+
+          // write to s3
+          var options = {
+            Bucket: config.images.s3.bucket,
+            Key: config.images.s3.dir + filename,
+            ACL: 'public-read',
+            ContentType: contentType,
+            Body: stream
+          };
+          client.upload(options, function(err, data) {
+            // upload unsuccessful
+            if(err) {
+              return rejectStream(new Error('S3 write error; ' + err));
+            }
+            // upload successful
+            else {
+              return resolveStream(fileCheckError);
+            }
           });
         })
-        // on success, upload
-        .then(function(stream) {
-          // await s3 upload
-          return new Promise(function(resolveS3, rejectS3) {
-            // write to s3
-            var options = {
-              Bucket: config.images.s3.bucket,
-              Key: config.images.s3.dir + filename,
-              ACL: 'public-read',
-              ContentType: contentType,
-              Body: stream
-            };
-            client.upload(options, function(err, data) {
-              // upload unsuccessful
-              if(err) { return rejectS3(new Error('S3 write error; ' + err)); }
-              // upload successful
-              else { return resolveS3(); }
-            });
-          });
+        .then(function(fileCheckError) {
+          // stream error while uploading
+          if(fileCheckError) {
+            return Promise.reject(fileCheckError);
+          }
+          else {
+            // upload succeeded
+            return resolveUpload();
+          }
         })
-        .then(function() {
-          // upload succeeded
-          return resolveUpload();
-        })
-        .catch(function(error) {
-          // upload failed
-          return rejectUpload(error);
+        // upload error
+        .catch(function(uploadError) {
         });
       }
     });
