@@ -98,19 +98,24 @@ var uploadImage = function(url, filename) {
         var newStream = true;
         var fileTypeCheck = new Magic(mmm.MAGIC_MIME_TYPE);
         var ftc = through2(function(chunk, enc, cb) {
-          fileTypeCheck.detect(chunk, function(err, result) {
-            var error;
-            if (err) { error = err; }
-            if (result && newStream) {
-              newStream = false;
-              if (result.indexOf('image') !== 0 || result !== contentType) {
-                error = new Error('File extension does not match analyzed content type');
+          if(newStream) {
+            fileTypeCheck.detect(chunk, function(err, result) {
+              var error;
+              if (err) { error = err; }
+              if (result) {
+                newStream = false;
+                if (result.indexOf('image') !== 0 || result !== contentType) {
+                  error = new Error('File extension does not match analyzed content type');
+                }
               }
-            }
 
-            // next
-            return cb(error, chunk);
-          });
+              // next
+              return cb(error, chunk);
+            });
+          }
+          else {
+            return cb(undefined, chunk);
+          }
         });
 
         // check file size
