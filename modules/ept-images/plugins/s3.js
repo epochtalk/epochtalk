@@ -185,6 +185,31 @@ var uploadImage = function(url, filename) {
         })
         // upload error
         .catch(function(uploadError) {
+          // upload failed, delete object
+          return new Promise(function(resolveDelete, rejectDelete) {
+            var options = {
+              Bucket: config.images.s3.bucket,
+              Key: config.images.s3.dir + filename
+            };
+            client.deleteObject(options, function(deleteError) {
+              if(deleteError) {
+                // error during deletion
+                return rejectDelete(deleteError);
+              }
+              else {
+                // file successfully deleted
+                return resolveDelete();
+              }
+            });
+          })
+          .then(function() {
+            // handle error during upload
+            return rejectUpload(uploadError);
+          })
+          .catch(function(deleteError) {
+            // handle error during deletion
+            return rejectUpload(deleteError);
+          });
         });
       }
     });
