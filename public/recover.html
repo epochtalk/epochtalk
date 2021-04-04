@@ -96,9 +96,13 @@
       var $attemptsMsg = $("#attempts");
       function getWarningMessage() {
         var msg = "";
-        if (failedTries > 0 && failedTries < 3) {
+        if (failedTries > 0 && failedTries < 2) {
           msg = 'You have ' + (3 - failedTries) + ' more tries before being temporarily locked out.';
         }
+        else if (failedTries = 2) {
+          msg = 'You have ' + (3 - failedTries) + ' more try before being temporarily locked out.';
+        }
+        
         else if (failedTries >= 3 && failedTries < 8) {
           msg = 'You have been temporarily banned from performing this action. Please return later and try again.';
         }
