@@ -89,7 +89,7 @@
     "redis": "^2.8.0",
     "request": "^2.88.0",
     "rolling-rate-limiter": "^0.1.10",
-    "sanitize-html": "^1.4.3",
+    "sanitize-html": "^2.3.2",
     "slugid": "^2.0.0",
     "slugify": "^1.4.5",
     "socketcluster": "^14.3.3",
