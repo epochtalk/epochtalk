@@ -2,6 +2,10 @@ var db = {};
 module.exports = db;
 var pg = require('pg');
 pg.defaults.parseInputDatesAsUTC = true;
+var types = pg.types;
+types.setTypeParser(1114, function(stringValue) {
+    return new Date(stringValue + "+0000");
+});
 var path = require('path');
 var Promise = require('bluebird');
 var config = require(path.join(__dirname, 'config'));
