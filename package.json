@@ -82,7 +82,7 @@
     "ng-tags-input": "3.0.0",
     "node-sass": "^4.11.0",
     "node-sass-globbing": "0.0.23",
-    "nodemailer": "^5.1.1",
+    "nodemailer": "^6.4.16",
     "nodemailer-ses-transport": "^1.5.1",
     "oclazyload": "^1.1.0",
     "pg": "^7.8.0",
