@@ -114,11 +114,14 @@ module.exports = function(request, opts) {
   return db.sqlQuery(query, params)
   .map(function(post) {
     // Build the breadcrumbs and reply
-    return request.db.breadcrumbs.getBreadcrumbs(post.slug, 'thread', request)
+    return post.slug ? request.db.breadcrumbs.getBreadcrumbs(post.slug, 'thread', request)
     .then(function(breadcrumbs) {
       post.breadcrumbs = breadcrumbs;
       return request.server.methods.common.posts.formatPost(post);
-    });
+    }) : null;
+  })
+  .then(function(posts) {
+    return posts.filter(function(p) { return p != null; })
   })
   .then(function(posts) {
     // hasMoreCheck
