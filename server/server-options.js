@@ -1,7 +1,7 @@
 var path = require('path');
 var config = require(path.normalize(__dirname + '/../config'));
 
-module.exports = {
+module.exports = server = {
   // cors disabled by default
   host: config.host,
   port: config.port,
@@ -20,3 +20,7 @@ module.exports = {
     }
   }
 };
+
+if (config.cors) {
+  server.routes.cors = config.cors;
+}
