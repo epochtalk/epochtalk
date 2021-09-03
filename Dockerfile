@@ -12,3 +12,4 @@ COPY . /usr/src/app
 
 CMD until node cli connect; do sleep 1; done; npm run serve
 EXPOSE 8080
+EXPOSE 23958

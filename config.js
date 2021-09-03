@@ -98,5 +98,6 @@ setIfDefined(config, 'emailerEnv.options.secure', coerceEnvBoolean(process.env.E
 setIfDefined(config, 'emailerEnv.options.region', process.env.EMAILER_OPTIONS_REGION);
 setIfDefined(config, 'emailerEnv.options.accessKeyId', process.env.EMAILER_OPTIONS_ACCESS_KEY_ID);
 setIfDefined(config, 'emailerEnv.options.secretAccessKey', process.env.EMAILER_OPTIONS_SECRET_ACCESS_KEY);
+setIfDefined(config, 'cors.origin', process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(' ') : undefined);
 
 module.exports = config;
