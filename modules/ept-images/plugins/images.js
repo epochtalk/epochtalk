@@ -76,7 +76,8 @@ images.setExpiration = function(duration, url) {
 };
 
 images.clearExpiration = function(url) {
-  return db.images.clearImageExpiration(url);
+  // url replace is a fix for vue project image expiry
+  return db.images.clearImageExpiration(url.replace(config.publicUrl, ''));
 };
 
 var expire = function() {
