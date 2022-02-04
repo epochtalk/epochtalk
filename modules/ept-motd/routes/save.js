@@ -40,6 +40,13 @@ module.exports = {
         motd_html: request.sanitizer.bbcode(request.parser.parse(data.motd)),
         main_view_only: data.main_view_only || false
       };
+    })
+    .tap(function(data) {
+      var notification = {
+        channel: { type: 'public' },
+        data: { action: 'announcement', payload: data }
+      };
+      request.server.plugins.notifications.systemNotification(notification);
     });
     return promise;
   }
