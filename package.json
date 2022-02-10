@@ -80,7 +80,7 @@
     "mustache": "^3.0.1",
     "nestable": "git+https://github.com/slickage/Nestable.git",
     "ng-tags-input": "3.0.0",
-    "node-sass": "^4.11.0",
+    "node-sass": "^7.0.0",
     "node-sass-globbing": "0.0.23",
     "nodemailer": "^5.1.1",
     "nodemailer-ses-transport": "^1.5.1",
