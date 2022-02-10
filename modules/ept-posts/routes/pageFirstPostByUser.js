@@ -43,6 +43,7 @@ module.exports = {
   method: 'GET',
   path: '/api/posts/user/{username}/started',
   options: {
+    app: { hook: 'posts.pageFirstPostByUser' },
     auth: { mode: 'try', strategy: 'jwt' },
     validate: {
       params: Joi.object({ username: Joi.string().required() }),

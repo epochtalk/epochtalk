@@ -203,6 +203,7 @@ module.exports = [
   { path: 'posts.byThread.post', method: userIdToUsername },
   { path: 'posts.patrol.post', method: userIdToUsername },
   { path: 'posts.pageByUser.post', method: userIdToUsername },
+  { path: 'posts.pageFirstPostByUser.post', method: userIdToUsername },
   { path: 'posts.find.post', method: userIdToUsername },
   { path: 'posts.search.post', method: userIdToUsername },
   { path: 'mentions.page.post', method: userIdToUsername },
