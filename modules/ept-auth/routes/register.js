@@ -119,7 +119,7 @@ module.exports = {
         .then(function(score) {
           // User has a malicious score less than 1 let them register
           if (score < 1) { return createdUser; }
-          // User has a malicious score higher than 1 ban the account
+          // User has a malicious score equal to or higher than 1 ban the account
           else {
             return request.db.bans.ban(createdUser.id)
             .then(function(banInfo) {
