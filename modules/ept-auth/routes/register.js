@@ -38,7 +38,6 @@ var crypto = require('crypto');
   *
   * @apiSuccess {string} message Account creation success message
   * @apiSuccess {string} username Created user's username
-  * @apiSuccess {string} confirm_token Created user's account confirmation token
   * @apiSuccess {string} avatar User's avatar url
   *
   * @apiError (Error 400) BadRequest There was an error registering the user
@@ -103,8 +102,7 @@ module.exports = {
         request.emailer.send('confirmAccount', emailParams);
         return {
           message: 'Successfully Created Account',
-          username: user.username,
-          confirm_token: user.confirmation_token
+          username: user.username
         };
       }
       else { return user; }
