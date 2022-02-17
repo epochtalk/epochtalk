@@ -102,7 +102,6 @@ module.exports = {
         request.emailer.send('confirmAccount', emailParams);
         return {
           confirm_token: true,
-          avatar: '/static/img/avatar.png',
           message: 'Successfully Created Account',
           username: user.username
         };
