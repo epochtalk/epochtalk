@@ -36,9 +36,9 @@ var crypto = require('crypto');
   * @apiParam (Payload) {string} password User's password
   * @apiParam (Payload) {string} confirmation User's confirmed password
   *
+  * @apiSuccess {string} confirm_token true if account verification is enabled
   * @apiSuccess {string} message Account creation success message
   * @apiSuccess {string} username Created user's username
-  * @apiSuccess {string} avatar User's avatar url
   *
   * @apiError (Error 400) BadRequest There was an error registering the user
   */
