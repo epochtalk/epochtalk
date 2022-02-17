@@ -36,10 +36,9 @@ var crypto = require('crypto');
   * @apiParam (Payload) {string} password User's password
   * @apiParam (Payload) {string} confirmation User's confirmed password
   *
+  * @apiSuccess {string} confirm_token true if account verification is enabled
   * @apiSuccess {string} message Account creation success message
   * @apiSuccess {string} username Created user's username
-  * @apiSuccess {string} confirm_token Created user's account confirmation token
-  * @apiSuccess {string} avatar User's avatar url
   *
   * @apiError (Error 400) BadRequest There was an error registering the user
   */
@@ -89,8 +88,8 @@ module.exports = {
     })
     // remove invitation if exists in db
     .tap(function(user) { return request.db.invitations.remove(user.email); })
-    // send confirmation email
     .then(function(user) {
+      // send confirmation email
       if (config.verifyRegistration) {
         var confirmUrl = config.publicUrl + '/' + path.join('confirm', user.username, user.confirmation_token);
         var emailParams = {
@@ -102,33 +101,29 @@ module.exports = {
         request.server.log('debug', emailParams);
         request.emailer.send('confirmAccount', emailParams);
         return {
+          confirm_token: true,
           message: 'Successfully Created Account',
-          username: user.username,
-          confirm_token: user.confirmation_token
+          username: user.username
         };
       }
-      else { return user; }
-    })
-    // TODO: Move to post handler code
-    // check malicious score and ban if necessary
-    .then(function(createdUser) {
-      createdUser.avatar = '/static/img/avatar.png';
-      if (config.verifyRegistration) { return createdUser; }
+      // TODO: Move to post handler code
+      // check malicious score and ban if necessary
       else {
+        user.avatar = '/static/img/avatar.png';
         var ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
-        var opts = { ip: ip, userId: createdUser.id };
+        var opts = { ip: ip, userId: user.id };
         return request.db.bans.getMaliciousScore(opts)
         .then(function(score) {
           // User has a malicious score less than 1 let them register
-          if (score < 1) { return createdUser; }
-          // User has a malicious score higher than 1 ban the account
+          if (score < 1) { return user; }
+          // User has a malicious score equal to or higher than 1 ban the account
           else {
-            return request.db.bans.ban(createdUser.id)
+            return request.db.bans.ban(user.id)
             .then(function(banInfo) {
-              createdUser.malicious_score = score;
-              createdUser.roles = banInfo.roles;
-              createdUser.ban_expiration = banInfo.expiration;
-              return createdUser;
+              user.malicious_score = score;
+              user.roles = banInfo.roles;
+              user.ban_expiration = banInfo.expiration;
+              return user;
             });
           }
         })
