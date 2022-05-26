@@ -157,6 +157,7 @@ function verifyRoles(reload, roleLookup) {
       delete modulePermissions.description;
       delete modulePermissions.priority;
       delete modulePermissions.highlightColor;
+      if (modulePermissions.limits && !modulePermissions.limits.length) delete modulePermissions.limits;
 
       var updatedRole = {
         id: dbRole ? dbRole.id : role.id,
@@ -169,12 +170,23 @@ function verifyRoles(reload, roleLookup) {
         custom_permissions: modulePermissions
       };
 
+      /*
+        1. Diff module and base permissions
+          a. Changes detected
+            i.  Apply diff to custom permissions and store
+            ii. Store module permissions as new base permissions
+          b. No Changes detected
+            i.  Continue
+        2. Use custom permissions to populate in memory role object
+        3. If no permissions are present, but the dbRole is found use module permissions
+        4. If no db role is found, create the role using module permissions
+      */
       var customPermissions = dbRole && dbRole.permissions ? dbRole.permissions : undefined;
       var permissionDiff = (dbRole && dbRole.base_permissions) ? diff(dbRole.base_permissions, modulePermissions) : undefined;
       var applyDiff = false;
-      var permissionsMissing = dbRole && (!dbRole.permissions || !Object.keys(dbRole.permissions).length || !dbRole.base_permissions || !Object.keys(dbRole.permissions).length);
+      var permissionsMissing = dbRole && (!dbRole.permissions || !Object.keys(dbRole.permissions).length);
       // There is a change to the module permissions. Update base permissions and custom permissions
-      if (permissionDiff) {
+      if (permissionDiff && !permissionsMissing) {
         // Iterate over each diff and update the custom permissions
         permissionDiff.forEach(function(diff) {
           var path = diff.path.join('.');
@@ -200,7 +212,7 @@ function verifyRoles(reload, roleLookup) {
       // if role found in db and permissions exists, use these in the in memory role object
       if (dbRole && dbRole.permissions && Object.keys(dbRole.permissions).length > 0) {
         // check if permissions are set
-        var newRole = customPermissions;
+        var newRole = _.clone(customPermissions);
         newRole.id = dbRole.id;
         newRole.name = dbRole.name;
         newRole.description = dbRole.description;
