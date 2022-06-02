@@ -308,7 +308,7 @@ var ctrl = ['$rootScope', '$scope', '$location', 'Session', 'Alert', 'Roles', 'U
   };
 
   this.resetRole = function() {
-    ctrl.roleToReset.permissions = {};
+    ctrl.roleToReset.permissions = ctrl.roleToReset.base_permissions;
     ctrl.roleToReset.highlight_color = ctrl.roleToReset.highlight_color ? ctrl.roleToReset.highlight_color : undefined;
     Roles.update(ctrl.roleToReset).$promise
     .then(function() {

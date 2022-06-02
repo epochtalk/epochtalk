@@ -3,7 +3,6 @@ var Boom = require('boom');
 var path = require('path');
 var diff = require('deep-diff');
 var roles = require(path.normalize(__dirname + '/roles'));
-
 var db, config, defaultPerms, validations, layouts;
 
 module.exports = {

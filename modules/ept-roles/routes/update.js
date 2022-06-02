@@ -53,20 +53,11 @@ module.exports = {
     var role = request.payload;
     role.custom_permissions = role.permissions;
     delete role.permissions;
-    var defaultRole;
     var promise = request.db.roles.update(role)
     .then(function(result) {
       // Swap back custom permissions for auth
       role.permissions = role.custom_permissions;
-      // If permissions are empty reset to default
-      if (role.custom_permissions === '{}' && role.id !== role.lookup) {
-        return request.server.plugins.acls.verifyRoles(true, role.lookup)
-          .then(function(updatedDefaultRole) {
-            defaultRole = updatedDefaultRole;
-            return result;
-          });
-      }
-      else { return result; }
+      return result;
     })
     .tap(function(dbRole) {
       var roleClone = _.cloneDeep(dbRole);
@@ -78,8 +69,7 @@ module.exports = {
     })
     .then(function(result) {
       var updateRole = role;
-      if (defaultRole) { updateRole = defaultRole; }
-      else { updateRole.id = result.id; } // undoes deslugify which happens in core
+      updateRole.id = result.id; // undoes deslugify which happens in core
       // Update role in the in memory role object
       request.rolesAPI.updateRole(updateRole);
       return result;
