@@ -55,7 +55,7 @@ module.exports = {
         page: Joi.number().integer().min(1).default(1),
         limit: Joi.number().integer().min(1).max(100).default(15),
         filter: Joi.string().valid('Pending', 'Reviewed', 'Ignored', 'Bad Report'),
-        field: Joi.string().default('created_at').valid('created_at', 'priority', 'reporter_username', 'offender_created_at', 'offender_author_username'),
+        field: Joi.string().default('created_at').valid('created_at', 'status', 'reporter_username', 'offender_created_at', 'offender_author_username'),
         desc: Joi.boolean().default(false),
         search: Joi.string()
       })
